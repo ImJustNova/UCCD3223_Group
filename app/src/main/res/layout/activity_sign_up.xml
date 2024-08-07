@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="ExtraText">
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="293dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_background"
+            android:layout_marginLeft="15dp"/>/>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="321dp"
+            android:layout_height="378dp"
+            android:layout_gravity="center"
+            android:src="@drawable/panda"
+            android:layout_marginLeft="15dp"/>
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="350dp"
+        android:text="Earn money and \n spend money in \n          ease"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:textColor="#000000" />  <!-- Black color -->
+
+
+    <TextView
+        android:id="@+id/textViewSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTitle"
+        android:layout_marginTop="1dp"
+        android:layout_centerHorizontal="true"
+        android:text="Become your own money manager \n       and make every cent count"
+        android:textSize="14sp"
+        android:textColor="#808080" />
+
+    <Button
+        android:id="@+id/buttonSignUp"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/textViewSubtitle"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/round_button_background"
+        android:padding="16dp"
+        android:text="Sign Up"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/buttonSignUp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/round_button_background"
+        android:padding="16dp"
+        android:text="Login"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

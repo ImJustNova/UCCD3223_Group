@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Kachin</string>
+    <string name="app_name">LoginApp</string>
+    <string name="login_success">Login Successful!</string>
+    <string name="login_failed">Login Failed!</string>
+    <string name="empty_fields_error">Please enter both username and password.</string>
+    <string name="terms_and_policy">By signing up, you agree to the Terms of Service and Privacy Policy</string>
+    <string name="default_web_client_id">YOUR_CLIENT_ID_HERE</string>
+    <string name="google_sign_in">Sign Up with Google</string>
+
+
 </resources>
