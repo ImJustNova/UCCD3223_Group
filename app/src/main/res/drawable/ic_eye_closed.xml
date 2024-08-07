@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Example path data for eye closed icon -->
+    <path
+        android:fillColor="#000"
+        android:pathData="M12,4.5C7.305,4.5 3.178,7.24 1,12c2.178,4.76 6.305,7.5 11,7.5 4.695,0 8.822,-2.74 11,-7.5C20.822,7.24 16.695,4.5 12,4.5zM12,15.5C10.067,15.5 8.5,13.933 8.5,12 8.5,10.067 10.067,8.5 12,8.5 13.933,8.5 15.5,10.067 15.5,12 15.5,13.933 13.933,15.5 12,15.5zM4.5,3L3,4.5L19.5,21L21,19.5 4.5,3z"/>
+</vector>
