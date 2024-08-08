@@ -40,6 +40,11 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         // Get the oobCode from the Intent
         oobCode = getIntent().getStringExtra("oobCode");
+        if (oobCode == null) {
+            Toast.makeText(this, "Invalid reset code", Toast.LENGTH_SHORT).show();
+            finish(); // Exit the activity if oobCode is not provided
+            return;
+        }
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
