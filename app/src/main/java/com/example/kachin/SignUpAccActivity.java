@@ -52,43 +52,43 @@ public class SignUpAccActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
-    private GoogleSignInClient googleSignInClient;
+    //private GoogleSignInClient googleSignInClient;
 
     // ActivityResultLauncher for Google Sign-In
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
-                            try {
-                                GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                                AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                                mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            if (user != null) {
-                                                saveUserToDatabase(user, user.getDisplayName(), user.getEmail());
-                                            }
-                                        } else {
-                                            Log.e("SignUpAccActivity", "Google sign in failed", task.getException());
-                                            Toast.makeText(SignUpAccActivity.this, "Failed to sign in: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            } catch (ApiException e) {
-                                e.printStackTrace();
-                                Toast.makeText(SignUpAccActivity.this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }
-            });
+//    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+//        new ActivityResultContracts.StartActivityForResult(),
+//        new ActivityResultCallback<ActivityResult>() {
+//            @Override
+//            public void onActivityResult(ActivityResult result) {
+//                if (result.getResultCode() == RESULT_OK) {
+//                    Intent data = result.getData();
+//                    if (data != null) {
+//                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+//                        try {
+//                            GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+//                            AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+//                            mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<AuthResult> task) {
+//                                    if (task.isSuccessful()) {
+//                                        FirebaseUser user = mAuth.getCurrentUser();
+//                                        if (user != null) {
+//                                            saveUserToDatabase(user, user.getDisplayName(), user.getEmail());
+//                                        }
+//                                    } else {
+//                                        Log.e("SignUpAccActivity", "Google sign in failed", task.getException());
+//                                        Toast.makeText(SignUpAccActivity.this, "Failed to sign in: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+//                        } catch (ApiException e) {
+//                            e.printStackTrace();
+//                            Toast.makeText(SignUpAccActivity.this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +100,11 @@ public class SignUpAccActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Configure Google Sign-In
-        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        googleSignInClient = GoogleSignIn.getClient(this, options);
+//        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestEmail()
+//                .build();
+//        googleSignInClient = GoogleSignIn.getClient(this, options);
 
         // Initialize UI elements
         editTextName = findViewById(R.id.editTextName);
@@ -142,10 +142,10 @@ public class SignUpAccActivity extends AppCompatActivity {
             editTextPassword.setSelection(editTextPassword.length());
         });
 
-        buttonSignUpGoogle.setOnClickListener(view -> {
-            Intent intent = googleSignInClient.getSignInIntent();
-            activityResultLauncher.launch(intent);
-        });
+//        buttonSignUpGoogle.setOnClickListener(view -> {
+//            Intent intent = googleSignInClient.getSignInIntent();
+//            activityResultLauncher.launch(intent);
+//        });
 
         // Set OnClickListener for TextView to navigate to MainActivity
         textViewLogin.setOnClickListener(v -> {
