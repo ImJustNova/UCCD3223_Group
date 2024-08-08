@@ -13,7 +13,20 @@
           "package_name": "com.example.kachin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "64636843229-nu75gf3a4asc13qh24ph3fepq321i5q1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kachin",
+            "certificate_hash": "cdd5651c144d3da9af5061aa8519d537f8e0efd8"
+          }
+        },
+        {
+          "client_id": "64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDJJGEyufNTUcI8XLaVtf9q__h-bV1ybfQ"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

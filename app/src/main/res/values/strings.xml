@@ -6,6 +6,6 @@
     <string name="terms_and_policy">By signing up, you agree to the Terms of Service and Privacy Policy</string>
     <string name="default_web_client_id">YOUR_CLIENT_ID_HERE</string>
     <string name="google_sign_in">Sign Up with Google</string>
-
+    <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
 
 </resources>

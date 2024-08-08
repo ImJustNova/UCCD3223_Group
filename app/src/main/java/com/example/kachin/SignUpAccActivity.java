@@ -1,14 +1,14 @@
 package com.example.kachin;
 
-import android.app.AlertDialog;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
+
 import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.LinkMovementMethod;
+
 import android.text.method.PasswordTransformationMethod;
-import android.text.style.ClickableSpan;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,18 +16,38 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageButton;
+
 
 import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+
+
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+import com.google.firebase.FirebaseApp;
+
 
 public class SignUpAccActivity extends AppCompatActivity {
 
@@ -36,43 +56,83 @@ public class SignUpAccActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private CheckBox checkBoxTerms;
     private Button buttonSignUpAcc;
+    private ImageButton buttonSignUpGoogle;
     private ImageView passwordToggle;
     private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    private GoogleSignInClient googleSignInClient;
+
+    // ActivityResultLauncher for Google Sign-In
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        try {
+                            GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+                            mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        if (user != null) {
+                                            saveUserToDatabase(user, user.getDisplayName(), user.getEmail());
+                                        }
+                                    } else {
+                                        Log.e("SignUpAccActivity", "Google sign in failed", task.getException());
+                                        Toast.makeText(SignUpAccActivity.this, "Failed to sign in: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } catch (ApiException e) {
+                            e.printStackTrace();
+                            Toast.makeText(SignUpAccActivity.this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_acc);
 
+        // Initialize Firebase Auth
+        FirebaseApp.initializeApp(this);
+        mAuth = FirebaseAuth.getInstance();
+
+        // Configure Google Sign-In
+        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(SignUpAccActivity.this, options);
+
+        // Initialize UI elements
         editTextName = findViewById(R.id.editTextName);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         checkBoxTerms = findViewById(R.id.checkBoxTerms);
         buttonSignUpAcc = findViewById(R.id.buttonSignUpAcc);
+        buttonSignUpGoogle = findViewById(R.id.buttonSignUpGoogle);
         passwordToggle = findViewById(R.id.passwordToggle);
-        mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
-
-        TextView textViewTerms = findViewById(R.id.textViewTerms);
-        makeTermsClickable(textViewTerms);
-
-        TextView textViewLogin = findViewById(R.id.textViewLogin);
-        textViewLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(SignUpAccActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
 
         checkBoxTerms.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonSignUpAcc.setEnabled(isChecked);
         });
 
         buttonSignUpAcc.setOnClickListener(v -> {
-            String name = editTextName.getText().toString();
-            String email = editTextEmail.getText().toString();
-            String password = editTextPassword.getText().toString();
-            signUpUser(name, email, password);
+            if (validateInputs()) {
+                String name = editTextName.getText().toString();
+                String email = editTextEmail.getText().toString();
+                String password = editTextPassword.getText().toString();
+                signUpUser(name, email, password);
+            }
         });
 
         passwordToggle.setOnClickListener(view -> {
@@ -86,35 +146,49 @@ public class SignUpAccActivity extends AppCompatActivity {
             isPasswordVisible = !isPasswordVisible;
             editTextPassword.setSelection(editTextPassword.length());
         });
-    }
 
-    private void makeTermsClickable(TextView textView) {
-        String fullText = "By signing up, you agree to the terms of service and privacy policy.";
-        String termsText = "terms of service and privacy policy";
-
-        SpannableString spannableString = new SpannableString(fullText);
-
-        int start = fullText.indexOf(termsText);
-        int end = start + termsText.length();
-
-        ClickableSpan clickableSpan = new ClickableSpan() {
+        buttonSignUpGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View widget) {
-                showTermsDialog();
+            public void onClick(View view) {
+                Intent intent = googleSignInClient.getSignInIntent();
+                activityResultLauncher.launch(intent);
             }
-        };
-        spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        textView.setText(spannableString);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        });
     }
 
-    private void showTermsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Terms of Service and Privacy Policy");
-        builder.setMessage("Here are the terms of service and privacy policy details...");
-        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-        builder.show();
+    private boolean validateInputs() {
+        boolean isValid = true;
+        String name = editTextName.getText().toString();
+        String email = editTextEmail.getText().toString();
+        String password = editTextPassword.getText().toString();
+
+        if (name.isEmpty()) {
+            editTextName.setError("Name cannot be empty");
+            isValid = false;
+        } else {
+            editTextName.setError(null);
+        }
+
+        if (email.isEmpty()) {
+            editTextEmail.setError("Email cannot be empty");
+            isValid = false;
+        } else {
+            editTextEmail.setError(null);
+        }
+
+        if (password.isEmpty()) {
+            editTextPassword.setError("Password cannot be empty");
+            isValid = false;
+        } else {
+            editTextPassword.setError(null);
+        }
+
+        if (!checkBoxTerms.isChecked()) {
+            Toast.makeText(this, "You must agree to the terms", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     private void signUpUser(String name, String email, String password) {
@@ -141,7 +215,6 @@ public class SignUpAccActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(SignUpAccActivity.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
-                        // Navigate to main activity or dashboard
                         Intent intent = new Intent(SignUpAccActivity.this, MainActivity.class);
                         startActivity(intent);
                     } else {
@@ -150,7 +223,6 @@ public class SignUpAccActivity extends AppCompatActivity {
                 });
     }
 
-    // Define a User class to represent user data
     public static class User {
         public String name;
         public String email;

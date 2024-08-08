@@ -35,7 +35,7 @@
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
+        android:layout_width="335dp"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
@@ -43,6 +43,17 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/edit_text_background"
         android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/block2"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="335dp"
+        android:layout_below="@id/editTextEmail"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp" />
+
 
     <ImageView
         android:id="@+id/passwordToggle"
