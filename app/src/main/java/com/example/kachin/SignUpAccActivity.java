@@ -1,26 +1,20 @@
 package com.example.kachin;
 
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.text.method.HideReturnsTransformationMethod;
-
 import android.text.method.PasswordTransformationMethod;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageButton;
-
 
 import androidx.annotation.NonNull;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,16 +32,12 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-
-
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.google.firebase.FirebaseApp;
-
 
 public class SignUpAccActivity extends AppCompatActivity {
 
@@ -58,6 +48,7 @@ public class SignUpAccActivity extends AppCompatActivity {
     private Button buttonSignUpAcc;
     private ImageButton buttonSignUpGoogle;
     private ImageView passwordToggle;
+    private TextView textViewLogin; // Reference to TextView for login
     private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -70,27 +61,30 @@ public class SignUpAccActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
-                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                        try {
-                            GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                            AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                            mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        if (user != null) {
-                                            saveUserToDatabase(user, user.getDisplayName(), user.getEmail());
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+                            try {
+                                GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+                                AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+                                mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            if (user != null) {
+                                                saveUserToDatabase(user, user.getDisplayName(), user.getEmail());
+                                            }
+                                        } else {
+                                            Log.e("SignUpAccActivity", "Google sign in failed", task.getException());
+                                            Toast.makeText(SignUpAccActivity.this, "Failed to sign in: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
-                                    } else {
-                                        Log.e("SignUpAccActivity", "Google sign in failed", task.getException());
-                                        Toast.makeText(SignUpAccActivity.this, "Failed to sign in: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
-                                }
-                            });
-                        } catch (ApiException e) {
-                            e.printStackTrace();
-                            Toast.makeText(SignUpAccActivity.this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                            } catch (ApiException e) {
+                                e.printStackTrace();
+                                Toast.makeText(SignUpAccActivity.this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
@@ -110,7 +104,7 @@ public class SignUpAccActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        googleSignInClient = GoogleSignIn.getClient(SignUpAccActivity.this, options);
+        googleSignInClient = GoogleSignIn.getClient(this, options);
 
         // Initialize UI elements
         editTextName = findViewById(R.id.editTextName);
@@ -120,6 +114,7 @@ public class SignUpAccActivity extends AppCompatActivity {
         buttonSignUpAcc = findViewById(R.id.buttonSignUpAcc);
         buttonSignUpGoogle = findViewById(R.id.buttonSignUpGoogle);
         passwordToggle = findViewById(R.id.passwordToggle);
+        textViewLogin = findViewById(R.id.textViewLogin); // Initialize TextView for login
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
         checkBoxTerms.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -147,12 +142,16 @@ public class SignUpAccActivity extends AppCompatActivity {
             editTextPassword.setSelection(editTextPassword.length());
         });
 
-        buttonSignUpGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = googleSignInClient.getSignInIntent();
-                activityResultLauncher.launch(intent);
-            }
+        buttonSignUpGoogle.setOnClickListener(view -> {
+            Intent intent = googleSignInClient.getSignInIntent();
+            activityResultLauncher.launch(intent);
+        });
+
+        // Set OnClickListener for TextView to navigate to MainActivity
+        textViewLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(SignUpAccActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // Optional: Close the SignUpAccActivity
         });
     }
 
@@ -217,6 +216,7 @@ public class SignUpAccActivity extends AppCompatActivity {
                         Toast.makeText(SignUpAccActivity.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(SignUpAccActivity.this, MainActivity.class);
                         startActivity(intent);
+                        finish(); // Optional: Close the SignUpAccActivity
                     } else {
                         Toast.makeText(SignUpAccActivity.this, "Failed to save user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
