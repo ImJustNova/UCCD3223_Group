@@ -12,13 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Login"
         tools:targetApi="31">
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="false" />
         <!-- for testing purposes -->
         <activity
             android:name=".testActivity"
             android:exported="true">
+
         </activity>
         <activity
-            android:name=".UserDashboardActivity"
+            android:name=".UserDashBoardActivity"
             android:exported="true" />
         <activity
             android:name=".SignUpAccActivity"

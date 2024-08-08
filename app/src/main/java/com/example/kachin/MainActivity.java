@@ -1,6 +1,5 @@
 package com.example.kachin;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -21,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
 
     private FirebaseAuth mAuth;
-
     private static final String TAG = "MainActivity";
 
     @Override
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             if (!validateEmail() || !validatePassword()) {
                 return;
             } else {
-                loginUser();
+                checkUser();
             }
         });
 
@@ -83,15 +82,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            reload();
-        }
-    }
-
     private Boolean validateEmail() {
         String val = email.getText().toString();
         if (val.isEmpty()) {
@@ -114,11 +104,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loginUser() {
+    private void checkUser() {
         String userEmail = email.getText().toString().trim();
         String userPassword = password.getText().toString().trim();
-
-        Log.d(TAG, "Attempting to login user with email: " + userEmail);
 
         mAuth.signInWithEmailAndPassword(userEmail, userPassword)
                 .addOnCompleteListener(this, task -> {
@@ -128,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                         if (user != null) {
                             retrieveUserData(user);
 
-                            Intent intent = new Intent(MainActivity.this, UserDashboardActivity.class);
+                            Intent intent = new Intent(MainActivity.this, UserDashBoardActivity.class);
                             //intent.putExtra("userId", user.getUid());
                             startActivity(intent);
                             finish();
@@ -140,15 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void showSuccessDialog(String name) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Login Successful")
-                .setMessage("Welcome, " + name + "!")
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .show();
-    }
-
     private void retrieveUserData(FirebaseUser user) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,26 +135,23 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     String nameFromDB = snapshot.child("name").getValue(String.class);
-                    Log.d(TAG, "User data retrieved: " + nameFromDB);
-                    showSuccessDialog(nameFromDB);
+                    navigateToWelcomeActivity(nameFromDB);
                 } else {
-                    Log.d(TAG, "User data does not exist");
                     Toast.makeText(MainActivity.this, "User data does not exist.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "Error retrieving user data: " + error.getMessage());
                 Toast.makeText(MainActivity.this, "Failed to retrieve user data.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void reload() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            retrieveUserData(user);
-        }
+    private void navigateToWelcomeActivity(String name) {
+        Intent intent = new Intent(MainActivity.this, UserDashBoardActivity.class);
+        intent.putExtra("name", name);
+        startActivity(intent);
+        finish();
     }
 }
