@@ -127,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             retrieveUserData(user);
+
+                            Intent intent = new Intent(MainActivity.this, UserDashboardActivity.class);
+                            //intent.putExtra("userId", user.getUid());
+                            startActivity(intent);
+                            finish();
                         }
                     } else {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
