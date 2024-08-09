@@ -112,7 +112,6 @@ public class SignUpAccActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         checkBoxTerms = findViewById(R.id.checkBoxTerms);
         buttonSignUpAcc = findViewById(R.id.buttonSignUpAcc);
-        buttonSignUpGoogle = findViewById(R.id.buttonSignUpGoogle);
         passwordToggle = findViewById(R.id.passwordToggle);
         textViewLogin = findViewById(R.id.textViewLogin); // Initialize TextView for login
         databaseReference = FirebaseDatabase.getInstance().getReference("users");

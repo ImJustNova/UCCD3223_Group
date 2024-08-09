@@ -5,26 +5,78 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
+    <!-- Title TextView -->
     <TextView
         android:id="@+id/loginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Login into Kachin"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:layout_marginBottom="90dp"/>
+        android:layout_marginBottom="30sp" />
 
+    <!-- Google Sign-In Button -->
+    <ImageButton
+        android:id="@+id/buttonSignUpGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/loginTitle"
+        android:layout_marginBottom="20sp"
+        android:background="@drawable/round_button_background_white"
+        android:contentDescription="@string/google_sign_in"
+        android:padding="12dp"
+        android:src="@drawable/logo_google"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <!-- Horizontal Divider with Text "Or with" -->
+    <LinearLayout
+        android:id="@+id/linearLayoutDivider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonSignUpGoogle"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Left Divider -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+
+        <!-- Text "Or with" -->
+        <TextView
+            android:id="@+id/textOrWith"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="or with"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
+
+        <!-- Right Divider -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </LinearLayout>
+
+    <!-- Email EditText -->
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:layout_below="@id/loginTitle"
+        android:layout_below="@id/linearLayoutDivider"
         android:padding="12dp"
-        android:background="@drawable/edit_text_background"/>
+        android:background="@drawable/edit_text_background" />
 
     <EditText
         android:id="@+id/password"
@@ -56,11 +108,11 @@
         android:layout_width="42dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="228dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginTop="301dp"
+        android:layout_marginEnd="2dp"
         android:padding="3dp"
         android:src="@drawable/ic_eye_closed" />
-
+    <!-- Login Button -->
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
@@ -71,8 +123,9 @@
         android:layout_below="@id/password"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="10dp"
-        android:padding="16dp"/>
+        android:padding="16dp" />
 
+    <!-- Forgot Password TextView -->
     <TextView
         android:id="@+id/forgotPassword"
         android:layout_width="wrap_content"
@@ -87,27 +140,29 @@
         android:textStyle="bold"
         tools:ignore="TextSizeCheck" />
 
+    <!-- Don't have an account TextView -->
     <TextView
         android:id="@+id/dont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/forgotPassword"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="70dp"
+        android:layout_marginLeft="76dp"
         android:text="Don’t have an account yet?"
         android:textSize="15dp"
         android:textStyle="bold"
         tools:ignore="TextSizeCheck" />
 
+    <!-- Sign Up TextView -->
     <TextView
         android:id="@+id/signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/forgotPassword"
         android:layout_marginTop="8dp"
+        android:layout_marginLeft="256dp"
         android:text="Sign Up"
         android:textColor="@color/blue"
-        android:layout_marginLeft="254dp"
         android:textSize="15dp"
         android:textStyle="bold"
         tools:ignore="TextSizeCheck" />

@@ -101,31 +101,12 @@
         android:textColor="@android:color/white"
         android:enabled="false" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Or with"
-        android:layout_below="@id/buttonSignUpAcc"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
-
-    <ImageButton
-        android:id="@+id/buttonSignUpGoogle"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_below="@id/buttonSignUpAcc"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/round_button_background_white"
-        android:contentDescription="@string/google_sign_in"
-        android:padding="12dp"
-        android:src="@drawable/logo_google"
-        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already have an account?"
-        android:layout_below="@id/buttonSignUpGoogle"
+        android:layout_below="@id/buttonSignUpAcc"
         android:layout_marginStart="100dp"
         android:layout_marginTop="20dp" />
 
@@ -135,7 +116,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textColor="@color/blue"
-        android:layout_below="@id/buttonSignUpGoogle"
+        android:layout_below="@id/buttonSignUpAcc"
         android:layout_marginStart="262dp"
         android:layout_marginTop="20dp" />
 
