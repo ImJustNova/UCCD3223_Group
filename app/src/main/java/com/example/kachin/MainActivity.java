@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -32,8 +31,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,11 +73,6 @@ public class MainActivity extends AppCompatActivity {
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             if (user != null) {
                                                 saveUserToDatabase(user, user.getDisplayName(), user.getEmail());
-
-                                                // After successful sign-in, navigate to UserDashBoardActivity
-                                                Intent intent = new Intent(MainActivity.this, UserDashBoardActivity.class);
-                                                startActivity(intent);
-                                                finish(); // Optional: Close MainActivity
                                             }
                                         } else {
                                             Log.e(TAG, "Google sign in failed", task.getException());
@@ -115,55 +112,40 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, options);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Login button clicked");
-                if (!validateEmail() || !validatePassword()) {
-                    return;
-                } else {
-                    checkUser();
-                }
+        loginButton.setOnClickListener(view -> {
+            Log.d(TAG, "Login button clicked");
+            if (!validateEmail() || !validatePassword()) {
+                return;
+            } else {
+                checkUser();
             }
         });
 
-        passwordToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isPasswordVisible) {
-                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    passwordToggle.setImageResource(R.drawable.ic_eye_closed);
-                } else {
-                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    passwordToggle.setImageResource(R.drawable.ic_eye_open);
-                }
-                isPasswordVisible = !isPasswordVisible;
-                password.setSelection(password.length());
+        passwordToggle.setOnClickListener(view -> {
+            if (isPasswordVisible) {
+                password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                passwordToggle.setImageResource(R.drawable.ic_eye_closed);
+            } else {
+                password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                passwordToggle.setImageResource(R.drawable.ic_eye_open);
             }
+            isPasswordVisible = !isPasswordVisible;
+            password.setSelection(password.length());
         });
 
-        buttonSignUpGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = googleSignInClient.getSignInIntent();
-                activityResultLauncher.launch(intent);
-            }
+        buttonSignUpGoogle.setOnClickListener(view -> {
+            Intent intent = googleSignInClient.getSignInIntent();
+            activityResultLauncher.launch(intent);
         });
 
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SignUpAccActivity.class);
-                startActivity(intent);
-            }
+        signUp.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, SignUpAccActivity.class);
+            startActivity(intent);
         });
 
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
-                startActivity(intent);
-            }
+        forgotPassword.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -171,21 +153,19 @@ public class MainActivity extends AppCompatActivity {
         String userId = user.getUid();
         SignUpAccActivity.User newUser = new SignUpAccActivity.User(name, email);
         databaseReference.child(userId).setValue(newUser)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Failed to save user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
+                        navigateToUserDashboard(name);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Failed to save user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private boolean validateEmail() {
-        String emailInput = email.getText().toString().trim();
-        if (emailInput.isEmpty()) {
+    private Boolean validateEmail() {
+        String val = email.getText().toString();
+        if (val.isEmpty()) {
             email.setError("Email cannot be empty");
             return false;
         } else {
@@ -194,9 +174,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validatePassword() {
-        String passwordInput = password.getText().toString().trim();
-        if (passwordInput.isEmpty()) {
+    private Boolean validatePassword() {
+        String val = password.getText().toString();
+        if (val.isEmpty()) {
             password.setError("Password cannot be empty");
             return false;
         } else {
@@ -206,24 +186,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkUser() {
-        String emailInput = email.getText().toString().trim();
-        String passwordInput = password.getText().toString().trim();
+        String userEmail = email.getText().toString().trim();
+        String userPassword = password.getText().toString().trim();
 
-        mAuth.signInWithEmailAndPassword(emailInput, passwordInput)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null) {
-                                Intent intent = new Intent(MainActivity.this, UserDashBoardActivity.class);
-                                startActivity(intent);
-                                finish(); // Optional: Close MainActivity
-                            }
-                        } else {
-                            Toast.makeText(MainActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+        mAuth.signInWithEmailAndPassword(userEmail, userPassword)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithEmail:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            retrieveUserData(user);
                         }
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void retrieveUserData(FirebaseUser user) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String nameFromDB = snapshot.child("name").getValue(String.class);
+                    navigateToUserDashboard(nameFromDB);
+                } else {
+                    Toast.makeText(MainActivity.this, "User data does not exist.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Failed to retrieve user data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void navigateToUserDashboard(String name) {
+        Intent intent = new Intent(MainActivity.this, UserDashBoardActivity.class);
+        intent.putExtra("name", name);
+        startActivity(intent);
+        finish();
     }
 }
