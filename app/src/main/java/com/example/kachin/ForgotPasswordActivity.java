@@ -9,13 +9,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.kachin.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -53,21 +54,41 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private void ResetPassword() {
         btnReset.setEnabled(false);  // Disable the button during the process
 
-        mAuth.sendPasswordResetEmail(strEmail)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        mAuth.fetchSignInMethodsForEmail(strEmail)
+                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ForgotPasswordActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Error :- " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        btnReset.setEnabled(true);  // Re-enable the button if there's an error
+                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                        if (task.isSuccessful()) {
+                            SignInMethodQueryResult result = task.getResult();
+                            if (result != null && result.getSignInMethods() != null && !result.getSignInMethods().isEmpty()) {
+                                // Email exists, proceed to send reset email
+                                mAuth.sendPasswordResetEmail(strEmail)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(ForgotPasswordActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(ForgotPasswordActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                btnReset.setEnabled(true);  // Re-enable the button if there's an error
+                                            }
+                                        });
+                            } else {
+                                // Email does not exist
+                                Toast.makeText(ForgotPasswordActivity.this, "This email is not registered", Toast.LENGTH_SHORT).show();
+                                btnReset.setEnabled(true);
+                            }
+                        } else {
+                            // Task failed
+                            Toast.makeText(ForgotPasswordActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            btnReset.setEnabled(true);
+                        }
                     }
                 });
     }
