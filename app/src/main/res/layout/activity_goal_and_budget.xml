@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="50dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="22dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/back_arrow"
+        android:contentDescription="Back"/>
+
+    <TextView
+        android:id="@+id/pageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:text="Goals &amp; Budgets"
+        android:textSize="25sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/backButton">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/goalTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Goal"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:id="@+id/goalLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/goalTitle">
+
+                <TextView
+                    android:id="@+id/GoalsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="There are no goals yet!"
+                    android:textSize="25sp"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/addGoalButton"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:src="@drawable/add_goal"
+                    android:scaleType="centerCrop"
+                    android:padding="8dp"
+                    android:contentDescription="Add goal"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/goalLayout"
+                android:background="#D3D3D3"
+                android:layout_margin="16dp" />
+
+            <TextView
+                android:id="@+id/budgetTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider"
+                android:text="Budget"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:id="@+id/budgetLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/budgetTitle">
+
+                <TextView
+                    android:id="@+id/BudgetText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="There are no budget limit yet!"
+                    android:textSize="25sp"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/addBudgetButton"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:src="@drawable/add_goal"
+                    android:scaleType="centerCrop"
+                    android:padding="8dp"
+                    android:contentDescription="Add Budget"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
