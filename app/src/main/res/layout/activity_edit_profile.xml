@@ -4,7 +4,6 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -32,24 +31,24 @@
         <EditText
             android:id="@+id/edit_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:hint="Name"
-            android:paddingTop="16dp"/>
+            android:paddingTop="16dp" />
 
         <EditText
             android:id="@+id/edit_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:hint="Email"
-            android:paddingTop="8dp"/>
+            android:paddingTop="8dp" />
 
         <EditText
             android:id="@+id/edit_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:hint="Password"
             android:inputType="textPassword"
-            android:paddingTop="8dp"/>
+            android:paddingTop="8dp" />
 
         <Button
             android:id="@+id/btn_save"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AplikasiLogMasuk</string>
+    <string name="login_success">Log Masuk Berjaya!</string>
+    <string name="login_failed">Log Masuk Gagal!</string>
+    <string name="empty_fields_error">Sila masukkan nama pengguna dan kata laluan.</string>
+    <string name="terms_and_policy">Dengan mendaftar, anda bersetuju dengan Terma Perkhidmatan dan Polisi Privasi</string>
+    <string name="default_web_client_id">ID_CLIENT_ANDA_DI_SINI</string>
+    <string name="google_sign_in">Daftar dengan Google</string>
+    <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
+
+    <string-array name="time_frame_array">
+        <item>harian</item>
+        <item>mingguan</item>
+        <item>bulanan</item>
+    </string-array>
+
+    <string-array name="recurring_array">
+        <item>ya</item>
+        <item>tidak</item>
+    </string-array>
+
+    <string name="language_label">Bahasa</string>
+    <string name="help_label">Bantuan</string>
+    <string name="select_language">Pilih Bahasa</string>
+    <string name="help_message">Akan datang</string>
+</resources>

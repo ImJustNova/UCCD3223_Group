@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">登录应用</string>
+    <string name="login_success">登录成功！</string>
+    <string name="login_failed">登录失败！</string>
+    <string name="empty_fields_error">请输入用户名和密码。</string>
+    <string name="terms_and_policy">注册即表示您同意服务条款和隐私政策</string>
+    <string name="default_web_client_id">您的客户端 ID</string>
+    <string name="google_sign_in">使用 Google 注册</string>
+    <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
+
+    <string-array name="time_frame_array">
+        <item>每天</item>
+        <item>每周</item>
+        <item>每月</item>
+    </string-array>
+
+    <string-array name="recurring_array">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+
+    <string name="language_label">语言</string>
+    <string name="help_label">帮助</string>
+    <string name="select_language">选择语言</string>
+    <string name="help_message">即将推出</string>
+</resources>
