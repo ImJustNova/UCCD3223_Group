@@ -2,6 +2,7 @@ package com.example.kachin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,27 +28,26 @@ public class addGoalAndBudget extends AppCompatActivity {
 
     private DatabaseReference database;
     private String uid;
-    private EditText goalName, targetAmount, budgetLimit;
-    private double currentAmount, progress;
+    private EditText goalName;
+    private EditText targetAmount;
     private Spinner category, timeFrame, recurring;
     private List<String> categoriesList;
-    private Button addButton;
-    private TextView pageTitle, cancelButton;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal_and_budget);
 
-        pageTitle = findViewById(R.id.pageTitle);
-        cancelButton = findViewById(R.id.cancelButton);
+        TextView pageTitle = findViewById(R.id.pageTitle);
+        TextView cancelButton = findViewById(R.id.cancelButton);
         goalName = findViewById(R.id.goalName);
         targetAmount = findViewById(R.id.targetAmount);
-        budgetLimit = findViewById(R.id.budgetLimit);
+        EditText budgetLimit = findViewById(R.id.budgetLimit);
         category = findViewById(R.id.category);
         timeFrame = findViewById(R.id.timeFrame);
         recurring = findViewById(R.id.recurring);
-        addButton = findViewById(R.id.addButton);
+        Button addButton = findViewById(R.id.addButton);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -95,26 +95,44 @@ public class addGoalAndBudget extends AppCompatActivity {
         });
 
         addButton.setOnClickListener(v -> {
-            if (title == "goal") {
-                getNextGoalIdAndWriteNewGoal(uid, goalName.getText().toString(), Double.parseDouble(targetAmount.getText().toString()), currentAmount);
-            } else if (title == "budget") {
-                getNextBudgetIdAndWriteNewBudget(uid, Double.parseDouble(targetAmount.getText().toString()),
-                        currentAmount, category.getSelectedItem().toString(), timeFrame.getSelectedItem().toString(),
+            if ("goal".equals(title)) {
+                String goalNameText = goalName.getText().toString().trim();
+                String targetAmountText = targetAmount.getText().toString().trim();
+
+                if (goalNameText.isEmpty() || targetAmountText.isEmpty()) {
+                    Toast.makeText(addGoalAndBudget.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                getNextGoalIdAndWriteNewGoal(uid, goalName.getText().toString(), Double.parseDouble(targetAmount.getText().toString()), 0);
+            } else if ("budget".equals(title)) {
+                String budgetLimitText = budgetLimit.getText().toString().trim();
+                String selectedCategory = category.getSelectedItem().toString();
+                String selectedTimeFrame = timeFrame.getSelectedItem().toString();
+                String selectedRecurring = recurring.getSelectedItem().toString();
+
+                if (budgetLimitText.isEmpty() || selectedCategory.isEmpty() || selectedTimeFrame.isEmpty() || selectedRecurring.isEmpty()) {
+                    Toast.makeText(addGoalAndBudget.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                getNextBudgetIdAndWriteNewBudget(uid, Double.parseDouble(budgetLimit.getText().toString()),
+                        0, category.getSelectedItem().toString(), timeFrame.getSelectedItem().toString(),
                         recurring.getSelectedItem().toString());
             }
         });
     }
 
     private void fetchCategories() {
-        database = FirebaseDatabase.getInstance().getReference("category");
-        database.addValueEventListener(new ValueEventListener() {
+        DatabaseReference databaseCategories = FirebaseDatabase.getInstance().getReference("category");
+        databaseCategories.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                categoriesList.clear(); // Clear list before adding new data
+                categoriesList.clear();
 
                 for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
-                    String category = categorySnapshot.getValue(String.class);
-                    categoriesList.add(category);
+                    if (categorySnapshot.getValue() instanceof String) {
+                        String category = categorySnapshot.getValue(String.class);
+                        categoriesList.add(category);
+                    }
                 }
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(addGoalAndBudget.this, android.R.layout.simple_spinner_item, categoriesList);
@@ -133,6 +151,7 @@ public class addGoalAndBudget extends AppCompatActivity {
         double progress = (currentAmount / targetAmount) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
         Goal goal = new Goal(uid, goalName, targetAmount, currentAmount, progress);
+
         database.child("goal").child(goalId).setValue(goal)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Goal added successfully", Toast.LENGTH_SHORT).show();
@@ -142,13 +161,14 @@ public class addGoalAndBudget extends AppCompatActivity {
                 });
     }
 
+
     private void getNextGoalIdAndWriteNewGoal(String uid, String goalName, double targetAmount, double currentAmount) {
         database.child("goal").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long nextGoalId = 1; // Default to 1 if there are no existing users
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    String key = userSnapshot.getKey();
+                long nextGoalId = 1; // Default to 1 if there are no existing goals
+                for (DataSnapshot goalSnapshot : dataSnapshot.getChildren()) {
+                    String key = goalSnapshot.getKey();
                     long goalId = Long.parseLong(key.replace("goal", ""));
                     nextGoalId = Math.max(nextGoalId, goalId + 1);
                 }
@@ -159,10 +179,11 @@ public class addGoalAndBudget extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(addGoalAndBudget.this, "Failed to read user data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(addGoalAndBudget.this, "Failed to read goal data", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     public static class Goal {
         public String uid;
@@ -184,6 +205,8 @@ public class addGoalAndBudget extends AppCompatActivity {
     }
 
     private void addNewBudget(String budgetId, String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String recurring) {
+        double progress = (currentBudget / budgetLimit) * 100;
+        progress = Math.round(progress * 100.0) / 100.0;
         String currentTimeFrame;
         if (timeFrame.equals("daily")) {
             currentTimeFrame = "currentDay";
@@ -193,7 +216,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             currentTimeFrame = "currentMonth";
         }
 
-        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, recurring, currentTimeFrame);
+        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, recurring, currentTimeFrame, progress);
         database.child("budget").child(budgetId).setValue(budget)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Budget added successfully", Toast.LENGTH_SHORT).show();
@@ -207,7 +230,7 @@ public class addGoalAndBudget extends AppCompatActivity {
         database.child("budget").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long nextBudgetId = 1; // Default to 1 if there are no existing users
+                long nextBudgetId = 1; // Default to 1 if there are no existing budgets
                 for (DataSnapshot budgetSnapshot : dataSnapshot.getChildren()) {
                     String key = budgetSnapshot.getKey();
                     long budgetId = Long.parseLong(key.replace("budget", ""));
@@ -233,11 +256,12 @@ public class addGoalAndBudget extends AppCompatActivity {
         public String timeFrame;
         public String recurring;
         public String currentTimeFrame;
+        public double progress;
 
         public Budget() {
         }
 
-        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String recurring, String currentTimeFrame) {
+        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String recurring, String currentTimeFrame, double progress) {
             this.uid = uid;
             this.budgetLimit = budgetLimit;
             this.currentBudget = currentBudget;
@@ -245,11 +269,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             this.timeFrame = timeFrame;
             this.recurring = recurring;
             this.currentTimeFrame = currentTimeFrame;
+            this.progress = progress;
         }
     }
 }
-
-// to update:
-// - check empty value
-// - check valid value
-// - setup logics for add goal and add budget
