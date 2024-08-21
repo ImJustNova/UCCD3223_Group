@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class GoalAndBudget extends AppCompatActivity {
 
-    private ImageButton addGoal, addBudget;
+    private ImageButton addGoal, addBudget, backButton;
     private DatabaseReference database;
     private String uid;
     private LinearLayout goalLayout, budgetLayout;
@@ -38,6 +38,7 @@ public class GoalAndBudget extends AppCompatActivity {
         budgetLayout = findViewById(R.id.budgetLayout);
         goalText = findViewById(R.id.GoalsText);
         budgetText = findViewById(R.id.BudgetText);
+        backButton = findViewById(R.id.backButton);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -154,6 +155,10 @@ public class GoalAndBudget extends AppCompatActivity {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
             intent.putExtra("title", "budget");
             startActivity(intent);
+        });
+
+        backButton.setOnClickListener(v -> {
+            finish();
         });
     }
 

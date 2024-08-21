@@ -19,9 +19,9 @@
         <item><string name="no">no</string></item>
     </string-array>
 
-        <string name="language_label">Language</string>
-        <string name="help_label">Help</string>
-        <string name="select_language">Select Language</string>
-        <string name="help_message">Coming soon</string>
+    <string name="language_label">Language</string>
+    <string name="help_label">Help</string>
+    <string name="select_language">Select Language</string>
+    <string name="help_message">Coming soon</string>
 
 </resources>

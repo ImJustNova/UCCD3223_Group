@@ -5,4 +5,7 @@
     <color name="green">#00A862</color>
     <color name="blue">#007AFF</color>
     <color name="purple">#800080</color>
+    <color name="light_gray">#E6E6E6</color>
+    <color name="light_red">#FD3C4A</color>
+    <color name="light_green">#00A86B</color>
 </resources>
