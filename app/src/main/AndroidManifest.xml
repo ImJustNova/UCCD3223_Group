@@ -5,6 +5,8 @@
     <!-- Add Internet permission here -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -75,6 +77,11 @@
 
         <activity android:name=".EditProfileActivity"
             android:exported="true"/>
+
+        <activity android:name=".AddTransactionActivity"
+            android:exported="true"/>
+
+
 
     </application>
 

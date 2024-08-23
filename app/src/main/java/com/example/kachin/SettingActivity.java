@@ -97,3 +97,6 @@ public class SettingActivity extends AppCompatActivity {
         builder.show();
     }
 }
+
+//help
+//language
