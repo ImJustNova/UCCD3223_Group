@@ -14,14 +14,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
@@ -32,15 +37,18 @@ public class AddTransactionActivity extends AppCompatActivity {
     private Button buttonSelectDate, buttonContinue, btnExpense, btnIncome, buttonAddAttachment;
     private String selectedDate;
     private boolean isExpense = true;
+    private Uri fileUri;
 
     private DatabaseReference databaseReference;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("transactions");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         initializeViews();
         initializeDefaultSettings();
@@ -51,7 +59,6 @@ public class AddTransactionActivity extends AppCompatActivity {
         editTextAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -61,7 +68,6 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -116,7 +122,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private String[] getIncomeCategories() {
-        return new String[]{"Salary", "Savings", "Others"};
+        return new String[]{"Salary", "Savings", "GoalName"};
     }
 
     private void openDatePicker() {
@@ -129,7 +135,8 @@ public class AddTransactionActivity extends AppCompatActivity {
                 AddTransactionActivity.this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     selectedMonth += 1;
-                    selectedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
+                    selectedDate = selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)
+                            + "-" + (selectedDay < 10 ? "0" + selectedDay : selectedDay);
                     textViewSelectedDate.setText("Selected Date: " + selectedDate);
                 }, year, month, day);
         datePickerDialog.show();
@@ -146,15 +153,15 @@ public class AddTransactionActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri fileUri = data.getData();
+            fileUri = data.getData();
             Toast.makeText(this, "File selected: " + fileUri.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
     private void saveTransaction() {
         String amount = editTextAmount.getText().toString();
         String category = spinnerCategory.getSelectedItem().toString();
         String description = editTextDescription.getText().toString();
+        String uid = UUID.randomUUID().toString();
 
         if (amount.isEmpty() || category.isEmpty() || selectedDate == null) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -162,18 +169,52 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
 
         Map<String, Object> transaction = new HashMap<>();
+        transaction.put("uid", uid);
         transaction.put("amount", amount);
         transaction.put("category", category);
         transaction.put("description", description);
         transaction.put("date", selectedDate);
-        transaction.put("type", isExpense ? "Expense" : "Income");
 
-        databaseReference.push().setValue(transaction)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(AddTransactionActivity.this, "Transaction saved", Toast.LENGTH_SHORT).show();
-                    resetForm();
-                })
-                .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to save transaction", Toast.LENGTH_SHORT).show());
+        DatabaseReference reference = isExpense ? databaseReference.child("expense") : databaseReference.child("income");
+
+        if (fileUri != null) {
+            StorageReference fileReference = storageReference.child("images/" + uid);
+            UploadTask uploadTask = fileReference.putFile(fileUri);
+
+            uploadTask.continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return fileReference.getDownloadUrl();
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    transaction.put("imageUrl", downloadUri.toString());
+                    saveTransactionToDatabase(reference, transaction, isExpense);
+                } else {
+                    Toast.makeText(AddTransactionActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            saveTransactionToDatabase(reference, transaction, isExpense);
+        }
+    }
+
+    private void saveTransactionToDatabase(DatabaseReference reference, Map<String, Object> transaction, boolean isExpense) {
+        reference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                long count = task.getResult().getChildrenCount();
+                String key = (isExpense ? "expense" : "income") + (count + 1);
+                reference.child(key).setValue(transaction)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(AddTransactionActivity.this, "Transaction saved", Toast.LENGTH_SHORT).show();
+                            resetForm();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to save transaction", Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(AddTransactionActivity.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void resetForm() {
@@ -183,6 +224,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         spinnerCategory.setSelection(0);
         textViewSelectedDate.setText("Select Date");
         selectedDate = null;
+        fileUri = null;
     }
 }
 
