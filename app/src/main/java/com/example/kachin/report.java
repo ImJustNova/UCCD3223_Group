@@ -1,11 +1,18 @@
 package com.example.kachin;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +70,6 @@ public class report extends AppCompatActivity {
         int monthNumber = calendar.get(Calendar.MONTH) + 1;
         currentMonth = String.format(Locale.getDefault(), "%02d", monthNumber);
 
-        // Set the month name to the TextView
         monthView.setText(currentMonthName);
 
         database = FirebaseDatabase.getInstance().getReference();
@@ -74,17 +80,19 @@ public class report extends AppCompatActivity {
             Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
         }
 
-        // Default display
+        // Display expense as default
         btnExpense.setSelected(true);
         btnIncome.setSelected(false);
         expensePieChart("expense");
         displayTotal("expense");
+        displayGroupedList("expense");
 
         btnExpense.setOnClickListener(v -> {
             btnExpense.setSelected(true);
             btnIncome.setSelected(false);
             expensePieChart("expense");
             displayTotal("expense");
+            displayGroupedList("expense");
         });
 
         btnIncome.setOnClickListener(v -> {
@@ -92,6 +100,7 @@ public class report extends AppCompatActivity {
             btnExpense.setSelected(false);
             expensePieChart("income");
             displayTotal("income");
+            displayGroupedList("income");
         });
 
         btnBack.setOnClickListener(v -> {
@@ -169,25 +178,21 @@ public class report extends AppCompatActivity {
                     dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
                     dataSet.setValueTextSize(16f);
 
-                    // Set the value formatter to display percentages
                     dataSet.setValueFormatter(new PercentFormatter(pieChart));
 
                     PieData data = new PieData(dataSet);
                     pieChart.setData(data);
 
-                    // Set the chart to use percentage values
                     pieChart.setUsePercentValues(true);
 
-                    // Disable the description label and entry labels
                     pieChart.getDescription().setEnabled(false);
                     pieChart.setDrawEntryLabels(false);
 
-                    // Customize the legend to be centered horizontally
                     Legend legend = pieChart.getLegend();
                     legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
                     legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
                     legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-                    legend.setDrawInside(false); // Ensure legend is outside the chart
+                    legend.setDrawInside(false);
                     legend.setTextSize(12f);
 
                     // Refresh the chart
@@ -202,6 +207,79 @@ public class report extends AppCompatActivity {
         });
     }
 
+    public void displayGroupedList(String ref) {
+        DatabaseReference expenseRef;
+        if (ref.equals("expense")) {
+            expenseRef = database.child("expense");
+        } else {
+            expenseRef = database.child("income");
+        }
 
+        expenseRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Map<String, Double> categoryAmount = new HashMap<>();
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String date = snapshot.child("date").getValue(String.class);
+                        String category = snapshot.child("category").getValue(String.class);
+                        double amount = snapshot.child("amount").getValue(Double.class);
+
+                        if (date != null && date.substring(5, 7).equals(currentMonth)) {
+                            if (categoryAmount.containsKey(category)) {
+                                categoryAmount.put(category, categoryAmount.get(category) + amount);
+                            } else {
+                                categoryAmount.put(category, amount);
+                            }
+                        }
+                    }
+
+                    List<Pair<String, Double>> groupedList = new ArrayList<>();
+                    for (Map.Entry<String, Double> entry : categoryAmount.entrySet()) {
+                        groupedList.add(new Pair<>(entry.getKey(), entry.getValue()));
+                    }
+
+                    updateListView(groupedList);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Error", "Failed to read value.", databaseError.toException());
+            }
+        });
+    }
+
+    private void updateListView(List<Pair<String, Double>> groupedList) {
+        ListView listView = findViewById(R.id.listView);
+        GroupedListAdapter adapter = new GroupedListAdapter(this, groupedList);
+        listView.setAdapter(adapter);
+    }
+
+    public class GroupedListAdapter extends ArrayAdapter<Pair<String, Double>> {
+        private final Context context;
+        private final List<Pair<String, Double>> values;
+
+        public GroupedListAdapter(Context context, List<Pair<String, Double>> values) {
+            super(context, R.layout.grouped_list_item, values);
+            this.context = context;
+            this.values = values;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.grouped_list_item, parent, false);
+
+            TextView categoryName = rowView.findViewById(R.id.categoryName);
+            TextView totalAmount = rowView.findViewById(R.id.totalAmount);
+
+            Pair<String, Double> item = values.get(position);
+            categoryName.setText(item.first);
+            totalAmount.setText("RM " + String.format(Locale.getDefault(), "%.2f", item.second));
+
+            return rowView;
+        }
+    }
 
 }
