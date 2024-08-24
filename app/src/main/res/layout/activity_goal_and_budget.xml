@@ -31,7 +31,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12sp">
 
             <TextView
                 android:id="@+id/goalTitle"
@@ -58,10 +59,11 @@
 
                 <ImageButton
                     android:id="@+id/addGoalButton"
-                    android:layout_width="100sp"
-                    android:layout_height="100sp"
+                    android:layout_width="75sp"
+                    android:layout_height="75sp"
                     android:src="@drawable/add_goal"
                     android:scaleType="centerCrop"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
                     android:contentDescription="Add goal"/>
             </LinearLayout>
@@ -71,8 +73,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@id/goalLayout"
-                android:background="#D3D3D3"
-                android:layout_margin="16dp" />
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="#D3D3D3" />
 
             <TextView
                 android:id="@+id/budgetTitle"
@@ -100,10 +103,11 @@
 
                 <ImageButton
                     android:id="@+id/addBudgetButton"
-                    android:layout_width="100sp"
-                    android:layout_height="100sp"
+                    android:layout_width="75sp"
+                    android:layout_height="75sp"
                     android:src="@drawable/add_goal"
                     android:scaleType="centerCrop"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
                     android:contentDescription="Add Budget"/>
             </LinearLayout>

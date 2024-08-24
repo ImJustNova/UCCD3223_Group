@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -49,101 +50,8 @@ public class GoalAndBudget extends AppCompatActivity {
             Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
         }
 
-        // Load Goals
-        DatabaseReference goalsRef = database.child("goal");
-        goalsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    goalText.setVisibility(View.GONE);
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String goalName = snapshot.child("goalName").getValue(String.class);
-                        int progress = snapshot.child("progress").getValue(Integer.class);
-
-                        // Create a LinearLayout to hold the TextView and ProgressBar
-                        LinearLayout goalItemLayout = new LinearLayout(GoalAndBudget.this);
-                        goalItemLayout.setOrientation(LinearLayout.VERTICAL);
-                        goalItemLayout.setPadding(10, 10, 10, 10);
-
-                        // Create TextView for goal name
-                        TextView goalNameView = new TextView(GoalAndBudget.this);
-                        goalNameView.setText(goalName);
-                        goalNameView.setTextSize(20);
-
-                        // Create ProgressBar for progress
-                        ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
-                        progressBar.setLayoutParams(new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT));
-                        progressBar.setMax(100);
-                        progressBar.setProgress(progress);
-
-                        // Add TextView and ProgressBar to the LinearLayout
-                        goalItemLayout.addView(goalNameView);
-                        goalItemLayout.addView(progressBar);
-
-                        // Add this layout above the "Add Goal" button
-                        goalLayout.addView(goalItemLayout, goalLayout.getChildCount() - 1);
-                    }
-                } else {
-                    goalText.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(GoalAndBudget.this, "Failed to load goals", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Load Budgets
-        DatabaseReference budgetsRef = database.child("budget");
-        budgetsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    budgetText.setVisibility(View.GONE);
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String category = snapshot.child("category").getValue(String.class);
-                        int currentBudget = snapshot.child("currentBudget").getValue(Integer.class);
-                        int budgetLimit = snapshot.child("budgetLimit").getValue(Integer.class);
-                        int progress = (int) ((currentBudget / (float) budgetLimit) * 100);
-
-                        // Create a LinearLayout to hold the TextView and ProgressBar
-                        LinearLayout budgetItemLayout = new LinearLayout(GoalAndBudget.this);
-                        budgetItemLayout.setOrientation(LinearLayout.VERTICAL);
-                        budgetItemLayout.setPadding(10, 10, 10, 10);
-
-                        // Create TextView for budget category
-                        TextView budgetCategoryView = new TextView(GoalAndBudget.this);
-                        budgetCategoryView.setText(category);
-                        budgetCategoryView.setTextSize(20);
-
-                        // Create ProgressBar for budget progress
-                        ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
-                        progressBar.setLayoutParams(new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT));
-                        progressBar.setMax(100);
-                        progressBar.setProgress(progress);
-
-                        // Add TextView and ProgressBar to the LinearLayout
-                        budgetItemLayout.addView(budgetCategoryView);
-                        budgetItemLayout.addView(progressBar);
-
-                        // Add this layout above the "Add Budget" button
-                        budgetLayout.addView(budgetItemLayout, budgetLayout.getChildCount() - 1);
-                    }
-                } else {
-                    budgetText.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(GoalAndBudget.this, "Failed to load budgets", Toast.LENGTH_SHORT).show();
-            }
-        });
+        displayGoals();
+        displayBudgets();
 
         addGoal.setOnClickListener(v -> {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
@@ -162,4 +70,153 @@ public class GoalAndBudget extends AppCompatActivity {
         });
     }
 
+    public void displayGoals() {
+        DatabaseReference goalsRef = database.child("goal");
+        goalsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    goalText.setVisibility(View.GONE);
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String goalName = snapshot.child("goalName").getValue(String.class);
+                        int progress = snapshot.child("progress").getValue(Integer.class);
+                        double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
+                        double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
+
+                        LinearLayout goalItemLayout = new LinearLayout(GoalAndBudget.this);
+                        goalItemLayout.setOrientation(LinearLayout.VERTICAL);
+                        goalItemLayout.setPadding(10, 10, 10, 10);
+
+                        LinearLayout progressNum = new LinearLayout(GoalAndBudget.this);
+                        progressNum.setOrientation(LinearLayout.HORIZONTAL);
+                        progressNum.setPadding(10, 10, 10, 10);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+                        progressNum.setLayoutParams(layoutParams);
+
+                        TextView goalNameView = new TextView(GoalAndBudget.this);
+                        goalNameView.setText(goalName);
+                        goalNameView.setTextSize(20);
+
+                        LinearLayout.LayoutParams goalNameParams = new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f
+                        );
+                        goalNameView.setLayoutParams(goalNameParams);
+
+                        TextView currProgress = new TextView(GoalAndBudget.this);
+                        currProgress.setText(String.format("%.2f / %.2f", currentAmount, targetAmount));
+                        currProgress.setTextSize(20);
+
+                        LinearLayout.LayoutParams currProgressParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        currProgress.setLayoutParams(currProgressParams);
+                        currProgress.setGravity(Gravity.END);
+
+                        progressNum.addView(goalNameView);
+                        progressNum.addView(currProgress);
+
+                        ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
+                        progressBar.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        progressBar.setMax(100);
+                        progressBar.setProgress(progress);
+
+                        goalItemLayout.addView(progressNum);
+                        goalItemLayout.addView(progressBar);
+
+                        goalLayout.addView(goalItemLayout, goalLayout.getChildCount() - 1);
+                    }
+                } else {
+                    goalText.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(GoalAndBudget.this, "Failed to load goals", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void displayBudgets() {
+        DatabaseReference budgetsRef = database.child("budget");
+        budgetsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    budgetText.setVisibility(View.GONE);
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String category = snapshot.child("category").getValue(String.class);
+                        double currentBudget = snapshot.child("currentBudget").getValue(Integer.class);
+                        double budgetLimit = snapshot.child("budgetLimit").getValue(Integer.class);
+                        int progress = (int) ((currentBudget / (float) budgetLimit) * 100);
+
+                        LinearLayout budgetItemLayout = new LinearLayout(GoalAndBudget.this);
+                        budgetItemLayout.setOrientation(LinearLayout.VERTICAL);
+                        budgetItemLayout.setPadding(10, 10, 10, 10);
+
+                        LinearLayout progressNum = new LinearLayout(GoalAndBudget.this);
+                        progressNum.setOrientation(LinearLayout.HORIZONTAL);
+                        progressNum.setPadding(10, 10, 10, 10);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+                        progressNum.setLayoutParams(layoutParams);
+
+                        TextView budgetCategoryView = new TextView(GoalAndBudget.this);
+                        budgetCategoryView.setText(category);
+                        budgetCategoryView.setTextSize(20);
+
+                        LinearLayout.LayoutParams goalNameParams = new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f
+                        );
+                        budgetCategoryView.setLayoutParams(goalNameParams);
+
+                        TextView currProgress = new TextView(GoalAndBudget.this);
+                        currProgress.setText(String.format("%.2f / %.2f", currentBudget, budgetLimit));
+                        currProgress.setTextSize(20);
+
+                        LinearLayout.LayoutParams currProgressParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        currProgress.setLayoutParams(currProgressParams);
+                        currProgress.setGravity(Gravity.END);
+
+                        progressNum.addView(budgetCategoryView);
+                        progressNum.addView(currProgress);
+
+                        ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
+                        progressBar.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        progressBar.setMax(100);
+                        progressBar.setProgress(progress);
+
+                        budgetItemLayout.addView(progressNum);
+                        budgetItemLayout.addView(progressBar);
+
+                        budgetLayout.addView(budgetItemLayout, budgetLayout.getChildCount() - 1);
+                    }
+                } else {
+                    budgetText.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(GoalAndBudget.this, "Failed to load budgets", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

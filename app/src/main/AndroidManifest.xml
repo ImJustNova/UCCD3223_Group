@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Add Internet permission here -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -9,6 +8,7 @@
 
     <application
         android:allowBackup="true"
+        android:configChanges="locale|layoutDirection"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -16,68 +16,62 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Login"
-        android:configChanges="locale|layoutDirection"
         tools:targetApi="31">
-
         <!-- Google Sign-In metadata -->
         <meta-data
             android:name="com.google.android.gms.client_id"
             android:value="@string/default_web_client_id" />
-
         <!-- Activities -->
+        <activity
+            android:name=".report"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".GoalAndBudget"
             android:exported="true">
         </activity>
-
         <activity
             android:name=".addGoalAndBudget"
-            android:exported="true" />
-
+            android:exported="false" />
         <activity
             android:name=".ResetPasswordActivity"
             android:exported="false" />
-
-        <!-- for testing purposes -->
         <activity
             android:name=".testActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"><!-- for testing purposes -->
 
+        </activity>
         <activity
             android:name=".UserDashBoardActivity"
             android:exported="true" />
-
         <activity
             android:name=".SignUpAccActivity"
             android:exported="false" />
-
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
-
         <activity
             android:name=".SignUpActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-
-        <activity android:name=".SettingActivity"
-            android:exported="true"/>
-
-        <activity android:name=".ProfileActivity"
-            android:exported="true"/>
-
-        <activity android:name=".EditProfileActivity"
-            android:exported="true"/>
-
+        <activity
+            android:name=".SettingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="true" />
         <activity android:name=".AddTransactionActivity"
             android:exported="true"/>
 
@@ -86,4 +80,3 @@
     </application>
 
 </manifest>
-
