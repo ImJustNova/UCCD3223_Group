@@ -3,9 +3,11 @@ package com.example.kachin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +29,7 @@ public class GoalAndBudget extends AppCompatActivity {
     private String uid;
     private LinearLayout goalLayout, budgetLayout;
     private TextView goalText, budgetText;
+    private Button refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class GoalAndBudget extends AppCompatActivity {
         goalText = findViewById(R.id.GoalsText);
         budgetText = findViewById(R.id.BudgetText);
         backButton = findViewById(R.id.backButton);
+        refresh = findViewById(R.id.refresh);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -57,20 +61,28 @@ public class GoalAndBudget extends AppCompatActivity {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
             intent.putExtra("title", "goal");
             startActivity(intent);
+            //finish();
         });
 
         addBudget.setOnClickListener(v -> {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
             intent.putExtra("title", "budget");
             startActivity(intent);
+            //finish();
         });
 
         backButton.setOnClickListener(v -> {
             finish();
         });
+
+        refresh.setOnClickListener(v -> {
+            displayGoals();
+            displayBudgets();
+        });
     }
 
     public void displayGoals() {
+        goalLayout.removeAllViews();
         DatabaseReference goalsRef = database.child("goal");
         goalsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -87,18 +99,36 @@ public class GoalAndBudget extends AppCompatActivity {
                         goalItemLayout.setOrientation(LinearLayout.VERTICAL);
                         goalItemLayout.setPadding(10, 10, 10, 10);
 
-                        LinearLayout progressNum = new LinearLayout(GoalAndBudget.this);
-                        progressNum.setOrientation(LinearLayout.HORIZONTAL);
-                        progressNum.setPadding(10, 10, 10, 10);
+                        LinearLayout titleLayout = new LinearLayout(GoalAndBudget.this);
+                        titleLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        titleLayout.setPadding(10, 10, 10, 10);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.MATCH_PARENT
                         );
-                        progressNum.setLayoutParams(layoutParams);
+                        titleLayout.setLayoutParams(layoutParams);
 
                         TextView goalNameView = new TextView(GoalAndBudget.this);
                         goalNameView.setText(goalName);
                         goalNameView.setTextSize(20);
+                        goalNameView.setTypeface(null, Typeface.BOLD);
+
+                        TextView remove = new TextView(GoalAndBudget.this);
+                        remove.setText("Remove");
+                        remove.setTextSize(15);
+                        remove.setGravity(Gravity.RIGHT);
+
+                        remove.setOnClickListener(v -> {
+                            DatabaseReference goalToRemoveRef = goalsRef.child(snapshot.getKey());
+                            goalToRemoveRef.removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(GoalAndBudget.this, "Goal removed successfully", Toast.LENGTH_SHORT).show();
+                                    goalLayout.removeView(goalItemLayout);
+                                } else {
+                                    Toast.makeText(GoalAndBudget.this, "Failed to remove goal", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
 
                         LinearLayout.LayoutParams goalNameParams = new LinearLayout.LayoutParams(
                                 0,
@@ -107,19 +137,13 @@ public class GoalAndBudget extends AppCompatActivity {
                         );
                         goalNameView.setLayoutParams(goalNameParams);
 
+                        TextView remaining = new TextView(GoalAndBudget.this);
+                        remaining.setText("Remaining RM " + String.format("%.2f", targetAmount - currentAmount));
+                        remaining.setTextSize(25);
+
                         TextView currProgress = new TextView(GoalAndBudget.this);
-                        currProgress.setText(String.format("%.2f / %.2f", currentAmount, targetAmount));
-                        currProgress.setTextSize(20);
-
-                        LinearLayout.LayoutParams currProgressParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                        );
-                        currProgress.setLayoutParams(currProgressParams);
-                        currProgress.setGravity(Gravity.END);
-
-                        progressNum.addView(goalNameView);
-                        progressNum.addView(currProgress);
+                        currProgress.setText(String.format("RM %.2f of RM %.2f", currentAmount, targetAmount));
+                        currProgress.setTextSize(15);
 
                         ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
                         progressBar.setLayoutParams(new LinearLayout.LayoutParams(
@@ -128,8 +152,20 @@ public class GoalAndBudget extends AppCompatActivity {
                         progressBar.setMax(100);
                         progressBar.setProgress(progress);
 
-                        goalItemLayout.addView(progressNum);
+                        titleLayout.addView(goalNameView);
+                        titleLayout.addView(remove);
+                        goalItemLayout.addView(titleLayout);
+                        goalItemLayout.addView(remaining);
                         goalItemLayout.addView(progressBar);
+                        goalItemLayout.addView(currProgress);
+
+                        if (progress >= 100) {
+                            TextView complete = new TextView(GoalAndBudget.this);
+                            complete.setText("You have exceeded your budget limit!");
+                            complete.setTextSize(15);
+                            complete.setTextColor(getResources().getColor(R.color.green));
+                            goalItemLayout.addView(complete);
+                        }
 
                         goalLayout.addView(goalItemLayout, goalLayout.getChildCount() - 1);
                     }
@@ -145,7 +181,9 @@ public class GoalAndBudget extends AppCompatActivity {
         });
     }
 
+
     public void displayBudgets() {
+        budgetLayout.removeAllViews();
         DatabaseReference budgetsRef = database.child("budget");
         budgetsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -162,39 +200,51 @@ public class GoalAndBudget extends AppCompatActivity {
                         budgetItemLayout.setOrientation(LinearLayout.VERTICAL);
                         budgetItemLayout.setPadding(10, 10, 10, 10);
 
-                        LinearLayout progressNum = new LinearLayout(GoalAndBudget.this);
-                        progressNum.setOrientation(LinearLayout.HORIZONTAL);
-                        progressNum.setPadding(10, 10, 10, 10);
+                        LinearLayout titleLayout = new LinearLayout(GoalAndBudget.this);
+                        titleLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        titleLayout.setPadding(10, 10, 10, 10);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.MATCH_PARENT
                         );
-                        progressNum.setLayoutParams(layoutParams);
+                        titleLayout.setLayoutParams(layoutParams);
 
                         TextView budgetCategoryView = new TextView(GoalAndBudget.this);
                         budgetCategoryView.setText(category);
                         budgetCategoryView.setTextSize(20);
+                        budgetCategoryView.setTypeface(null, Typeface.BOLD);
 
-                        LinearLayout.LayoutParams goalNameParams = new LinearLayout.LayoutParams(
+                        TextView remove = new TextView(GoalAndBudget.this);
+                        remove.setText("Remove");
+                        remove.setTextSize(15);
+                        remove.setGravity(Gravity.RIGHT);
+
+                        remove.setOnClickListener(v -> {
+                            DatabaseReference budgetToRemoveRef = budgetsRef.child(snapshot.getKey());
+                            budgetToRemoveRef.removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(GoalAndBudget.this, "Budget removed successfully", Toast.LENGTH_SHORT).show();
+                                    budgetLayout.removeView(budgetItemLayout);
+                                } else {
+                                    Toast.makeText(GoalAndBudget.this, "Failed to remove budget", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
+
+                        TextView remaining = new TextView(GoalAndBudget.this);
+                        remaining.setText("Remaining RM " + String.format("%.2f", budgetLimit - currentBudget));
+                        remaining.setTextSize(25);
+
+                        LinearLayout.LayoutParams categoryParams = new LinearLayout.LayoutParams(
                                 0,
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
                                 1.0f
                         );
-                        budgetCategoryView.setLayoutParams(goalNameParams);
+                        budgetCategoryView.setLayoutParams(categoryParams);
 
                         TextView currProgress = new TextView(GoalAndBudget.this);
-                        currProgress.setText(String.format("%.2f / %.2f", currentBudget, budgetLimit));
-                        currProgress.setTextSize(20);
-
-                        LinearLayout.LayoutParams currProgressParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                        );
-                        currProgress.setLayoutParams(currProgressParams);
-                        currProgress.setGravity(Gravity.END);
-
-                        progressNum.addView(budgetCategoryView);
-                        progressNum.addView(currProgress);
+                        currProgress.setText(String.format("RM %.2f of RM %.2f", currentBudget, budgetLimit));
+                        currProgress.setTextSize(15);
 
                         ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
                         progressBar.setLayoutParams(new LinearLayout.LayoutParams(
@@ -203,8 +253,20 @@ public class GoalAndBudget extends AppCompatActivity {
                         progressBar.setMax(100);
                         progressBar.setProgress(progress);
 
-                        budgetItemLayout.addView(progressNum);
+                        titleLayout.addView(budgetCategoryView);
+                        titleLayout.addView(remove);
+                        budgetItemLayout.addView(titleLayout);
+                        budgetItemLayout.addView(remaining);
                         budgetItemLayout.addView(progressBar);
+                        budgetItemLayout.addView(currProgress);
+
+                        if (progress >= 100) {
+                            TextView warning = new TextView(GoalAndBudget.this);
+                            warning.setText("You have exceeded your budget limit!");
+                            warning.setTextSize(15);
+                            warning.setTextColor(getResources().getColor(R.color.red));
+                            budgetItemLayout.addView(warning);
+                        }
 
                         budgetLayout.addView(budgetItemLayout, budgetLayout.getChildCount() - 1);
                     }
@@ -219,4 +281,5 @@ public class GoalAndBudget extends AppCompatActivity {
             }
         });
     }
+
 }

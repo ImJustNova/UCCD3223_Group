@@ -28,10 +28,11 @@ public class addGoalAndBudget extends AppCompatActivity {
 
     private DatabaseReference database;
     private String uid;
-    private EditText goalName;
-    private EditText targetAmount;
+    private EditText goalName, targetAmount, budgetLimit;
     private Spinner category, timeFrame, recurring;
     private List<String> categoriesList;
+    private Button addButton;
+    private TextView pageTitle, cancelButton;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -39,15 +40,15 @@ public class addGoalAndBudget extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal_and_budget);
 
-        TextView pageTitle = findViewById(R.id.pageTitle);
-        TextView cancelButton = findViewById(R.id.cancelButton);
+        pageTitle = findViewById(R.id.pageTitle);
+        cancelButton = findViewById(R.id.cancelButton);
         goalName = findViewById(R.id.goalName);
         targetAmount = findViewById(R.id.targetAmount);
-        EditText budgetLimit = findViewById(R.id.budgetLimit);
+        budgetLimit = findViewById(R.id.budgetLimit);
         category = findViewById(R.id.category);
         timeFrame = findViewById(R.id.timeFrame);
         recurring = findViewById(R.id.recurring);
-        Button addButton = findViewById(R.id.addButton);
+        addButton = findViewById(R.id.addButton);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -61,22 +62,13 @@ public class addGoalAndBudget extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
-                R.array.time_frame_array,
+                R.array.time_frame,
                 android.R.layout.simple_spinner_item
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeFrame.setAdapter(adapter);
-
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
-                this,
-                R.array.recurring_array,
-                android.R.layout.simple_spinner_item
-        );
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        recurring.setAdapter(adapter2);
 
         if ("goal".equals(title)) {
             pageTitle.setText("Set Goal");
@@ -115,9 +107,9 @@ public class addGoalAndBudget extends AppCompatActivity {
                     return;
                 }
                 getNextBudgetIdAndWriteNewBudget(uid, Double.parseDouble(budgetLimit.getText().toString()),
-                        0, category.getSelectedItem().toString(), timeFrame.getSelectedItem().toString(),
-                        recurring.getSelectedItem().toString());
+                        0, category.getSelectedItem().toString(), timeFrame.getSelectedItem().toString());
             }
+            finish();
         });
     }
 
@@ -204,7 +196,7 @@ public class addGoalAndBudget extends AppCompatActivity {
         }
     }
 
-    private void addNewBudget(String budgetId, String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String recurring) {
+    private void addNewBudget(String budgetId, String uid, double budgetLimit, double currentBudget, String category, String timeFrame) {
         double progress = (currentBudget / budgetLimit) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
         String currentTimeFrame;
@@ -216,7 +208,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             currentTimeFrame = "currentMonth";
         }
 
-        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, recurring, currentTimeFrame, progress);
+        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, currentTimeFrame, progress);
         database.child("budget").child(budgetId).setValue(budget)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Budget added successfully", Toast.LENGTH_SHORT).show();
@@ -226,7 +218,7 @@ public class addGoalAndBudget extends AppCompatActivity {
                 });
     }
 
-    private void getNextBudgetIdAndWriteNewBudget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String recurring) {
+    private void getNextBudgetIdAndWriteNewBudget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame) {
         database.child("budget").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -238,7 +230,7 @@ public class addGoalAndBudget extends AppCompatActivity {
                 }
 
                 String budgetId = "budget" + nextBudgetId;
-                addNewBudget(budgetId, uid, budgetLimit, currentBudget, category, timeFrame, recurring);
+                addNewBudget(budgetId, uid, budgetLimit, currentBudget, category, timeFrame);
             }
 
             @Override
@@ -254,20 +246,18 @@ public class addGoalAndBudget extends AppCompatActivity {
         public double currentBudget;
         public String category;
         public String timeFrame;
-        public String recurring;
         public String currentTimeFrame;
         public double progress;
 
         public Budget() {
         }
 
-        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String recurring, String currentTimeFrame, double progress) {
+        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String currentTimeFrame, double progress) {
             this.uid = uid;
             this.budgetLimit = budgetLimit;
             this.currentBudget = currentBudget;
             this.category = category;
             this.timeFrame = timeFrame;
-            this.recurring = recurring;
             this.currentTimeFrame = currentTimeFrame;
             this.progress = progress;
         }

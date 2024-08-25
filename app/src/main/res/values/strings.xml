@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">LoginApp</string>
     <string name="login_success">Login Successful!</string>
     <string name="login_failed">Login Failed!</string>
@@ -8,15 +8,9 @@
     <string name="google_sign_in">Sign Up with Google</string>
     <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
 
-    <string-array name="time_frame_array">
+    <string-array name="time_frame">
         <item><string name="daily">daily</string></item>
-        <item><string name="weekly">weekly</string></item>
         <item><string name="monthly">monthly</string></item>
-    </string-array>
-
-    <string-array name="recurring_array">
-        <item><string name="yes">yes</string></item>
-        <item><string name="no">no</string></item>
     </string-array>
 
     <string name="language_label">Language</string>
