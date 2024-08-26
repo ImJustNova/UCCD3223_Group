@@ -5,19 +5,13 @@
       <entry key="AddTransactionActivity">
         <State />
       </entry>
-      <entry key="GoalAndBudget">
-        <State />
-      </entry>
       <entry key="HomePageActivity">
         <State />
       </entry>
-      <entry key="app">
+      <entry key="MainActivity">
         <State />
       </entry>
-      <entry key="report">
-        <State />
-      </entry>
-      <entry key="testActivity">
+      <entry key="ProfileActivity">
         <State />
       </entry>
     </value>

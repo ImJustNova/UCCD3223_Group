@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvAmountLabel"
             android:layout_centerHorizontal="true"
-            android:text="$0"
+            android:text="RM0"
             android:textColor="@android:color/black"
             android:textSize="40sp"
             android:textStyle="bold" />

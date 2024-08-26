@@ -63,7 +63,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tvAmount.setText("$" + s.toString());
+                tvAmount.setText("RM" + s.toString());
             }
 
             @Override
@@ -97,10 +97,10 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void goToHomePage() {
-        //Intent intent = new Intent(AddTransactionActivity.this, HomePageActivity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        //startActivity(intent);
-        //finish();
+        Intent intent = new Intent(AddTransactionActivity.this, HomePageActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void updateUIForTransactionType(boolean isExpense) {
@@ -219,7 +219,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private void resetForm() {
         editTextAmount.setText("");
-        tvAmount.setText("$0");
+        tvAmount.setText("RM0");
         editTextDescription.setText("");
         spinnerCategory.setSelection(0);
         textViewSelectedDate.setText("Select Date");
@@ -228,5 +228,3 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 }
 
-//the detail display in homepage
-//the icon button go back to home page

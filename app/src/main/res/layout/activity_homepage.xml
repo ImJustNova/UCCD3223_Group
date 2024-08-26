@@ -265,9 +265,11 @@
 
             <ImageButton
                 android:id="@+id/btnHome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/home" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -288,9 +290,11 @@
 
             <ImageButton
                 android:id="@+id/btnAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/add" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -303,24 +307,26 @@
         <LinearLayout
             android:id="@+id/historyLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
             android:layout_weight="1"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="4dp">
 
             <ImageButton
                 android:id="@+id/btnHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/calendar" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="History"
-                android:textSize="12sp"
-                android:textColor="#404040" />
+                android:textColor="#404040"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -334,9 +340,11 @@
 
             <ImageButton
                 android:id="@+id/btnReport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/report" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -357,9 +365,11 @@
 
             <ImageButton
                 android:id="@+id/btnProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/profileicon" />
 
             <TextView
                 android:layout_width="wrap_content"
