@@ -1,11 +1,13 @@
 package com.example.kachin;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,10 +39,14 @@ public class HomePageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TransactionAdapter transactionAdapter;
     private List<FinancialTransaction> transactionList = new ArrayList<>();
-    private Button seeAllButton;
+    private Button seeAllButton,seeAllbtn;
     private DatabaseReference expensesRef;
     private DatabaseReference incomeRef;
+    private DatabaseReference goalRef;
+    private ProgressBar progressBarGoal;
+    private TextView goalNameText, progressText;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +63,7 @@ public class HomePageActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.btnProfile);
         recyclerView = findViewById(R.id.transactionRecyclerView);
         seeAllButton = findViewById(R.id.seeAllText);
+        seeAllbtn = findViewById(R.id.btnSeeAllGoals);
 
         // Initialize RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -83,6 +90,20 @@ public class HomePageActivity extends AppCompatActivity {
         seeAllButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomePageActivity.this, AllTransactionsActivity.class);
             intent.putExtra("date", getCurrentDate());
+            startActivity(intent);
+        });
+
+        progressBarGoal = findViewById(R.id.progressBarGoal);
+        goalNameText = findViewById(R.id.goalNameText);
+        progressText = findViewById(R.id.progressText);
+
+
+        goalRef = FirebaseDatabase.getInstance().getReference("goal");
+
+        fetchGoalProgress();
+
+        seeAllbtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomePageActivity.this, AllGoalsActivity.class);
             startActivity(intent);
         });
 
@@ -310,5 +331,29 @@ public class HomePageActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormat.format(calendar.getTime());
+    }
+
+    private void fetchGoalProgress() {
+        goalRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot goalSnapshot : dataSnapshot.getChildren()) {
+                    String goalName = goalSnapshot.child("goalName").getValue(String.class);
+                    double currentAmount = goalSnapshot.child("currentAmount").getValue(Double.class);
+                    double targetAmount = goalSnapshot.child("targetAmount").getValue(Double.class);
+
+                    double progress = (currentAmount / targetAmount) * 100;
+
+                    goalNameText.setText(goalName);
+                    progressBarGoal.setProgress((int) progress);
+                    progressText.setText(String.format(Locale.getDefault(), "%.0f%%", progress));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(HomePageActivity.this, "Failed to load goal progress", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
