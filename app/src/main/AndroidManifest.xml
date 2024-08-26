@@ -22,6 +22,10 @@
             android:name="com.google.android.gms.client_id"
             android:value="@string/default_web_client_id" />
         <!-- Activities -->
+        <activity android:name=".HomePageActivity"
+            android:exported="true"/>
+        <activity android:name=".AllTransactionsActivity"
+            android:exported="true"/>
         <activity
             android:name=".report"
             android:exported="true">
