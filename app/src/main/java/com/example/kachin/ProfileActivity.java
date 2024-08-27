@@ -53,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         loadProfileData();
+        setupButtonListeners();
 
         Button btnSettings = findViewById(R.id.btn_settings);
         btnSettings.setOnClickListener(v -> {
