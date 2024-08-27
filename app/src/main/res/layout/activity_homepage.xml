@@ -203,43 +203,24 @@
                 android:text="See All"
                 android:textAllCaps="false"
                 android:textColor="#8d54ff"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:background="@android:color/transparent" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/goalProgressSection"
+            android:id="@+id/goalLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/goalNameText"
+                android:id="@+id/GoalsText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Goal Name"
-                android:textColor="#404040"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="There are no goals yet!"
+                android:textSize="25sp"
+                android:visibility="visible" />
 
-            <ProgressBar
-                android:id="@+id/progressBarGoal"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:progress="0" />
-
-            <TextView
-                android:id="@+id/progressText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="0%"
-                android:textColor="#404040"
-                android:textSize="16sp"
-                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 

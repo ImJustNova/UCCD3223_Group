@@ -2,19 +2,9 @@ package com.example.kachin;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -57,15 +47,13 @@ public class HomePageActivity extends AppCompatActivity {
     private DatabaseReference expensesRef;
     private DatabaseReference incomeRef;
     private DatabaseReference goalRef;
-    private ProgressBar progressBarGoal;
-    private TextView goalNameText, progressText;
-    private String uid;
 
-    private ImageButton addGoal, addBudget, backButton;
-    private DatabaseReference database;
-    private LinearLayout goalLayout, budgetLayout;
-    private TextView goalText, budgetText;
-    private Button refresh;
+    private String uid;
+    private LinearLayout goalLayout;
+    private TextView goalText;
+
+    public HomePageActivity() {
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -100,14 +88,8 @@ public class HomePageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.transactionRecyclerView);
         seeAllButton = findViewById(R.id.seeAllText);
         seeAllbtn = findViewById(R.id.btnSeeAllGoals);
-        addGoal = findViewById(R.id.addGoalButton);
-        addBudget = findViewById(R.id.addBudgetButton);
-        goalLayout = findViewById(R.id.goalLayout);
-        budgetLayout = findViewById(R.id.budgetLayout);
-        goalText = findViewById(R.id.GoalsText);
-        budgetText = findViewById(R.id.BudgetText);
-        backButton = findViewById(R.id.backButton);
-        refresh = findViewById(R.id.refresh);
+        goalLayout = findViewById(R.id.goalLayout); // Replace with your actual layout id
+        goalText = findViewById(R.id.GoalsText); // Replace with your actual layout id
 
         // Initialize RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -125,7 +107,7 @@ public class HomePageActivity extends AppCompatActivity {
         fetchTotalIncome();
         fetchTotalExpense();
         fetchRecentTransactions();
-        displayGoals();
+        displayGoals(); // Call the displayGoals method to show goals
 
         seeAllButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomePageActivity.this, AllTransactionsActivity.class);
@@ -360,58 +342,83 @@ public class HomePageActivity extends AppCompatActivity {
         transactionAdapter.notifyDataSetChanged();
     }
 
-    public void displayGoals() {
-        // Remove old views
-        goalLayout.removeAllViews();
-
-        // Reference to Firebase database for goals
-        DatabaseReference goalsRef = FirebaseDatabase.getInstance().getReference("goal");
-        goalsRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void displayGoals() {
+        goalRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    goalText.setVisibility(View.GONE); // Hide the placeholder text if goals exist
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                double totalGoalsAmount = 0;
+                goalLayout.removeAllViews(); // Clear previous views if any
 
-                    // Loop through the goals from Firebase
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String goalName = snapshot.child("goalName").getValue(String.class);
-                        int progress = snapshot.child("progress").getValue(Integer.class);
-                        double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
-                        double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String goalName = snapshot.child("goalName").getValue(String.class);
+                    int progress = snapshot.child("progress").getValue(Integer.class);
+                    double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
+                    double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
 
-                        // Inflate the goal layout
-                        LinearLayout goalItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_homepage, null);
+                    // Calculate total goals amount
+                    totalGoalsAmount += targetAmount;
 
-                        // Reference to the views
-                        TextView goalNameView = goalItemLayout.findViewById(R.id.goalNameText);
-                        ProgressBar progressBar = goalItemLayout.findViewById(R.id.progressBarGoal);
-                        TextView progressText = goalItemLayout.findViewById(R.id.progressText);
+                    // Create layout for each goal
+                    LinearLayout goalItemLayout = new LinearLayout(HomePageActivity.this);
+                    goalItemLayout.setOrientation(LinearLayout.VERTICAL);
+                    goalItemLayout.setPadding(10, 10, 10, 10);
 
-                        // Set goal data
-                        goalNameView.setText(goalName);
-                        progressBar.setMax(100);
-                        progressBar.setProgress(progress);
-                        progressText.setText(String.format("RM %.2f of RM %.2f", currentAmount, targetAmount));
+                    // Create and configure TextView for goal name
+                    TextView goalNameView = new TextView(HomePageActivity.this);
+                    goalNameView.setText(goalName);
+                    goalNameView.setTextSize(20);
+                    goalNameView.setTypeface(null, Typeface.BOLD);
 
-                        // Check if the goal is complete
-                        if (progress >= 100) {
-                            TextView complete = new TextView(HomePageActivity.this);
-                            complete.setText("You have exceeded your budget limit!");
-                            complete.setTextSize(15);
-                            complete.setTextColor(getResources().getColor(R.color.green));
-                            goalItemLayout.addView(complete);
-                        }
+                    // Create and configure TextView for progress
+                    TextView progressView = new TextView(HomePageActivity.this);
+                    progressView.setText(String.format("Progress: %d%%", progress));
+                    progressView.setTextSize(15);
 
-                        // Add the goal layout to the parent layout
-                        goalLayout.addView(goalItemLayout);
+                    // Create and configure TextView for current amount
+                    TextView currentAmountView = new TextView(HomePageActivity.this);
+                    currentAmountView.setText(String.format("Current Amount: RM %.2f", currentAmount));
+                    currentAmountView.setTextSize(15);
+
+                    // Create and configure TextView for target amount
+                    TextView targetAmountView = new TextView(HomePageActivity.this);
+                    targetAmountView.setText(String.format("Target Amount: RM %.2f", targetAmount));
+                    targetAmountView.setTextSize(15);
+
+                    // Create and configure ProgressBar
+                    ProgressBar progressBar = new ProgressBar(HomePageActivity.this, null, android.R.attr.progressBarStyleHorizontal);
+                    progressBar.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    ));
+                    progressBar.setMax(100);
+                    progressBar.setProgress(progress);
+
+                    // Add views to goalItemLayout
+                    goalItemLayout.addView(goalNameView);
+                    goalItemLayout.addView(progressView);
+                    goalItemLayout.addView(currentAmountView);
+                    goalItemLayout.addView(targetAmountView);
+                    goalItemLayout.addView(progressBar);
+
+                    // Check if progress exceeds 100% and add warning if necessary
+                    if (progress >= 100) {
+                        TextView warning = new TextView(HomePageActivity.this);
+                        warning.setText("You have exceeded your goal!");
+                        warning.setTextSize(15);
+                        warning.setTextColor(getResources().getColor(R.color.red));
+                        goalItemLayout.addView(warning);
                     }
-                } else {
-                    goalText.setVisibility(View.VISIBLE); // Show placeholder text if no goals
+
+                    // Add the goalItemLayout to the parent layout
+                    goalLayout.addView(goalItemLayout);
                 }
+
+                // Display total goals amount
+                Toast.makeText(HomePageActivity.this, "Total Goals Amount: RM " + totalGoalsAmount, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(HomePageActivity.this, "Failed to load goals", Toast.LENGTH_SHORT).show();
             }
         });
