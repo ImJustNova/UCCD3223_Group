@@ -113,7 +113,7 @@ public class HomePageActivity extends AppCompatActivity {
         displayCurrentMonth();
 
         seeAllButton.setOnClickListener(v -> {
-            Intent intent = new Intent(HomePageActivity.this, AllTransactionsActivity.class);
+            Intent intent = new Intent(HomePageActivity.this, HistoryActivity.class);
             intent.putExtra("date", getCurrentDate());
             startActivity(intent);
         });
@@ -122,6 +122,8 @@ public class HomePageActivity extends AppCompatActivity {
             Intent intent = new Intent(HomePageActivity.this, AllGoalsActivity.class);
             startActivity(intent);
         });
+
+        Toast.makeText(HomePageActivity.this, uid, Toast.LENGTH_SHORT).show();
     }
 
     private void displayCurrentMonth() {
