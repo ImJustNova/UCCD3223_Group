@@ -34,6 +34,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+
+
 public class HomePageActivity extends AppCompatActivity {
 
     private TextView monthView;
@@ -108,6 +110,7 @@ public class HomePageActivity extends AppCompatActivity {
         fetchTotalExpense();
         fetchRecentTransactions();
         displayGoals(); // Call the displayGoals method to show goals
+        displayCurrentMonth();
 
         seeAllButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomePageActivity.this, AllTransactionsActivity.class);
@@ -120,6 +123,40 @@ public class HomePageActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    private void displayCurrentMonth() {
+        // Find the TextView by its ID
+        TextView monthTextView = findViewById(R.id.monthView);
+
+        // Get the current month
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        String currentMonth = monthFormat.format(calendar.getTime());
+
+        // Set the current month to the TextView
+        monthTextView.setText(currentMonth);
+    }
+
+    private void updateTransactionView(List<FinancialTransaction> transactions) {
+        RecyclerView recyclerView = findViewById(R.id.transactionRecyclerView);
+        TextView noRecordsTextView = findViewById(R.id.noRecordsTextView);
+
+        if (transactions.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            noRecordsTextView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noRecordsTextView.setVisibility(View.GONE);
+
+            // Set up your RecyclerView adapter
+            TransactionAdapter adapter = new TransactionAdapter(transactions);
+            recyclerView.setAdapter(adapter);
+
+            // Optionally set a layout manager
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
+    }
+
 
     private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
@@ -243,7 +280,6 @@ public class HomePageActivity extends AppCompatActivity {
 
     private void fetchRecentTransactions() {
         transactionList.clear();
-
         String currentDate = getCurrentDate();
 
         expensesRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -275,6 +311,7 @@ public class HomePageActivity extends AppCompatActivity {
                         Log.d("DEBUG", "Added expense transaction: " + category + " " + amount + " " + description + " " + date);
                     }
                 }
+                updateTransactionView(transactionList);
                 fetchIncomeTransactions();
             }
 
@@ -284,6 +321,7 @@ public class HomePageActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void fetchIncomeTransactions() {
         incomeRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -341,7 +379,6 @@ public class HomePageActivity extends AppCompatActivity {
 
         transactionAdapter.notifyDataSetChanged();
     }
-
     private void displayGoals() {
         goalRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -349,7 +386,11 @@ public class HomePageActivity extends AppCompatActivity {
                 double totalGoalsAmount = 0;
                 goalLayout.removeAllViews(); // Clear previous views if any
 
+                boolean isFirstGoal = true; // Flag to check if the first goal is processed
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (!isFirstGoal) break; // Stop processing after the first goal
+
                     String goalName = snapshot.child("goalName").getValue(String.class);
                     int progress = snapshot.child("progress").getValue(Integer.class);
                     double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
@@ -358,7 +399,7 @@ public class HomePageActivity extends AppCompatActivity {
                     // Calculate total goals amount
                     totalGoalsAmount += targetAmount;
 
-                    // Create layout for each goal
+                    // Create layout for the goal
                     LinearLayout goalItemLayout = new LinearLayout(HomePageActivity.this);
                     goalItemLayout.setOrientation(LinearLayout.VERTICAL);
                     goalItemLayout.setPadding(10, 10, 10, 10);
@@ -368,8 +409,6 @@ public class HomePageActivity extends AppCompatActivity {
                     goalNameView.setText(goalName);
                     goalNameView.setTextSize(20);
                     goalNameView.setTypeface(null, Typeface.BOLD);
-
-
 
                     // Create and configure TextView for current amount
                     TextView currentAmountView = new TextView(HomePageActivity.this);
@@ -407,10 +446,12 @@ public class HomePageActivity extends AppCompatActivity {
 
                     // Add the goalItemLayout to the parent layout
                     goalLayout.addView(goalItemLayout);
+
+                    // Set flag to false to ensure only the first goal is processed
+                    isFirstGoal = false;
                 }
 
-                // Display total goals amount
-                Toast.makeText(HomePageActivity.this, "Total Goals Amount: RM " + totalGoalsAmount, Toast.LENGTH_SHORT).show();
+                // Removed Toast message here
             }
 
             @Override
@@ -419,7 +460,6 @@ public class HomePageActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     private String getCurrentDate() {
