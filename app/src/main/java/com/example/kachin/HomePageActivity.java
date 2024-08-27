@@ -369,10 +369,7 @@ public class HomePageActivity extends AppCompatActivity {
                     goalNameView.setTextSize(20);
                     goalNameView.setTypeface(null, Typeface.BOLD);
 
-                    // Create and configure TextView for progress
-                    TextView progressView = new TextView(HomePageActivity.this);
-                    progressView.setText(String.format("Progress: %d%%", progress));
-                    progressView.setTextSize(15);
+
 
                     // Create and configure TextView for current amount
                     TextView currentAmountView = new TextView(HomePageActivity.this);
@@ -395,7 +392,6 @@ public class HomePageActivity extends AppCompatActivity {
 
                     // Add views to goalItemLayout
                     goalItemLayout.addView(goalNameView);
-                    goalItemLayout.addView(progressView);
                     goalItemLayout.addView(currentAmountView);
                     goalItemLayout.addView(targetAmountView);
                     goalItemLayout.addView(progressBar);
