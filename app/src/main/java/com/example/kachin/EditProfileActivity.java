@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,10 +51,20 @@ public class EditProfileActivity extends AppCompatActivity {
         btnChangePicture = findViewById(R.id.btn_change_picture);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String userId = "yourUserId"; // Replace with the actual user ID
-        userRef = database.getReference("users").child(userId);
 
-        storageRef = FirebaseStorage.getInstance().getReference("profile_pictures").child(userId);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+
+            userRef = database.getReference("users").child(userId);
+
+            storageRef = FirebaseStorage.getInstance().getReference("profile_pictures").child(userId);
+        } else {
+            Toast.makeText(EditProfileActivity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         btnChangePicture.setOnClickListener(v -> selectProfilePicture());
 
@@ -65,6 +77,7 @@ public class EditProfileActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -80,17 +93,16 @@ public class EditProfileActivity extends AppCompatActivity {
         String newEmail = editEmail.getText().toString().trim();
         String newPassword = editPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(newName)) {
-            editName.setError("Name is required");
-            return;
+        Map<String, Object> updates = new HashMap<>();
+
+        if (!TextUtils.isEmpty(newName)) {
+            updates.put("name", newName);
         }
-        if (TextUtils.isEmpty(newEmail)) {
-            editEmail.setError("Email is required");
-            return;
+        if (!TextUtils.isEmpty(newEmail)) {
+            updates.put("email", newEmail);
         }
-        if (TextUtils.isEmpty(newPassword)) {
-            editPassword.setError("Password is required");
-            return;
+        if (!TextUtils.isEmpty(newPassword)) {
+            updates.put("password", newPassword);
         }
 
         if (imageUri != null) {
@@ -101,7 +113,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             if (task.isSuccessful()) {
                                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                    updateFirebaseProfile(newName, newEmail, newPassword, uri.toString());
+                                    updates.put("profilePictureUrl", uri.toString());
+                                    updateFirebaseProfile(updates);
                                 });
                             } else {
                                 Toast.makeText(EditProfileActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
@@ -109,26 +122,22 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            updateFirebaseProfile(newName, newEmail, newPassword, null);
+            updateFirebaseProfile(updates);
         }
     }
 
-    private void updateFirebaseProfile(String name, String email, String password, String imageUrl) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("name", name);
-        updates.put("email", email);
-        updates.put("password", password);
-        if (imageUrl != null) {
-            updates.put("profilePictureUrl", imageUrl);
+    private void updateFirebaseProfile(Map<String, Object> updates) {
+        if (!updates.isEmpty()) {
+            userRef.updateChildren(updates)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            Toast.makeText(EditProfileActivity.this, "No changes to update", Toast.LENGTH_SHORT).show();
         }
-
-        userRef.updateChildren(updates)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 }

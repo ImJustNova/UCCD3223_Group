@@ -1,123 +1,10 @@
 package com.example.kachin;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-public class ProfileActivity extends AppCompatActivity {
-
-    private SharedPreferences sharedPreferences;
-    private TextView tvUsername;
-    private ImageView profileImage;
-    private ImageButton btnHome, btnAdd, btnHistory, btnReport, btnProfile;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-        sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-
-        tvUsername = findViewById(R.id.username);
-        profileImage = findViewById(R.id.profile_image);
-
-        btnHome = findViewById(R.id.btnHome);
-        btnAdd = findViewById(R.id.btnAdd);
-        btnHistory = findViewById(R.id.btnHistory);
-        btnReport = findViewById(R.id.btnReport);
-        btnProfile = findViewById(R.id.btnProfile);
-
-        loadProfileData();
-
-        Button btnSettings = findViewById(R.id.btn_settings);
-        btnSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, SettingActivity.class);
-            startActivity(intent);
-        });
-
-        Button btnLogout = findViewById(R.id.btn_logout);
-        btnLogout.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        ImageView btnEditProfile = findViewById(R.id.btn_edit_profile);
-        btnEditProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-            startActivity(intent);
-        });
-
-        // Call setupButtonListeners to set up the click listeners for bottom navigation buttons
-        setupButtonListeners();
-    }
-
-    private void loadProfileData() {
-        String name = sharedPreferences.getString("name", "Default Name");
-        String profileImageUri = sharedPreferences.getString("profile_image_uri", "");
-
-        tvUsername.setText(name);
-
-        if (!profileImageUri.isEmpty()) {
-            Uri imageUri = Uri.parse(profileImageUri);
-            profileImage.setImageURI(imageUri);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadProfileData();
-    }
-
-    private void setupButtonListeners() {
-        btnHome.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Home Clicked", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
-            startActivity(intent);
-        });
-
-        btnAdd.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Add Clicked", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, AddTransactionActivity.class);
-            startActivity(intent);
-        });
-
-        btnHistory.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "History Clicked", Toast.LENGTH_SHORT).show();
-            // Uncomment this when HistoryActivity is available
-            // Intent intent = new Intent(ProfileActivity.this, HistoryActivity.class);
-            // startActivity(intent);
-        });
-
-        btnReport.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, GoalAndBudget.class);
-            startActivity(intent);
-        });
-
-        btnProfile.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        });
-    }
-}
-
-/*package com.example.kachin;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -139,6 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profileImage;
     private DatabaseReference userRef;
     private FirebaseUser currentUser;
+    private ImageButton btnHome, btnAdd, btnHistory, btnReport, btnProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +35,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         tvUsername = findViewById(R.id.username);
         profileImage = findViewById(R.id.profile_image);
+
+        btnHome = findViewById(R.id.btnHome);
+        btnAdd = findViewById(R.id.btnAdd);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnReport = findViewById(R.id.btnReport);
+        btnProfile = findViewById(R.id.btnProfile);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -210,8 +104,35 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
         loadProfileData();
     }
-}
-*/
+     private void setupButtonListeners() {
+        btnHome.setOnClickListener(v -> {
+            Toast.makeText(ProfileActivity.this, "Home Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+            startActivity(intent);
+        });
 
-//below the button
-//firebase
+        btnAdd.setOnClickListener(v -> {
+            Toast.makeText(ProfileActivity.this, "Add Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ProfileActivity.this, AddTransactionActivity.class);
+            startActivity(intent);
+        });
+
+        btnHistory.setOnClickListener(v -> {
+            Toast.makeText(ProfileActivity.this, "History Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ProfileActivity.this, HistoryActivity.class);
+            startActivity(intent);
+        });
+
+        btnReport.setOnClickListener(v -> {
+            Toast.makeText(ProfileActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ProfileActivity.this, GoalAndBudget.class);
+            startActivity(intent);
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            Toast.makeText(ProfileActivity.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+    }
+}
