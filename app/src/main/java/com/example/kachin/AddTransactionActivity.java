@@ -17,14 +17,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,7 +43,6 @@ public class AddTransactionActivity extends AppCompatActivity {
     private String selectedDate;
     private boolean isExpense = true;
     private Uri fileUri;
-
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
 
@@ -106,7 +110,54 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void updateUIForTransactionType(boolean isExpense) {
         this.isExpense = isExpense;
         tvTitle.setText(isExpense ? "Expense" : "Income");
-        loadCategories(isExpense ? getExpenseCategories() : getIncomeCategories());
+        if (isExpense) {
+            loadCategoriesFromFirebase();
+        } else {
+            loadIncomeCategoriesFromFirebase();
+        }
+    }
+
+    private void loadCategoriesFromFirebase() {
+        databaseReference.child("category").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> categories = new ArrayList<>();
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    String category = categorySnapshot.getValue(String.class);
+                    categories.add(category);
+                }
+                loadCategories(categories.toArray(new String[0]));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddTransactionActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadIncomeCategoriesFromFirebase() {
+        databaseReference.child("goal").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> incomeCategories = new ArrayList<>();
+                incomeCategories.add("Salary");
+                incomeCategories.add("Savings");
+
+                for (DataSnapshot goalSnapshot : snapshot.getChildren()) {
+                    String goalName = goalSnapshot.child("goalName").getValue(String.class);
+                    if (goalName != null && !goalName.isEmpty()) {
+                        incomeCategories.add(goalName);
+                    }
+                }
+                loadCategories(incomeCategories.toArray(new String[0]));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddTransactionActivity.this, "Failed to load income categories", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadCategories(String[] categories) {
@@ -114,15 +165,6 @@ public class AddTransactionActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapter);
-    }
-
-    private String[] getExpenseCategories() {
-        return new String[]{"Food and Drinks", "Transport", "Groceries", "Vehicle",
-                "Entertainment", "Shopping", "Rent", "Travel"};
-    }
-
-    private String[] getIncomeCategories() {
-        return new String[]{"Salary", "Savings", "GoalName"};
     }
 
     private void openDatePicker() {
@@ -157,6 +199,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             Toast.makeText(this, "File selected: " + fileUri.toString(), Toast.LENGTH_LONG).show();
         }
     }
+
     private void saveTransaction() {
         String amount = editTextAmount.getText().toString();
         String category = spinnerCategory.getSelectedItem().toString();
@@ -168,9 +211,11 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
+        String formattedAmount = "RM" + amount;
+
         Map<String, Object> transaction = new HashMap<>();
         transaction.put("uid", uid);
-        transaction.put("amount", amount);
+        transaction.put("amount", formattedAmount);
         transaction.put("category", category);
         transaction.put("description", description);
         transaction.put("date", selectedDate);
@@ -227,4 +272,3 @@ public class AddTransactionActivity extends AppCompatActivity {
         fileUri = null;
     }
 }
-
