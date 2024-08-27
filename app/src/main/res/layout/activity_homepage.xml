@@ -5,276 +5,294 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="#EEE5FF"
-    android:padding="13dp"
+    android:padding="16dp"
     tools:context=".HomePageActivity">
 
-    <!-- Top Notification and More Buttons -->
-    <ImageButton
-        android:id="@+id/btnNotification"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="Notification" />
 
-    <ImageButton
-        android:id="@+id/btnMore"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="More" />
-
-    <!-- Month View -->
-    <TextView
-        android:id="@+id/monthView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnNotification"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:textColor="#000000"
-        android:textSize="48sp"
-        />
-
-    <!-- Cards for Income and Expenses -->
-    <LinearLayout
-        android:id="@+id/cardRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/monthView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardIncome"
-            android:layout_width="150dp"
-            android:layout_height="70dp"
-            android:layout_marginEnd="10dp"
-            android:padding="6dp"
-            app:cardBackgroundColor="#00a86b"
-            app:cardCornerRadius="20dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textTitleIncome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Income"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textIncomeAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="RM 0"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardExpenses"
-            android:layout_width="150dp"
-            android:layout_height="70dp"
-            android:layout_marginStart="10dp"
-            android:padding="7dp"
-            app:cardBackgroundColor="#fd3c4a"
-            app:cardCornerRadius="20dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textTitleExpenses"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Expenses"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textExpensesAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="RM 0"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-
-
-    <!-- Transaction History Section -->
-
-    <LinearLayout
-        android:id="@+id/transactionHistoryRow"
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cardRow"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:backgroundTint="#EEE5FF"
+        android:padding="13dp"
+        tools:context=".HomePageActivity"
+        android:scrollbars="none">
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/recentTransactionText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:gravity="start"
-                android:text="Recent Transactions"
-                android:textColor="#404040"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/seeAllText"
-                android:layout_width="60dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:text="See All"
-                android:textAllCaps="false"
-                android:textColor="#8d54ff"
-                android:textSize="12dp"
-                android:background="@android:color/transparent" />
-        </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- RecyclerView to display the list of transactions -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/transactionRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:background="@android:color/white"
-                    android:visibility="gone"/> <!-- Initially hidden -->
-
-                <!-- TextView to show when there are no records -->
-                <TextView
-                    android:id="@+id/noRecordsTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="There is no record"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/black"
-                    android:layout_gravity="center"
-                    android:visibility="visible"/> <!-- Initially visible -->
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-
-    <!-- Goal Progress Section -->
-    <LinearLayout
-        android:id="@+id/goalProgressRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/transactionHistoryRow"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/goalProgressText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:gravity="start"
-                android:text="Goal Progress"
-                android:textColor="#404040"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnSeeAllGoals"
-                android:layout_width="60dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:text="See All"
-                android:textAllCaps="false"
-                android:textColor="#8d54ff"
-                android:textSize="12sp"
-                android:background="@android:color/transparent" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/goalLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Top Notification and More Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnNotification"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="start"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Notification" />
+
+                <ImageButton
+                    android:id="@+id/btnMore"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="More" />
+            </LinearLayout>
+
+            <!-- Month View -->
             <TextView
-                android:id="@+id/GoalsText"
+                android:id="@+id/monthView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="There are no goals yet!"
-                android:textSize="25sp"
-                android:visibility="visible" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#000000"
+                android:textSize="48sp" />
 
-        </LinearLayout>
-
-        <!-- Add the new box with text here -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:background="@drawable/box_background">
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Cards for Income and Expenses -->
+            <LinearLayout
+                android:id="@+id/cardRow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tips:\nSetting a clear money goal helps you stay focused, motivated, and disciplined in achieving financial success."
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:lineSpacingExtra="4dp"/>
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardIncome"
+                    android:layout_width="150dp"
+                    android:layout_height="70dp"
+                    android:layout_marginEnd="10dp"
+                    android:padding="6dp"
+                    app:cardBackgroundColor="#00a86b"
+                    app:cardCornerRadius="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textTitleIncome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Income"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/textIncomeAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RM 0"
+                            android:textColor="@android:color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardExpenses"
+                    android:layout_width="150dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="10dp"
+                    android:padding="7dp"
+                    app:cardBackgroundColor="#fd3c4a"
+                    app:cardCornerRadius="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textTitleExpenses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Expenses"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/textExpensesAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RM 0"
+                            android:textColor="@android:color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Transaction History Section -->
+            <LinearLayout
+                android:id="@+id/transactionHistoryRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/recentTransactionText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        android:gravity="start"
+                        android:text="Recent Transactions"
+                        android:textColor="#404040"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/seeAllText"
+                        android:layout_width="60dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="See All"
+                        android:textAllCaps="false"
+                        android:textColor="#8d54ff"
+                        android:textSize="12sp"
+                        android:background="@android:color/transparent" />
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- RecyclerView to display the list of transactions -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/transactionRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:background="@android:color/white"
+                            android:visibility="gone"/> <!-- Initially hidden -->
+
+                        <!-- TextView to show when there are no records -->
+                        <TextView
+                            android:id="@+id/noRecordsTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="There is no record"
+                            android:textSize="18sp"
+                            android:textColor="@android:color/black"
+                            android:layout_gravity="center"
+                            android:visibility="visible"/> <!-- Initially visible -->
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Goal Progress Section -->
+            <LinearLayout
+                android:id="@+id/goalProgressRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/goalProgressText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        android:gravity="start"
+                        android:text="Goal Progress"
+                        android:textColor="#404040"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnSeeAllGoals"
+                        android:layout_width="60dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="See All"
+                        android:textAllCaps="false"
+                        android:textColor="#8d54ff"
+                        android:textSize="12sp"
+                        android:background="@android:color/transparent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/goalLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/GoalsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There are no goals yet!"
+                        android:textSize="25sp"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+                <!-- Add the new box with text here -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@drawable/box_background"
+                    android:layout_marginBottom="120dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tips:\nSetting a clear money goal helps you stay focused, motivated, and disciplined in achieving financial success."
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:lineSpacingExtra="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
     <!-- Bottom Navigation Bar -->
     <LinearLayout
