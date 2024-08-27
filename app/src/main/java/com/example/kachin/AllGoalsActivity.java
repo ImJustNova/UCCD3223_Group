@@ -17,6 +17,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
 
+
+
+// this is not needed, will be deleted (along with the xml file)
+
+
+
 public class AllGoalsActivity extends AppCompatActivity {
 
     private LinearLayout goalsLayout;
