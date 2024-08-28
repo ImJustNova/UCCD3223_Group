@@ -411,15 +411,7 @@ public class HomePageActivity extends AppCompatActivity {
                     goalNameView.setTextSize(20);
                     goalNameView.setTypeface(null, Typeface.BOLD);
 
-                    // Create and configure TextView for current amount
-                    TextView currentAmountView = new TextView(HomePageActivity.this);
-                    currentAmountView.setText(String.format("Current Amount: RM %.2f", currentAmount));
-                    currentAmountView.setTextSize(15);
 
-                    // Create and configure TextView for target amount
-                    TextView targetAmountView = new TextView(HomePageActivity.this);
-                    targetAmountView.setText(String.format("Target Amount: RM %.2f", targetAmount));
-                    targetAmountView.setTextSize(15);
 
                     // Create and configure ProgressBar
                     ProgressBar progressBar = new ProgressBar(HomePageActivity.this, null, android.R.attr.progressBarStyleHorizontal);
@@ -432,8 +424,6 @@ public class HomePageActivity extends AppCompatActivity {
 
                     // Add views to goalItemLayout
                     goalItemLayout.addView(goalNameView);
-                    goalItemLayout.addView(currentAmountView);
-                    goalItemLayout.addView(targetAmountView);
                     goalItemLayout.addView(progressBar);
 
                     // Check if progress exceeds 100% and add warning if necessary
