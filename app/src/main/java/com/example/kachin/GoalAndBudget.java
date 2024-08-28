@@ -29,7 +29,6 @@ public class GoalAndBudget extends AppCompatActivity {
     private String uid;
     private LinearLayout goalLayout, budgetLayout;
     private TextView goalText, budgetText;
-    private Button refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,6 @@ public class GoalAndBudget extends AppCompatActivity {
         goalText = findViewById(R.id.GoalsText);
         budgetText = findViewById(R.id.BudgetText);
         backButton = findViewById(R.id.backButton);
-        refresh = findViewById(R.id.refresh);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -61,24 +59,20 @@ public class GoalAndBudget extends AppCompatActivity {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
             intent.putExtra("title", "goal");
             startActivity(intent);
-            //finish();
+            finish();
         });
 
         addBudget.setOnClickListener(v -> {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
             intent.putExtra("title", "budget");
             startActivity(intent);
-            //finish();
+            finish();
         });
 
         backButton.setOnClickListener(v -> {
             finish();
         });
 
-        refresh.setOnClickListener(v -> {
-            displayGoals();
-            displayBudgets();
-        });
     }
 
     public void displayGoals() {
@@ -116,7 +110,7 @@ public class GoalAndBudget extends AppCompatActivity {
                         TextView remove = new TextView(GoalAndBudget.this);
                         remove.setText("Remove");
                         remove.setTextSize(15);
-                        remove.setGravity(Gravity.RIGHT);
+                        remove.setGravity(Gravity.END);
 
                         remove.setOnClickListener(v -> {
                             DatabaseReference goalToRemoveRef = goalsRef.child(snapshot.getKey());

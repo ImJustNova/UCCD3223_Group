@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class DisplayHistoryActivity extends AppCompatActivity {
 
     private ImageButton backButton;
-    private TextView pageTitle;
+    private TextView pageTitle, transactionText;
     private DatabaseReference database;
     private String uid;
     private LinearLayout transactionContainer;
@@ -36,6 +36,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         pageTitle = findViewById(R.id.pageTitle);
         transactionContainer = findViewById(R.id.transactionContainer);
+        transactionText = findViewById(R.id.transactionText);
 
         Intent intent = getIntent();
         String selectedDate = intent.getStringExtra("selectedDate");
@@ -53,6 +54,8 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         pageTitle.setText("History for " + selectedDate);
 
         backButton.setOnClickListener(v -> finish());
+
+
     }
 
     private void loadTransactions(String date) {
@@ -70,8 +73,11 @@ public class DisplayHistoryActivity extends AppCompatActivity {
                         double amount = snapshot.child("amount").getValue(Double.class);
                         String category = snapshot.child("category").getValue(String.class);
                         String description = snapshot.child("description").getValue(String.class);
+                        String date = snapshot.child("date").getValue(String.class);
+                        String imageUrl = snapshot.child("imageUrl").getValue(String.class);
 
-                        addTransactionView(amount, category, description, "Expense");
+                        addTransactionView(amount, category, description, date, imageUrl, "Expense");
+                        transactionText.setVisibility(View.GONE);
                     }
                 }
             }
@@ -92,8 +98,11 @@ public class DisplayHistoryActivity extends AppCompatActivity {
                     if (transactionDate != null && transactionDate.equals(date)) {
                         double amount = snapshot.child("amount").getValue(Double.class);
                         String category = snapshot.child("category").getValue(String.class);
+                        String date = snapshot.child("date").getValue(String.class);
+                        String imageUrl = snapshot.child("imageUrl").getValue(String.class);
 
-                        addTransactionView(amount, category, null, "Income");
+                        addTransactionView(amount, category, null, date, imageUrl, "Income");
+                        transactionText.setVisibility(View.GONE);
                     }
                 }
             }
@@ -105,24 +114,41 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         });
     }
 
-    private void addTransactionView(double amount, String category, String description, String type) {
+    private void addTransactionView(double amount, String category, String description, String date, String image, String type) {
         View transactionView = LayoutInflater.from(this).inflate(R.layout.transaction_item, transactionContainer, false);
 
         TextView amountView = transactionView.findViewById(R.id.amountView);
         TextView categoryView = transactionView.findViewById(R.id.categoryView);
         TextView descriptionView = transactionView.findViewById(R.id.descriptionView);
-        TextView typeView = transactionView.findViewById(R.id.typeView);
+        TextView dateView = transactionView.findViewById(R.id.dateView);
 
-        amountView.setText(String.format("Amount: %.2f", amount));
-        categoryView.setText("Category: " + category);
-        typeView.setText("Type: " + type);
+        categoryView.setText(category);
+        amountView.setText(String.format("RM %.2f", amount));
+        dateView.setText(date);
+
+        if (type.equals("Expense")) {
+            amountView.setTextColor(getResources().getColor(R.color.red));
+        } else {
+            amountView.setTextColor(getResources().getColor(R.color.green));
+        }
 
         if (description != null && !description.isEmpty()) {
-            descriptionView.setText("Description: " + description);
+            descriptionView.setText(description);
         } else {
             descriptionView.setVisibility(View.GONE);
         }
-
         transactionContainer.addView(transactionView);
+
+        transactionView.setOnClickListener(v -> {
+            Intent intent = new Intent(DisplayHistoryActivity.this, DetailedTransaction.class);
+            intent.putExtra("amount", amount);
+            intent.putExtra("category", category);
+            intent.putExtra("description", description);
+            intent.putExtra("date", date);
+            intent.putExtra("type", type);
+            intent.putExtra("uid", uid);
+            intent.putExtra("image", image);
+            startActivity(intent);
+        });
     }
 }

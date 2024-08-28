@@ -1,9 +1,12 @@
 package com.example.kachin;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
@@ -17,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +36,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
@@ -40,7 +44,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private EditText editTextAmount, editTextDescription;
     private Spinner spinnerCategory;
     private Button buttonSelectDate, buttonContinue, btnExpense, btnIncome, buttonAddAttachment;
-    private String selectedDate;
+    private String selectedDate, uid;
     private boolean isExpense = true;
     private Uri fileUri;
     private DatabaseReference databaseReference;
@@ -53,6 +57,13 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            uid = currentUser.getUid();
+        } else {
+            Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         initializeViews();
         initializeDefaultSettings();
@@ -201,21 +212,26 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void saveTransaction() {
-        String amount = editTextAmount.getText().toString();
+        String amountText = editTextAmount.getText().toString();
         String category = spinnerCategory.getSelectedItem().toString();
         String description = editTextDescription.getText().toString();
-        String uid = UUID.randomUUID().toString();
 
-        if (amount.isEmpty() || category.isEmpty() || selectedDate == null) {
+        if (amountText.isEmpty() || category.isEmpty() || selectedDate == null) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String formattedAmount = "RM" + amount;
+        double amount;
+        try {
+            amount = Double.parseDouble(amountText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid amount format", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Map<String, Object> transaction = new HashMap<>();
         transaction.put("uid", uid);
-        transaction.put("amount", formattedAmount);
+        transaction.put("amount", amount);
         transaction.put("category", category);
         transaction.put("description", description);
         transaction.put("date", selectedDate);
@@ -223,7 +239,9 @@ public class AddTransactionActivity extends AppCompatActivity {
         DatabaseReference reference = isExpense ? databaseReference.child("expense") : databaseReference.child("income");
 
         if (fileUri != null) {
-            StorageReference fileReference = storageReference.child("images/" + uid);
+            String fileName = getFileName(fileUri); // Retrieve the original file name
+            StorageReference fileReference = storageReference.child(fileName); // Use original file name
+
             UploadTask uploadTask = fileReference.putFile(fileUri);
 
             uploadTask.continueWithTask(task -> {
@@ -244,6 +262,30 @@ public class AddTransactionActivity extends AppCompatActivity {
             saveTransactionToDatabase(reference, transaction, isExpense);
         }
     }
+
+    @SuppressLint("Range")
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
 
     private void saveTransactionToDatabase(DatabaseReference reference, Map<String, Object> transaction, boolean isExpense) {
         reference.get().addOnCompleteListener(task -> {
