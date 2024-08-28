@@ -3,6 +3,7 @@ package com.example.kachin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -43,7 +44,7 @@ import java.util.Map;
 public class report extends AppCompatActivity {
 
     private Button btnExpense, btnIncome;
-    private ImageButton btnBack;
+    private ImageButton btnBack, btnHome, btnAdd, btnHistory, btnReport, btnProfile;
     private TextView totalAmount, monthView;
     private PieChart pieChart;
     private DatabaseReference database;
@@ -60,6 +61,11 @@ public class report extends AppCompatActivity {
         btnExpense = findViewById(R.id.btnExpense);
         btnIncome = findViewById(R.id.btnIncome);
         btnBack = findViewById(R.id.btnBack);
+        btnHome = findViewById(R.id.btnHome);
+        btnAdd = findViewById(R.id.btnAdd);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnReport = findViewById(R.id.btnReport);
+        btnProfile = findViewById(R.id.btnProfile);
         totalAmount = findViewById(R.id.totalAmount);
         monthView = findViewById(R.id.monthView);
         pieChart = findViewById(R.id.pieChart);
@@ -79,6 +85,8 @@ public class report extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
         }
+
+        setupButtonListeners();
 
         // Display expense as default
         btnExpense.setSelected(true);
@@ -108,6 +116,37 @@ public class report extends AppCompatActivity {
         });
     }
 
+    private void setupButtonListeners() {
+        btnHome.setOnClickListener(v -> {
+            Toast.makeText(report.this, "Home Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(report.this, HomePageActivity.class);
+            startActivity(intent);
+        });
+
+        btnAdd.setOnClickListener(v -> {
+            Toast.makeText(report.this, "Add Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(report.this, AddTransactionActivity.class);
+            startActivity(intent);
+        });
+
+        btnHistory.setOnClickListener(v -> {
+            Toast.makeText(report.this, "History Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(report.this, HistoryActivity.class);
+            startActivity(intent);
+        });
+
+        btnReport.setOnClickListener(v -> {
+            Toast.makeText(report.this, "Report Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(report.this, report.class);
+            startActivity(intent);
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            Toast.makeText(report.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(report.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+    }
 
     public void displayTotal(String ref) {
         DatabaseReference cashFlowRef;

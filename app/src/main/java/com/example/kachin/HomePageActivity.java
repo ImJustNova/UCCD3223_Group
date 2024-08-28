@@ -49,7 +49,6 @@ public class HomePageActivity extends AppCompatActivity {
     private DatabaseReference expensesRef;
     private DatabaseReference incomeRef;
     private DatabaseReference goalRef;
-
     private String uid;
     private LinearLayout goalLayout;
     private TextView goalText;
@@ -174,14 +173,13 @@ public class HomePageActivity extends AppCompatActivity {
 
         btnHistory.setOnClickListener(v -> {
             Toast.makeText(HomePageActivity.this, "History Clicked", Toast.LENGTH_SHORT).show();
-            // Uncomment this when HistoryActivity is available
-            // Intent intent = new Intent(HomePageActivity.this, HistoryActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(HomePageActivity.this, HistoryActivity.class);
+            startActivity(intent);
         });
 
         btnReport.setOnClickListener(v -> {
             Toast.makeText(HomePageActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(HomePageActivity.this, GoalAndBudget.class);
+            Intent intent = new Intent(HomePageActivity.this, report.class);
             startActivity(intent);
         });
 

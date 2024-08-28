@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class GoalAndBudget extends AppCompatActivity {
 
-    private ImageButton addGoal, addBudget, backButton;
+    private ImageButton addGoal, addBudget, backButton, btnHome, btnAdd, btnHistory, btnReport, btnProfile;
     private DatabaseReference database;
     private String uid;
     private LinearLayout goalLayout, budgetLayout;
@@ -46,6 +46,11 @@ public class GoalAndBudget extends AppCompatActivity {
         goalText = findViewById(R.id.GoalsText);
         budgetText = findViewById(R.id.BudgetText);
         backButton = findViewById(R.id.backButton);
+        btnHome = findViewById(R.id.btnHome);
+        btnAdd = findViewById(R.id.btnAdd);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnReport = findViewById(R.id.btnReport);
+        btnProfile = findViewById(R.id.btnProfile);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -58,6 +63,7 @@ public class GoalAndBudget extends AppCompatActivity {
 
         displayGoals();
         displayBudgets();
+        setupButtonListeners();
 
         addGoal.setOnClickListener(v -> {
             Intent intent = new Intent(GoalAndBudget.this, addGoalAndBudget.class);
@@ -77,6 +83,38 @@ public class GoalAndBudget extends AppCompatActivity {
             finish();
         });
 
+    }
+
+    private void setupButtonListeners() {
+        btnHome.setOnClickListener(v -> {
+            Toast.makeText(GoalAndBudget.this, "Home Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(GoalAndBudget.this, HomePageActivity.class);
+            startActivity(intent);
+        });
+
+        btnAdd.setOnClickListener(v -> {
+            Toast.makeText(GoalAndBudget.this, "Add Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(GoalAndBudget.this, AddTransactionActivity.class);
+            startActivity(intent);
+        });
+
+        btnHistory.setOnClickListener(v -> {
+            Toast.makeText(GoalAndBudget.this, "History Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(GoalAndBudget.this, HistoryActivity.class);
+            startActivity(intent);
+        });
+
+        btnReport.setOnClickListener(v -> {
+            Toast.makeText(GoalAndBudget.this, "Report Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(GoalAndBudget.this, report.class);
+            startActivity(intent);
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            Toast.makeText(GoalAndBudget.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(GoalAndBudget.this, ProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void displayGoals() {
