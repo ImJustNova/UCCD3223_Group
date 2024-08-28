@@ -46,7 +46,7 @@
                 <View
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/red_circle" />
+                    android:background="@drawable/green_circle" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -61,7 +61,7 @@
                     android:id="@+id/addGoalButton"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/add_goal"
+                    android:src="@drawable/circle_plus"
                     android:scaleType="centerCrop"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
@@ -105,25 +105,36 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/divider"
                 android:orientation="horizontal"
+                android:padding="8dp"
+                android:background="@drawable/rounded_background"
                 android:gravity="center_vertical">
+
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/red_circle" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Budget Limit"
-                    android:textSize="35sp"
-                    android:layout_weight="1" />
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp" />
 
                 <ImageButton
                     android:id="@+id/addBudgetButton"
-                    android:layout_width="50sp"
-                    android:layout_height="50sp"
-                    android:src="@drawable/add_goal"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/circle_plus"
                     android:scaleType="centerCrop"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
-                    android:contentDescription="Add Budget"/>
+                    android:contentDescription="Add Budget"
+                    android:layout_gravity="center_vertical" />
             </LinearLayout>
+
 
 
             <LinearLayout

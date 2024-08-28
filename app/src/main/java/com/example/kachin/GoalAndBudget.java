@@ -9,10 +9,14 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Color;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -194,66 +198,63 @@ public class GoalAndBudget extends AppCompatActivity {
                         budgetItemLayout.setOrientation(LinearLayout.VERTICAL);
                         budgetItemLayout.setPadding(10, 10, 10, 10);
 
-                        LinearLayout titleLayout = new LinearLayout(GoalAndBudget.this);
-                        titleLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        titleLayout.setPadding(10, 10, 10, 10);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT
-                        );
-                        titleLayout.setLayoutParams(layoutParams);
-
-                        TextView budgetCategoryView = new TextView(GoalAndBudget.this);
-                        budgetCategoryView.setText(category);
-                        budgetCategoryView.setTextSize(20);
-                        budgetCategoryView.setTypeface(null, Typeface.BOLD);
-
-                        TextView remove = new TextView(GoalAndBudget.this);
-                        remove.setText("Remove");
-                        remove.setTextSize(15);
-                        remove.setGravity(Gravity.RIGHT);
-
-                        remove.setOnClickListener(v -> {
-                            DatabaseReference budgetToRemoveRef = budgetsRef.child(snapshot.getKey());
-                            budgetToRemoveRef.removeValue().addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(GoalAndBudget.this, "Budget removed successfully", Toast.LENGTH_SHORT).show();
-                                    budgetLayout.removeView(budgetItemLayout);
-                                } else {
-                                    Toast.makeText(GoalAndBudget.this, "Failed to remove budget", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        });
-
+                        // Remaining budget text
                         TextView remaining = new TextView(GoalAndBudget.this);
                         remaining.setText("Remaining RM " + String.format("%.2f", budgetLimit - currentBudget));
                         remaining.setTextSize(25);
+                        remaining.setTypeface(null, Typeface.BOLD);
 
-                        LinearLayout.LayoutParams categoryParams = new LinearLayout.LayoutParams(
-                                0,
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                1.0f
-                        );
-                        budgetCategoryView.setLayoutParams(categoryParams);
+                        // ProgressBar Layout
+                        RelativeLayout progressBarLayout = new RelativeLayout(GoalAndBudget.this);
 
-                        TextView currProgress = new TextView(GoalAndBudget.this);
-                        currProgress.setText(String.format("RM %.2f of RM %.2f", currentBudget, budgetLimit));
-                        currProgress.setTextSize(15);
-
+                        // ProgressBar
                         ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
-                        progressBar.setLayoutParams(new LinearLayout.LayoutParams(
+                        RelativeLayout.LayoutParams progressBarParams = new RelativeLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                                20 // Set the thickness of the ProgressBar
+                        );
+                        progressBar.setLayoutParams(progressBarParams);
                         progressBar.setMax(100);
                         progressBar.setProgress(progress);
 
-                        titleLayout.addView(budgetCategoryView);
-                        titleLayout.addView(remove);
-                        budgetItemLayout.addView(titleLayout);
-                        budgetItemLayout.addView(remaining);
-                        budgetItemLayout.addView(progressBar);
-                        budgetItemLayout.addView(currProgress);
+                        if (progress >= 100) {
+                            progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.red_progress_bar)); // Set a red progress bar drawable
+                        }
 
+                        // Current progress text and warning icon in a horizontal layout
+                        LinearLayout progressInfoLayout = new LinearLayout(GoalAndBudget.this);
+                        progressInfoLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        progressInfoLayout.setGravity(Gravity.CENTER_VERTICAL); // Align items vertically centered
+
+                        // Current progress text
+                        TextView currProgress = new TextView(GoalAndBudget.this);
+                        currProgress.setText(String.format("RM %.2f of RM %.2f", currentBudget, budgetLimit));
+                        currProgress.setTextSize(15);
+                        currProgress.setTextColor(progress >= 100 ? getResources().getColor(R.color.red) : getResources().getColor(R.color.grey));
+                        currProgress.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)); // Weight 1
+
+                        // Add the red circle with exclamation mark if the limit is reached
+                        ImageView redCircleWarning = null;
+                        if (progress >= 100) {
+                            redCircleWarning = new ImageView(GoalAndBudget.this);
+                            LinearLayout.LayoutParams circleParams = new LinearLayout.LayoutParams(40, 40); // Set the size of the red circle
+                            circleParams.setMargins(10, 0, 0, 0); // Add some margin to the left
+                            redCircleWarning.setLayoutParams(circleParams);
+                            redCircleWarning.setImageDrawable(getResources().getDrawable(R.drawable.ic_warning_red_24dp)); // Set the drawable resource for the red circle with exclamation mark
+                        }
+
+                        // Add TextView and ImageView to progressInfoLayout
+                        progressInfoLayout.addView(currProgress);
+                        if (redCircleWarning != null) {
+                            progressInfoLayout.addView(redCircleWarning);
+                        }
+
+                        // Adding views to layout
+                        budgetItemLayout.addView(remaining);
+                        budgetItemLayout.addView(progressBarLayout);
+                        budgetItemLayout.addView(progressInfoLayout);
+
+                        // Warning if the budget is exceeded
                         if (progress >= 100) {
                             TextView warning = new TextView(GoalAndBudget.this);
                             warning.setText("You have exceeded your budget limit!");
@@ -262,6 +263,7 @@ public class GoalAndBudget extends AppCompatActivity {
                             budgetItemLayout.addView(warning);
                         }
 
+                        // Add the budget item layout to the main budget layout
                         budgetLayout.addView(budgetItemLayout, budgetLayout.getChildCount() - 1);
                     }
                 } else {
@@ -269,7 +271,8 @@ public class GoalAndBudget extends AppCompatActivity {
                 }
             }
 
-            @Override
+
+    @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(GoalAndBudget.this, "Failed to load budgets", Toast.LENGTH_SHORT).show();
             }
