@@ -29,7 +29,7 @@ public class addGoalAndBudget extends AppCompatActivity {
     private DatabaseReference database;
     private String uid;
     private EditText goalName, targetAmount, budgetLimit;
-    private Spinner category, timeFrame, recurring;
+    private Spinner category, timeFrame;
     private List<String> categoriesList;
     private Button addButton;
     private TextView pageTitle, cancelButton;
@@ -47,7 +47,6 @@ public class addGoalAndBudget extends AppCompatActivity {
         budgetLimit = findViewById(R.id.budgetLimit);
         category = findViewById(R.id.category);
         timeFrame = findViewById(R.id.timeFrame);
-        recurring = findViewById(R.id.recurring);
         addButton = findViewById(R.id.addButton);
 
         database = FirebaseDatabase.getInstance().getReference();
@@ -79,7 +78,6 @@ public class addGoalAndBudget extends AppCompatActivity {
             budgetLimit.setVisibility(View.VISIBLE);
             category.setVisibility(View.VISIBLE);
             timeFrame.setVisibility(View.VISIBLE);
-            recurring.setVisibility(View.VISIBLE);
         }
 
         cancelButton.setOnClickListener(v -> {
@@ -100,9 +98,8 @@ public class addGoalAndBudget extends AppCompatActivity {
                 String budgetLimitText = budgetLimit.getText().toString().trim();
                 String selectedCategory = category.getSelectedItem().toString();
                 String selectedTimeFrame = timeFrame.getSelectedItem().toString();
-                String selectedRecurring = recurring.getSelectedItem().toString();
 
-                if (budgetLimitText.isEmpty() || selectedCategory.isEmpty() || selectedTimeFrame.isEmpty() || selectedRecurring.isEmpty()) {
+                if (budgetLimitText.isEmpty() || selectedCategory.isEmpty() || selectedTimeFrame.isEmpty()) {
                     Toast.makeText(addGoalAndBudget.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }

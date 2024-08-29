@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,27 +8,19 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        >
 
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="19dp"
-            android:layout_height="29dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/back" />
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/ivBack"
+
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Expense"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -39,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:text="How much?"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
         <TextView
@@ -49,105 +42,133 @@
             android:layout_below="@id/tvAmountLabel"
             android:layout_centerHorizontal="true"
             android:text="RM0"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="40sp"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spinnerCategory"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvAmount"
-            android:layout_marginTop="24dp"
-            android:background="@android:drawable/edit_text" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-20dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="8dp">
 
-        <EditText
-            android:id="@+id/editTextAmount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spinnerCategory"
-            android:layout_marginTop="16dp"
-            android:hint="Enter Amount"
-            android:background="@android:drawable/edit_text"
-            android:padding="8dp"
-            android:inputType="numberDecimal" />
+            <!-- Place the views you want inside the CardView here -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/editTextDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/editTextAmount"
-            android:layout_marginTop="16dp"
-            android:hint="Description"
-            android:background="@android:drawable/edit_text"
-            android:padding="8dp"
-            android:inputType="text" />
 
-        <Button
-            android:id="@+id/buttonAddAttachment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/editTextDescription"
-            android:layout_marginTop="16dp"
-            android:text="Add attachment"
-            android:background="@android:drawable/edit_text" />
 
-        <Button
-            android:id="@+id/buttonSelectDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/buttonAddAttachment"
-            android:layout_marginTop="16dp"
-            android:text="Select Date"
-            android:background="@android:drawable/edit_text" />
+                <Spinner
+                    android:id="@+id/spinnerCategory"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:drawable/edit_text" />
 
-        <TextView
-            android:id="@+id/textViewSelectedDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/buttonSelectDate"
-            android:layout_marginTop="8dp"
-            android:text="No date selected"
-            android:textSize="16sp"
-            android:textColor="@android:color/black" />
+                <EditText
+                    android:id="@+id/editTextAmount"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spinnerCategory"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:hint="Enter Amount"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="8dp"
+                    android:inputType="numberDecimal" />
 
-        <LinearLayout
-            android:id="@+id/linearLayoutExpenseIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textViewSelectedDate"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+                <EditText
+                    android:id="@+id/editTextDescription"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/editTextAmount"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:hint="Description"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="8dp"
+                    android:inputType="text" />
 
-            <Button
-                android:id="@+id/btnExpense"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/holo_red_dark"
-                android:text="Expense"
-                android:textColor="@android:color/white" />
+                <Button
+                    android:id="@+id/buttonAddAttachment"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/editTextDescription"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Add attachment"
+                    android:background="@android:drawable/edit_text" />
 
-            <Button
-                android:id="@+id/btnIncome"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/holo_green_dark"
-                android:text="Income"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/buttonSelectDate"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/buttonAddAttachment"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Select Date"
+                    android:background="@android:drawable/edit_text" />
 
-        <Button
-            android:id="@+id/buttonContinue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/linearLayoutExpenseIncome"
-            android:layout_marginTop="24dp"
-            android:text="Continue"
-            android:background="@android:color/holo_green_dark"
-            android:textColor="@android:color/white" />
+                <TextView
+                    android:id="@+id/textViewSelectedDate"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/buttonSelectDate"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="No date selected"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutExpenseIncome"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewSelectedDate"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btnExpense"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/holo_red_dark"
+                        android:text="Expense"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/btnIncome"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/green"
+                        android:text="Income"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/buttonContinue"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/linearLayoutExpenseIncome"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="120dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Continue"
+                    android:background="@color/green"
+                    android:textColor="@android:color/white" />
+
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 

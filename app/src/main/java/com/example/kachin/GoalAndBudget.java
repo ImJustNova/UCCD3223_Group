@@ -236,7 +236,44 @@ public class GoalAndBudget extends AppCompatActivity {
                         budgetItemLayout.setOrientation(LinearLayout.VERTICAL);
                         budgetItemLayout.setPadding(10, 10, 10, 10);
 
-                        // Remaining budget text
+                        LinearLayout titleLayout = new LinearLayout(GoalAndBudget.this);
+                        titleLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        titleLayout.setPadding(10, 10, 10, 10);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+                        titleLayout.setLayoutParams(layoutParams);
+
+                        TextView budgetText = new TextView(GoalAndBudget.this);
+                        budgetText.setText(category);
+                        budgetText.setTextSize(20);
+                        budgetText.setTypeface(null, Typeface.BOLD);
+
+                        TextView remove = new TextView(GoalAndBudget.this);
+                        remove.setText("Remove");
+                        remove.setTextSize(15);
+                        remove.setGravity(Gravity.END);
+
+                        remove.setOnClickListener(v -> {
+                            DatabaseReference budgetToRemoveRef = budgetsRef.child(snapshot.getKey());
+                            budgetToRemoveRef.removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(GoalAndBudget.this, "Budget limit removed successfully", Toast.LENGTH_SHORT).show();
+                                    budgetLayout.removeView(budgetItemLayout);
+                                } else {
+                                    Toast.makeText(GoalAndBudget.this, "Failed to remove goal", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
+
+                        LinearLayout.LayoutParams goalNameParams = new LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1.0f
+                        );
+                        budgetText.setLayoutParams(goalNameParams);
+
                         TextView remaining = new TextView(GoalAndBudget.this);
                         remaining.setText("Remaining RM " + String.format("%.2f", budgetLimit - currentBudget));
                         remaining.setTextSize(25);
@@ -288,8 +325,11 @@ public class GoalAndBudget extends AppCompatActivity {
                         }
 
                         // Adding views to layout
+                        titleLayout.addView(budgetText);
+                        titleLayout.addView(remove);
+                        budgetItemLayout.addView(titleLayout);
                         budgetItemLayout.addView(remaining);
-                        budgetItemLayout.addView(progressBarLayout);
+                        budgetItemLayout.addView(progressBar);
                         budgetItemLayout.addView(progressInfoLayout);
 
                         // Warning if the budget is exceeded

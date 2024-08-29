@@ -2,6 +2,7 @@ package com.example.kachin;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -68,8 +72,6 @@ public class AddTransactionActivity extends AppCompatActivity {
         initializeViews();
         initializeDefaultSettings();
 
-        ImageView ivBack = findViewById(R.id.ivBack);
-        ivBack.setOnClickListener(v -> goToHomePage());
 
         editTextAmount.addTextChangedListener(new TextWatcher() {
             @Override
@@ -120,13 +122,23 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private void updateUIForTransactionType(boolean isExpense) {
         this.isExpense = isExpense;
+
+        // Update the title text
         tvTitle.setText(isExpense ? "Expense" : "Income");
+
+        // Get reference to the root layout
+        ConstraintLayout rootLayout = findViewById(R.id.rootLayout);
+
+        // Change the background color of the root layout
         if (isExpense) {
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));  // Set background to red
             loadCategoriesFromFirebase();
         } else {
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));  // Set background to green
             loadIncomeCategoriesFromFirebase();
         }
     }
+
 
     private void loadCategoriesFromFirebase() {
         databaseReference.child("category").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -253,13 +265,99 @@ public class AddTransactionActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     transaction.put("imageUrl", downloadUri.toString());
-                    saveTransactionToDatabase(reference, transaction, isExpense);
+                    saveTransactionToDatabase(reference, transaction, isExpense, amount, category);
                 } else {
                     Toast.makeText(AddTransactionActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            saveTransactionToDatabase(reference, transaction, isExpense);
+            saveTransactionToDatabase(reference, transaction, isExpense, amount, category);
+        }
+    }
+
+    private void saveTransactionToDatabase(DatabaseReference reference, Map<String, Object> transaction, boolean isExpense, double amount, String category) {
+        reference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                long count = task.getResult().getChildrenCount();
+                String key = (isExpense ? "expense" : "income") + (count + 1);
+                reference.child(key).setValue(transaction)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(AddTransactionActivity.this, "Transaction saved", Toast.LENGTH_SHORT).show();
+                            // Update the budget or goal based on the type of transaction
+                            updateBudgetOrGoal(category, amount, isExpense);
+                            resetForm();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to save transaction", Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(AddTransactionActivity.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void updateBudgetOrGoal(String category, double amount, boolean isExpense) {
+        if (isExpense) {
+            databaseReference.child("budget").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot budgetSnapshot : snapshot.getChildren()) {
+                        String categoryName = budgetSnapshot.child("category").getValue(String.class);
+
+                        if (categoryName != null && categoryName.equals(category)) {
+                            Double currentBudget = budgetSnapshot.child("currentBudget").getValue(Double.class);
+                            Double budgetLimit = budgetSnapshot.child("budgetLimit").getValue(Double.class);
+
+                            if (currentBudget == null || budgetLimit == null) {
+                                Toast.makeText(AddTransactionActivity.this, "Error: Missing goal data for category " + category, Toast.LENGTH_SHORT).show();
+                                continue;
+                            }
+
+                            currentBudget += amount;
+                            double budgetProgress = (currentBudget / budgetLimit) * 100;
+                            budgetSnapshot.getRef().child("currentBudget").setValue(currentBudget);
+                            budgetSnapshot.getRef().child("progress").setValue(budgetProgress);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(AddTransactionActivity.this, "Failed to update budget limit", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else { // income
+            databaseReference.child("goal").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        // If no data matches the query
+                        Toast.makeText(AddTransactionActivity.this, "No matching goal found for this category", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    for (DataSnapshot goalSnapshot : snapshot.getChildren()) {
+                        String categoryName = goalSnapshot.child("goalName").getValue(String.class);
+
+                        if (categoryName != null && categoryName.equals(category)) {
+                            Double currentAmount = goalSnapshot.child("currentAmount").getValue(Double.class);
+                            Double targetAmount = goalSnapshot.child("targetAmount").getValue(Double.class);
+
+                            if (currentAmount == null || targetAmount == null) {
+                                Toast.makeText(AddTransactionActivity.this, "Error: Missing goal data for category " + category, Toast.LENGTH_SHORT).show();
+                                continue;
+                            }
+
+                            currentAmount += amount;
+                            double goalProgress = (currentAmount / targetAmount) * 100;
+                            goalSnapshot.getRef().child("currentAmount").setValue(currentAmount);
+                            goalSnapshot.getRef().child("progress").setValue(goalProgress);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(AddTransactionActivity.this, "Failed to update goal progress", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -284,24 +382,6 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         }
         return result;
-    }
-
-
-    private void saveTransactionToDatabase(DatabaseReference reference, Map<String, Object> transaction, boolean isExpense) {
-        reference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                long count = task.getResult().getChildrenCount();
-                String key = (isExpense ? "expense" : "income") + (count + 1);
-                reference.child(key).setValue(transaction)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(AddTransactionActivity.this, "Transaction saved", Toast.LENGTH_SHORT).show();
-                            resetForm();
-                        })
-                        .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to save transaction", Toast.LENGTH_SHORT).show());
-            } else {
-                Toast.makeText(AddTransactionActivity.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void resetForm() {
