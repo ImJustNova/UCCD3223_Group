@@ -23,6 +23,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+
+
+// this is probably not being used, can delete if not needed
+
+
+
 public class AllTransactionsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;

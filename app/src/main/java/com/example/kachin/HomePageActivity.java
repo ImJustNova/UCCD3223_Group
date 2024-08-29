@@ -62,19 +62,17 @@ public class HomePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        // Initialize Firebase references
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         expensesRef = database.getReference("expense");
         incomeRef = database.getReference("income");
         goalRef = database.getReference("goal");
 
-        // Get the current user's UID
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             uid = currentUser.getUid();
         } else {
             Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
-            return; // Exit the activity or handle this scenario as appropriate
+            return;
         }
 
         // Initialize UI components
@@ -89,15 +87,13 @@ public class HomePageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.transactionRecyclerView);
         seeAllButton = findViewById(R.id.seeAllText);
         seeAllbtn = findViewById(R.id.btnSeeAllGoals);
-        goalLayout = findViewById(R.id.goalLayout); // Replace with your actual layout id
-        goalText = findViewById(R.id.GoalsText); // Replace with your actual layout id
+        goalLayout = findViewById(R.id.goalLayout);
+        goalText = findViewById(R.id.GoalsText);
 
-        // Initialize RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         transactionAdapter = new TransactionAdapter(transactionList);
         recyclerView.setAdapter(transactionAdapter);
 
-        // Set the current month in the UI
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         String currentMonth = monthFormat.format(calendar.getTime());
@@ -108,7 +104,7 @@ public class HomePageActivity extends AppCompatActivity {
         fetchTotalIncome();
         fetchTotalExpense();
         fetchRecentTransactions();
-        displayGoals(); // Call the displayGoals method to show goals
+        displayGoals();
         displayCurrentMonth();
 
         seeAllButton.setOnClickListener(v -> {
@@ -121,7 +117,6 @@ public class HomePageActivity extends AppCompatActivity {
             Intent intent = new Intent(HomePageActivity.this, GoalAndBudget.class);
             startActivity(intent);
         });
-
     }
 
     private void displayCurrentMonth() {
@@ -156,7 +151,6 @@ public class HomePageActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
     }
-
 
     private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
