@@ -20,8 +20,18 @@
         <item>tidak</item>
     </string-array>
 
-    <string name="language_label">Bahasa</string>
-    <string name="help_label">Bantuan</string>
-    <string name="select_language">Pilih Bahasa</string>
-    <string name="help_message">Akan datang</string>
+    <string name="settings">Tetapan</string>
+    <string name="logout">Log keluar</string>
+    <string name="home">Laman Utama</string>
+    <string name="add">Tambah</string>
+    <string name="history">Sejarah</string>
+    <string name="report">Laporan</string>
+    <string name="profile">Profil</string>
+    <string name="change_picture">Tukar Gambar</string>
+    <string name="save">Simpan</string>
+    <string name="name_hint">Nama</string>
+    <string name="email_hint">E-mel</string>
+    <string name="password_hint">Kata Laluan</string>
+    <string name="language">Bahasa</string>
+    <string name="help">Bantuan</string>
 </resources>
