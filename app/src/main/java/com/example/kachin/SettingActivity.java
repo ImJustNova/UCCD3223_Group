@@ -82,10 +82,14 @@ public class SettingActivity extends AppCompatActivity {
     private void showHelpDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Help");
-        builder.setMessage("Coming soon \n\n" +
-                "1. \n" +
-                "2. \n" +
-                "3. ");
+        builder.setMessage("Welcome to Kachin! Here's how you can use the app. \n\n" +
+                "1.Use the bottom navigation bar to quickly access different sections like Home, Add expense/income, History, Report and Profile. \n\n" +
+                "2.On the Home screen, you can get a quick overview of your financial status, including a summary of recent transactions and an overview of your budget.\n\n" +
+                "3.To add a new expense, tap on the '+' button located at the bottom of the screen. Enter the amount, category, date, and any additional notes, then tap 'Save'.\n\n"+
+                "4.You can view all your past expenses by navigating to the 'History' section. \n\n"+
+                "5.In the 'Report' section, you can generate detailed financial reports, including expense breakdowns by category, monthly summaries, and more. This helps you analyze your spending patterns and make informed financial decisions.\n\n" +
+                "6.In the Profile section, you can manage your settings, logout and edit your profile information.\n\n" +
+                "Thank you for using Kachin! We hope you have a great experience.");
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -97,6 +101,3 @@ public class SettingActivity extends AppCompatActivity {
         builder.show();
     }
 }
-
-//help
-//language
