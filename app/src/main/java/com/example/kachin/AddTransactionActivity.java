@@ -131,10 +131,10 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         // Change the background color of the root layout
         if (isExpense) {
-            rootLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));  // Set background to red
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.red));  // Set background to red
             loadCategoriesFromFirebase();
         } else {
-            rootLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));  // Set background to green
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.green));  // Set background to green
             loadIncomeCategoriesFromFirebase();
         }
     }
