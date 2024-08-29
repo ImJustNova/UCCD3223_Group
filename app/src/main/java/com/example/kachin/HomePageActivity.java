@@ -26,11 +26,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,7 +102,7 @@ public class HomePageActivity extends AppCompatActivity {
         monthView.setText(currentMonth);
 
         setupButtonListeners();
-
+        resetBudgetIfNecessary(uid);
         fetchTotalIncome();
         fetchTotalExpense();
         fetchRecentTransactions();
@@ -442,6 +444,56 @@ public class HomePageActivity extends AppCompatActivity {
                 Toast.makeText(HomePageActivity.this, "Failed to load goals", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void resetBudgetIfNecessary(String uid) {
+        DatabaseReference budgetRef = FirebaseDatabase.getInstance().getReference("budgets").child(uid);
+
+        budgetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+                for (DataSnapshot budgetSnapshot : snapshot.getChildren()) {
+                    String lastResetDate = budgetSnapshot.child("lastResetDate").getValue(String.class);
+                    String timeFrame = budgetSnapshot.child("timeFrame").getValue(String.class); // "daily" or "monthly"
+
+                    if (lastResetDate == null || isDateDifferent(currentDate, lastResetDate, timeFrame)) {
+                        // Reset the budget
+                        budgetSnapshot.getRef().child("currentBudget").setValue(0.0);
+                        budgetSnapshot.getRef().child("progress").setValue(0.0);
+                        budgetSnapshot.getRef().child("lastResetDate").setValue(currentDate);
+                        Toast.makeText(HomePageActivity.this, "Budget for " + timeFrame + " has been reset.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(HomePageActivity.this, "Failed to reset budgets", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean isDateDifferent(String currentDate, String lastResetDate, String timeFrame) {
+        Calendar currentCalendar = Calendar.getInstance();
+        Calendar lastResetCalendar = Calendar.getInstance();
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            lastResetCalendar.setTime(sdf.parse(lastResetDate));
+
+            if ("daily".equals(timeFrame)) {
+                return !currentDate.equals(lastResetDate); // reset daily if the date is different
+            } else if ("monthly".equals(timeFrame)) {
+                return currentCalendar.get(Calendar.MONTH) != lastResetCalendar.get(Calendar.MONTH) ||
+                        currentCalendar.get(Calendar.YEAR) != lastResetCalendar.get(Calendar.YEAR); // reset monthly if the month/year is different
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 

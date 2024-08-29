@@ -21,7 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class addGoalAndBudget extends AppCompatActivity {
@@ -150,7 +152,6 @@ public class addGoalAndBudget extends AppCompatActivity {
                 });
     }
 
-
     private void getNextGoalIdAndWriteNewGoal(String uid, String goalName, double targetAmount, double currentAmount) {
         database.child("goal").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -173,7 +174,6 @@ public class addGoalAndBudget extends AppCompatActivity {
         });
     }
 
-
     public static class Goal {
         public String uid;
         public String goalName;
@@ -193,9 +193,10 @@ public class addGoalAndBudget extends AppCompatActivity {
         }
     }
 
-    private void addNewBudget(String budgetId, String uid, double budgetLimit, double currentBudget, String category, String timeFrame) {
+    private void addNewBudget(String budgetId, String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String lastResetDate) {
         double progress = (currentBudget / budgetLimit) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
+
         String currentTimeFrame;
         if (timeFrame.equals("daily")) {
             currentTimeFrame = "currentDay";
@@ -205,7 +206,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             currentTimeFrame = "currentMonth";
         }
 
-        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, currentTimeFrame, progress);
+        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, currentTimeFrame, lastResetDate, progress);
         database.child("budget").child(budgetId).setValue(budget)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Budget added successfully", Toast.LENGTH_SHORT).show();
@@ -219,7 +220,7 @@ public class addGoalAndBudget extends AppCompatActivity {
         database.child("budget").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long nextBudgetId = 1; // Default to 1 if there are no existing budgets
+                long nextBudgetId = 1;
                 for (DataSnapshot budgetSnapshot : dataSnapshot.getChildren()) {
                     String key = budgetSnapshot.getKey();
                     long budgetId = Long.parseLong(key.replace("budget", ""));
@@ -227,7 +228,11 @@ public class addGoalAndBudget extends AppCompatActivity {
                 }
 
                 String budgetId = "budget" + nextBudgetId;
-                addNewBudget(budgetId, uid, budgetLimit, currentBudget, category, timeFrame);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String lastResetDate = sdf.format(new Date());
+
+                addNewBudget(budgetId, uid, budgetLimit, currentBudget, category, timeFrame, lastResetDate);
             }
 
             @Override
@@ -244,18 +249,20 @@ public class addGoalAndBudget extends AppCompatActivity {
         public String category;
         public String timeFrame;
         public String currentTimeFrame;
+        public String lastResetDate;
         public double progress;
 
         public Budget() {
         }
 
-        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String currentTimeFrame, double progress) {
+        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String currentTimeFrame, String lastResetDate, double progress) {
             this.uid = uid;
             this.budgetLimit = budgetLimit;
             this.currentBudget = currentBudget;
             this.category = category;
             this.timeFrame = timeFrame;
             this.currentTimeFrame = currentTimeFrame;
+            this.lastResetDate = lastResetDate;
             this.progress = progress;
         }
     }
