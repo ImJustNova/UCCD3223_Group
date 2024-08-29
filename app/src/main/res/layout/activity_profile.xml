@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingTop="16dp"
-            android:text="Settings" />
+            android:text="@string/settings" />
 
         <Button
             android:id="@+id/btn_logout"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingTop="8dp"
-            android:text="Logout" />
+            android:text="@string/logout" />
     </LinearLayout>
 
     <LinearLayout
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/home"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -116,7 +116,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:text="@string/add"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -141,7 +141,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -166,7 +166,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Report"
+                android:text="@string/report"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -191,7 +191,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>

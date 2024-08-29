@@ -89,7 +89,7 @@
                             android:id="@+id/textTitleIncome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Income"
+                            android:text="@string/income"
                             android:textColor="@android:color/white"
                             android:textSize="16sp" />
 
@@ -125,7 +125,7 @@
                             android:id="@+id/textTitleExpenses"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Expenses"
+                            android:text="@string/expenses"
                             android:textColor="@android:color/white"
                             android:textSize="16sp" />
 
@@ -164,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="9"
                         android:gravity="start"
-                        android:text="Recent Transactions"
+                        android:text="@string/recent_transactions"
                         android:textColor="#404040"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -174,7 +174,7 @@
                         android:layout_width="60dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:text="See All"
+                        android:text="@string/see_all"
                         android:textAllCaps="false"
                         android:textColor="#8d54ff"
                         android:textSize="12sp"
@@ -208,7 +208,7 @@
                             android:id="@+id/noRecordsTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="There is no record"
+                            android:text="@string/no_records"
                             android:textSize="18sp"
                             android:textColor="@android:color/black"
                             android:layout_gravity="center"
@@ -240,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="9"
                         android:gravity="start"
-                        android:text="Goal Progress"
+                        android:text="@string/goal_progress"
                         android:textColor="#404040"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -250,7 +250,7 @@
                         android:layout_width="60dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:text="See All"
+                        android:text="@string/see_all"
                         android:textAllCaps="false"
                         android:textColor="#8d54ff"
                         android:textSize="12sp"
@@ -267,7 +267,7 @@
                         android:id="@+id/GoalsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="There are no goals yet!"
+                        android:text="@string/no_goals_yet"
                         android:textSize="25sp"
                         android:visibility="visible" />
 
@@ -285,7 +285,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tips:\nSetting a clear money goal helps you stay focused, motivated, and disciplined in achieving financial success."
+                        android:text="@string/tips"
                         android:textSize="16sp"
                         android:textColor="@android:color/black"
                         android:lineSpacingExtra="4dp"/>
@@ -326,7 +326,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/home"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -351,7 +351,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:text="@string/add"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -376,7 +376,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -401,7 +401,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Report"
+                android:text="@string/report"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -426,7 +426,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>

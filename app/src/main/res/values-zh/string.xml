@@ -6,7 +6,7 @@
     <string name="empty_fields_error">请输入用户名和密码。</string>
     <string name="terms_and_policy">注册即表示您同意服务条款和隐私政策</string>
     <string name="default_web_client_id">您的客户端 ID</string>
-    <string name="google_sign_in">使用 Google 注册</string>
+    <string name="google_sign">使用 Google 注册</string>
     <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
 
     <string-array name="time_frame_array">
@@ -20,6 +20,71 @@
         <item>否</item>
     </string-array>
 
+    <string name="reset_password">重置密码</string>
+    <string name="new_password">新密码</string>
+    <string name="confirm_password">确认新密码</string>
+
+    <string name="financial_report">财务报告</string>
+    <string name="month">月份</string>
+
+    <string name="login_title">登录到Kachin</string>
+    <string name="google_sign_in">使用Google登录</string>
+    <string name="or_with">或使用</string>
+    <string name="email_hint">电子邮件</string>
+    <string name="password_hint">密码</string>
+    <string name="remember_me">记住我</string>
+    <string name="login_button">登录</string>
+    <string name="no_account">还没有账户？</string>
+    <string name="sign_up">注册</string>
+
+    <string name="check_transaction">检查交易</string>
+
+    <string name="goals_budgets">目标与预算</string>
+    <string name="no_goals">还没有目标！</string>
+    <string name="add_budget">添加预算</string>
+    <string name="no_budget">还没有预算上限！</string>
+
+    <string name="forgot_password">忘记密码</string>
+    <string name="forgot_password_text">请提供您的电子邮件，我们将向您发送更改密码的说明</string>
+    <string name="email_text">电子邮件</string>
+
+    <string name="date">日期</string>
+    <string name="no_transaction">今天没有交易！</string>
+
+    <string name="back">返回</string>
+    <string name="detail_transaction">交易详情</string>
+    <string name="type">类型</string>
+    <string name="category">类别</string>
+    <string name="shopping">购物</string>
+    <string name="no_description">无描述</string>
+    <string name="attachment">附件</string>
+    <string name="no_image_found">未找到图片</string>
+
+    <string name="cancel">取消</string>
+    <string name="title">标题</string>
+    <string name="goal_name">目标名称</string>
+    <string name="target_amount">目标金额</string>
+    <string name="budget_limit">预算限制</string>
+    <string name="add_goal">添加目标</string>
+
+    <string name="amount_label">多少钱？</string>
+    <string name="enter_amount">输入金额</string>
+    <string name="description">描述</string>
+    <string name="add_attachment">添加附件</string>
+    <string name="select_date">选择日期</string>
+    <string name="no_date_selected">未选择日期</string>
+    <string name="continue_button">继续</string>
+
+    <string name="see_all">查看全部</string>
+    <string name="goal_progress">目标进度</string>
+    <string name="recent_transactions">最近交易</string>
+    <string name="no_records">没有记录</string>
+    <string name="income">收入</string>
+    <string name="expenses">支出</string>
+    <string name="tips">提示:\n设定明确的财务目标有助于保持专注、激励和纪律，以实现财务成功。</string>
+    <string name="no_goals_yet">还没有目标！</string>
+
+
     <string name="settings">设置</string>
     <string name="logout">退出</string>
     <string name="home">首页</string>
@@ -29,9 +94,9 @@
     <string name="profile">个人资料</string>
     <string name="change_picture">更换图片</string>
     <string name="save">保存</string>
-    <string name="name_hint">姓名</string>
-    <string name="email_hint">电子邮件</string>
-    <string name="password_hint">密码</string>
+    <string name="name">姓名</string>
+    <string name="email">电子邮件</string>
+    <string name="password">密码</string>
     <string name="language">语言</string>
     <string name="help">帮助</string>
 </resources>

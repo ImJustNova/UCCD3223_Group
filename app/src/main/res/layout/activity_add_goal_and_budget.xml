@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="341dp"
         android:layout_marginTop="38dp"
-        android:text="cancel"
+        android:text="@string/cancel"
         android:textSize="15sp"/>
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
-        android:text="Title"
+        android:text="@string/title"
         android:textSize="25sp" />
 
     <!-- Goal fields -->
@@ -37,7 +37,7 @@
         android:layout_marginBottom="16sp"
         android:background="@drawable/custom_input"
         android:ems="10"
-        android:hint="Goal Name"
+        android:hint="@string/goal_name"
         android:inputType="text"
         android:paddingStart="12sp"
         android:paddingEnd="12sp"
@@ -57,7 +57,7 @@
         android:paddingEnd="12sp"
         android:background="@drawable/custom_input"
         android:ems="10"
-        android:hint="Target Amount"
+        android:hint="@string/target_amount"
         android:inputType="numberDecimal"
         android:textSize="14sp"
         android:visibility="gone" />
@@ -76,7 +76,7 @@
         android:paddingEnd="12sp"
         android:background="@drawable/custom_input"
         android:ems="10"
-        android:hint="Budget Limit"
+        android:hint="@string/budget_limit"
         android:inputType="numberDecimal"
         android:textSize="14sp"
         android:visibility="gone" />
@@ -117,7 +117,7 @@
         android:layout_marginRight="12sp"
         android:background="@drawable/round_button_background"
         android:padding="16dp"
-        android:text="add goal"
+        android:text="@string/add_goal"
         android:textColor="@android:color/white" />
 
 </RelativeLayout>

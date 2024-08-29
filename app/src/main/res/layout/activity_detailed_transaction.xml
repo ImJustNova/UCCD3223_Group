@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8sp"
         android:layout_centerHorizontal="true"
-        android:text="Detail Transaction"
+        android:text="@string/detail_transaction"
         android:textSize="25sp" />
 
     <TextView
@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Type"
+                android:text="@string/type"
                 android:textSize="15sp"
                 android:textColor="@android:color/darker_gray"
                 android:gravity="center"/>
@@ -73,7 +73,7 @@
                 android:id="@+id/transactionType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Expense"
+                android:text="@string/expenses"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"
                 android:gravity="center"
@@ -92,7 +92,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category"
+                android:text="@string/category"
                 android:textSize="15sp"
                 android:textColor="@android:color/darker_gray"
                 android:gravity="center"/>
@@ -101,7 +101,7 @@
                 android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shopping"
+                android:text="@string/shopping"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"
                 android:gravity="center"
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/transactionLayout"
         android:layout_marginTop="20sp"
-        android:text="Description"
+        android:text="@string/description"
         android:textSize="20sp">
     </TextView>
 
@@ -127,7 +127,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/descriptionText"
         android:layout_marginTop="14sp"
-        android:text="No Description"
+        android:text="@string/no_description"
         android:textSize="20sp">
     </TextView>
 
@@ -137,7 +137,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/description"
         android:layout_marginTop="20sp"
-        android:text="Attachment"
+        android:text="@string/attachment"
         android:textSize="20sp">
     </TextView>
 
@@ -156,7 +156,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/attachment"
-        android:text="No image found"
+        android:text="@string/no_image_found"
         android:textSize="20sp">
     </TextView>
 

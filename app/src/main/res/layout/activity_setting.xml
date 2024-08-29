@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="37dp"
             android:layout_gravity="center"
-            android:text="Setting"
+            android:text="@string/settings"
             android:textAlignment="center"
             android:textSize="18sp" />
 
