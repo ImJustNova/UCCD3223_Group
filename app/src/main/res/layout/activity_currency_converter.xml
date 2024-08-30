@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/background_gradient"
     android:layout_height="match_parent"
-    android:padding="16sp">
+    android:padding="16dp">
 
     <ImageButton
         android:id="@+id/backButton"
@@ -20,19 +20,27 @@
         android:id="@+id/pageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8sp"
+        android:layout_marginTop="8dp"
         android:layout_centerHorizontal="true"
-        android:text="History"
+        android:text="Currency Convert"
         android:textSize="25sp" />
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/currencyListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/pageTitle">
+        android:layout_below="@id/pageTitle"
+        android:layout_marginTop="16dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
 
-        
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/updateCurrencyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currencyListView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="Update Currency" />
 
 </RelativeLayout>

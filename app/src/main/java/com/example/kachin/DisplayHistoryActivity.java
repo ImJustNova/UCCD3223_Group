@@ -128,7 +128,6 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         amountView.setText(String.format("RM %.2f", amount));
         dateView.setText(date);
 
-
         if (type.equals("expense")) {
             amountView.setTextColor(getResources().getColor(R.color.red));
             switch (category) {
@@ -188,4 +187,5 @@ public class DisplayHistoryActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
 }

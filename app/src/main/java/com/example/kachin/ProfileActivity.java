@@ -128,7 +128,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnReport.setOnClickListener(v -> {
             Toast.makeText(ProfileActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, GoalAndBudget.class);
+            Intent intent = new Intent(ProfileActivity.this, report.class);
             startActivity(intent);
         });
 
