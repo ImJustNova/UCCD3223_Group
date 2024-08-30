@@ -59,31 +59,26 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
-            Toast.makeText(HistoryActivity.this, "Home Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HistoryActivity.this, HomePageActivity.class);
             startActivity(intent);
         });
 
         btnAdd.setOnClickListener(v -> {
-            Toast.makeText(HistoryActivity.this, "Add Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HistoryActivity.this, AddTransactionActivity.class);
             startActivity(intent);
         });
 
         btnHistory.setOnClickListener(v -> {
-            Toast.makeText(HistoryActivity.this, "History Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HistoryActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
 
         btnReport.setOnClickListener(v -> {
-            Toast.makeText(HistoryActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HistoryActivity.this, report.class);
             startActivity(intent);
         });
 
         btnProfile.setOnClickListener(v -> {
-            Toast.makeText(HistoryActivity.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HistoryActivity.this, ProfileActivity.class);
             startActivity(intent);
         });

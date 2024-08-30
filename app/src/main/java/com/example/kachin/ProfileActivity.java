@@ -109,31 +109,26 @@ public class ProfileActivity extends AppCompatActivity {
     }
      private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Home Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
             startActivity(intent);
         });
 
         btnAdd.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Add Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, AddTransactionActivity.class);
             startActivity(intent);
         });
 
         btnHistory.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "History Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
 
         btnReport.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, report.class);
             startActivity(intent);
         });
 
         btnProfile.setOnClickListener(v -> {
-            Toast.makeText(ProfileActivity.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
             startActivity(intent);
         });

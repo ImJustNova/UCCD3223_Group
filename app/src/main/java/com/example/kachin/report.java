@@ -118,31 +118,26 @@ public class report extends AppCompatActivity {
 
     private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
-            Toast.makeText(report.this, "Home Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(report.this, HomePageActivity.class);
             startActivity(intent);
         });
 
         btnAdd.setOnClickListener(v -> {
-            Toast.makeText(report.this, "Add Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(report.this, AddTransactionActivity.class);
             startActivity(intent);
         });
 
         btnHistory.setOnClickListener(v -> {
-            Toast.makeText(report.this, "History Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(report.this, HistoryActivity.class);
             startActivity(intent);
         });
 
         btnReport.setOnClickListener(v -> {
-            Toast.makeText(report.this, "Report Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(report.this, report.class);
             startActivity(intent);
         });
 
         btnProfile.setOnClickListener(v -> {
-            Toast.makeText(report.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(report.this, ProfileActivity.class);
             startActivity(intent);
         });
