@@ -38,7 +38,7 @@ import java.util.Locale;
 
 
 
-public class HomePageActivity extends AppCompatActivity {
+public class HomePageActivity extends BaseActivity {
 
     private TextView monthView;
     private TextView textIncomeAmount;
