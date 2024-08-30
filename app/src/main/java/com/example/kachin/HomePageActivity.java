@@ -156,31 +156,26 @@ public class HomePageActivity extends AppCompatActivity {
 
     private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
-            Toast.makeText(HomePageActivity.this, "Home Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomePageActivity.this, HomePageActivity.class);
             startActivity(intent);
         });
 
         btnAdd.setOnClickListener(v -> {
-            Toast.makeText(HomePageActivity.this, "Add Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomePageActivity.this, AddTransactionActivity.class);
             startActivity(intent);
         });
 
         btnHistory.setOnClickListener(v -> {
-            Toast.makeText(HomePageActivity.this, "History Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomePageActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
 
         btnReport.setOnClickListener(v -> {
-            Toast.makeText(HomePageActivity.this, "Report Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomePageActivity.this, report.class);
             startActivity(intent);
         });
 
         btnProfile.setOnClickListener(v -> {
-            Toast.makeText(HomePageActivity.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
             startActivity(intent);
         });

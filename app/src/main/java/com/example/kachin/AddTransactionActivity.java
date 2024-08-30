@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -131,10 +132,10 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         // Change the background color of the root layout
         if (isExpense) {
-            rootLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));  // Set background to red
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.red));  // Set background to red
             loadCategoriesFromFirebase();
         } else {
-            rootLayout.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));  // Set background to green
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.green));  // Set background to green
             loadIncomeCategoriesFromFirebase();
         }
     }
@@ -286,6 +287,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                             // Update the budget or goal based on the type of transaction
                             updateBudgetOrGoal(category, amount, isExpense);
                             resetForm();
+                            showConfirmationDialog();
                         })
                         .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to save transaction", Toast.LENGTH_SHORT).show());
             } else {
@@ -353,6 +355,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(AddTransactionActivity.this, "Failed to update goal progress", Toast.LENGTH_SHORT).show();
@@ -392,5 +395,19 @@ public class AddTransactionActivity extends AppCompatActivity {
         textViewSelectedDate.setText("Select Date");
         selectedDate = null;
         fileUri = null;
+    }
+
+    private void showConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Transaction Saved")
+                .setMessage("Do you want to go to home page?")
+                .setPositiveButton("No", (dialog, which) -> {
+                    resetForm();
+                })
+                .setNegativeButton("Yes", (dialog, which) -> {
+                    goToHomePage();
+                })
+                .setCancelable(false)
+                .show();
     }
 }
