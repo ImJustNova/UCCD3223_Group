@@ -24,22 +24,26 @@
         android:text="@string/date"
         android:textSize="25sp" />
 
-    <LinearLayout
-        android:id="@+id/transactionContainer"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16sp"
-        android:orientation="vertical"
         android:layout_below="@+id/pageTitle">
 
-        <TextView
-            android:id="@+id/transactionText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/transactionContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/no_transaction"
-            android:textSize="25sp"
-            android:visibility="visible" />
+            android:layout_marginTop="16sp"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/transactionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="@string/no_transaction"
+                android:textSize="25sp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

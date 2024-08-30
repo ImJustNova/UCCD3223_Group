@@ -8,6 +8,7 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,7 +77,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
                         String date = snapshot.child("date").getValue(String.class);
                         String imageUrl = snapshot.child("imageUrl").getValue(String.class);
 
-                        addTransactionView(amount, category, description, date, imageUrl, "Expense");
+                        addTransactionView(amount, category, description, date, imageUrl, "expense");
                         transactionText.setVisibility(View.GONE);
                     }
                 }
@@ -101,7 +102,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
                         String date = snapshot.child("date").getValue(String.class);
                         String imageUrl = snapshot.child("imageUrl").getValue(String.class);
 
-                        addTransactionView(amount, category, null, date, imageUrl, "Income");
+                        addTransactionView(amount, category, null, date, imageUrl, "income");
                         transactionText.setVisibility(View.GONE);
                     }
                 }
@@ -121,15 +122,41 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         TextView categoryView = transactionView.findViewById(R.id.categoryView);
         TextView descriptionView = transactionView.findViewById(R.id.descriptionView);
         TextView dateView = transactionView.findViewById(R.id.dateView);
+        ImageView categoryIcon = transactionView.findViewById(R.id.transactionCategoryIcon);
 
         categoryView.setText(category);
         amountView.setText(String.format("RM %.2f", amount));
         dateView.setText(date);
 
-        if (type.equals("Expense")) {
+
+        if (type.equals("expense")) {
             amountView.setTextColor(getResources().getColor(R.color.red));
+            switch (category) {
+                case "Food and Drinks":
+                    categoryIcon.setImageResource(R.drawable.food_and_drinks_icon);
+                    break;
+                case "Transport":
+                    categoryIcon.setImageResource(R.drawable.transport_icon);
+                    break;
+                case "Groceries":
+                    categoryIcon.setImageResource(R.drawable.groceries_icon);
+                    break;
+                case "Entertainment":
+                    categoryIcon.setImageResource(R.drawable.entertainment_icon);
+                    break;
+                case "Rent":
+                    categoryIcon.setImageResource(R.drawable.rent_icon);
+                    break;
+                case "Others":
+                    categoryIcon.setImageResource(R.drawable.others_icon);
+                    break;
+                default:
+                    categoryIcon.setImageResource(R.drawable.profile); // Use a default icon for unknown categories
+                    break;
+            }
         } else {
             amountView.setTextColor(getResources().getColor(R.color.green));
+            categoryIcon.setImageResource(R.drawable.income);
         }
 
         if (description != null && !description.isEmpty()) {
