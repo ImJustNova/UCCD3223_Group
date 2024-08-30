@@ -156,7 +156,17 @@ public class DisplayHistoryActivity extends AppCompatActivity {
             }
         } else {
             amountView.setTextColor(getResources().getColor(R.color.green));
-            categoryIcon.setImageResource(R.drawable.income);
+            switch(category){
+                case "Salary":
+                    categoryIcon.setImageResource(R.drawable.income);
+                    break;
+                case "Savings":
+                    categoryIcon.setImageResource(R.drawable.wallet);
+                    break;
+                default:
+                    categoryIcon.setImageResource(R.drawable.coin);
+                    break;
+            }
         }
 
         if (description != null && !description.isEmpty()) {
