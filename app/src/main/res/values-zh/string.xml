@@ -20,6 +20,16 @@
         <item>否</item>
     </string-array>
 
+    <string name="welcome_text">欢迎!</string>
+    <string name="sign_out">登出</string>
+
+    <string name="app_n">你的应用名称</string>
+    <string name="text_view_title">赚取金钱 \n 轻松消费</string>
+    <string name="text_view_subtitle">成为你自己的理财经理 \n 让每分钱都物有所值</string>
+    <string name="terms_and_privacy">通过注册，您同意服务条款和隐私政策</string>
+    <string name="already_have_account">已经有账号了？</string>
+    <string name="hi">嗨!</string>
+
     <string name="reset_password">重置密码</string>
     <string name="new_password">新密码</string>
     <string name="confirm_password">确认新密码</string>

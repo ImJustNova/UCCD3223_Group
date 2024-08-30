@@ -8,7 +8,7 @@
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome!"
+        android:text="@string/welcome_text"
         android:textSize="24sp"
         android:textColor="@android:color/black"
         android:layout_centerHorizontal="true"
@@ -18,7 +18,7 @@
         android:id="@+id/signOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Out"
+        android:text="@string/sign_out"
         android:layout_below="@id/welcomeTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"/>

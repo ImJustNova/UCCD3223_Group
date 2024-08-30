@@ -19,6 +19,16 @@
         <item>ya</item>
         <item>tidak</item>
     </string-array>
+    <string name="welcome_text">Selamat Datang!</string>
+    <string name="sign_out">Log Keluar</string>
+
+    <string name="app_n">Nama Aplikasi Anda</string>
+    <string name="text_view_title">Dapatkan wang dan \n belanjakan wang dengan \n          mudah</string>
+    <string name="text_view_subtitle">Jadilah pengurus wang anda sendiri \n       dan buat setiap sen berbaloi</string>
+    <string name="terms_and_privacy">Dengan mendaftar, anda bersetuju dengan Terma Perkhidmatan dan Dasar Privasi</string>
+    <string name="already_have_account">Sudah mempunyai akaun?</string>
+    <string name="hi">Hi!</string>
+
     <string name="reset_password">Tetapkan Semula Kata Laluan</string>
     <string name="new_password">Kata Laluan Baru</string>
     <string name="confirm_password">Sahkan Kata Laluan Baru</string>

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -286,6 +287,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                             // Update the budget or goal based on the type of transaction
                             updateBudgetOrGoal(category, amount, isExpense);
                             resetForm();
+                            showConfirmationDialog();
                         })
                         .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to save transaction", Toast.LENGTH_SHORT).show());
             } else {
@@ -392,5 +394,18 @@ public class AddTransactionActivity extends AppCompatActivity {
         textViewSelectedDate.setText("Select Date");
         selectedDate = null;
         fileUri = null;
+    }
+    private void showConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Transaction Saved")
+                .setMessage("Do you want to add another transaction?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    resetForm();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    goToHomePage();
+                })
+                .setCancelable(false)
+                .show();
     }
 }
