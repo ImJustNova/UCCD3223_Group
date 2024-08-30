@@ -13,6 +13,18 @@
         <item><string name="monthly">monthly</string></item>
     </string-array>
 
+    <!--user dashboard-->
+    <string name="welcome_text">Welcome!</string>
+    <string name="sign_out">Sign Out</string>
+
+    <!--sign-up-->
+    <string name="app_n">Your App Name</string>
+    <string name="text_view_title">Earn money and \n spend money in \n          ease</string>
+    <string name="text_view_subtitle">Become your own money manager \n       and make every cent count</string>
+    <string name="terms_and_privacy">By signing up, you agree to the Terms of Service and Privacy Policy</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="hi">Hi!</string>
+
     <!--reset password-->
     <string name="reset_password">Reset Password</string>
     <string name="new_password">New Password</string>
