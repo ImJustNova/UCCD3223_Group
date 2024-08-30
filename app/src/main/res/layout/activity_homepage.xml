@@ -184,7 +184,6 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="4dp">
 
@@ -192,14 +191,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:padding="2dp">
 
                         <!-- RecyclerView to display the list of transactions -->
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/transactionRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
                             android:background="@android:color/white"
                             android:visibility="gone"/> <!-- Initially hidden -->
 
