@@ -25,7 +25,12 @@ public class SettingActivity extends BaseActivity {
 
         tvLanguage = findViewById(R.id.tv_language);
         tvHelp = findViewById(R.id.tv_help);
+        TextView tvCurrency = findViewById(R.id.tv_currency);
 
+        tvCurrency.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingActivity.this, CurrencyConverter.class);
+            startActivity(intent);
+        });
         tvLanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
