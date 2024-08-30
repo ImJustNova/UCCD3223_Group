@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,8 @@ public class DetailedTransaction extends AppCompatActivity {
         TextView description = findViewById(R.id.description);
         TextView noAttachment = findViewById(R.id.noAttachment);
         ImageView attachment = findViewById(R.id.attachment);
-        ImageButton backButton = findViewById(R.id.backButton);
+        LinearLayout transactionColor = findViewById(R.id.transactionColor);
+
 
         Intent intent = getIntent();
         double amountValue = intent.getDoubleExtra("amount", 0.0);  // Retrieving the double value
@@ -58,6 +60,7 @@ public class DetailedTransaction extends AppCompatActivity {
 
         if (descriptionText != null && !descriptionText.isEmpty()) {
             description.setText(descriptionText);
+            description.setTextColor(getResources().getColor(android.R.color.black));
         }
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -66,7 +69,10 @@ public class DetailedTransaction extends AppCompatActivity {
         } else {
             attachment.setVisibility(View.GONE);
         }
-
-        backButton.setOnClickListener(v -> finish());
+        if (transactionTypeText.equals("Income")) {
+            transactionColor.setBackground(R.drawable.half_screen_background);
+        } else {
+            transactionColor.setBackground(R.drawable.half_screen_background_red);
+        }
     }
 }
