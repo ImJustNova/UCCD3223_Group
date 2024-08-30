@@ -66,9 +66,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        // Return the size of the transaction list
-        return transactionList.size();
+        return Math.min(transactionList.size(), 3); // Limit to 4 items
     }
+
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
         TextView transactionCategory, transactionAmount, transactionDescription, transactionDate;
