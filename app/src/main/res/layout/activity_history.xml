@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8sp"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
         android:text="@string/history"
         android:textSize="25sp" />
 
