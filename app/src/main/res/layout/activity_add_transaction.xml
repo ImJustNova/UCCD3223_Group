@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="Expense"
+            android:text="@string/expenses"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -31,7 +31,7 @@
             android:layout_below="@id/tvTitle"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
-            android:text="How much?"
+            android:text="@string/amount_label"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -78,7 +78,7 @@
                     android:layout_below="@id/spinnerCategory"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
-                    android:hint="Enter Amount"
+                    android:hint="@string/enter_amount"
                     android:background="@drawable/rounded_background"
                     android:padding="8dp"
                     android:inputType="numberDecimal" />
@@ -90,7 +90,7 @@
                     android:layout_below="@id/editTextAmount"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
-                    android:hint="Description"
+                    android:hint="@string/description"
                     android:background="@drawable/rounded_background"
                     android:padding="8dp"
                     android:inputType="text" />
@@ -103,7 +103,7 @@
                     android:background="@drawable/rounded_background"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
-                    android:text="Add attachment"
+                    android:text="@string/add_attachment"
                      />
 
                 <Button
@@ -113,7 +113,7 @@
                     android:layout_below="@id/buttonAddAttachment"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
-                    android:text="Select Date"
+                    android:text="@string/select_date"
                     android:background="@drawable/rounded_background" />
 
                 <TextView
@@ -123,7 +123,7 @@
                     android:layout_below="@id/buttonSelectDate"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="20dp"
-                    android:text="No date selected"
+                    android:text="@string/no_date_selected"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
 
@@ -144,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/red_round_button_background"
-                        android:text="Expense"
+                        android:text="@string/expenses"
                         android:textColor="@android:color/white" />
 
                     <Button
@@ -154,7 +154,7 @@
                         android:layout_marginLeft="2dp"
                         android:layout_weight="1"
                         android:background="@drawable/round_button_background"
-                        android:text="Income"
+                        android:text="@string/income"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 
@@ -167,7 +167,7 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="120dp"
                     android:layout_marginLeft="20dp"
-                    android:text="Continue"
+                    android:text="@string/continue_button"
 
                     android:textColor="@android:color/white" />
 

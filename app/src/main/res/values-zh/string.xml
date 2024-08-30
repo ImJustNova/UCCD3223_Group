@@ -48,6 +48,7 @@
     <string name="sign_up">注册</string>
 
     <string name="check_transaction">检查交易</string>
+    <string name="history_for">历史</string>
 
     <string name="goals_budgets">目标与预算</string>
     <string name="no_goals">还没有目标！</string>
@@ -109,4 +110,5 @@
     <string name="password">密码</string>
     <string name="language">语言</string>
     <string name="help">帮助</string>
+    <string name="currency">货币换算</string>
 </resources>

@@ -47,6 +47,7 @@
     <string name="sign_up">Daftar</string>
 
     <string name="check_transaction">Semak Transaksi</string>
+    <string name="history_for">sejarah_untuk</string>
 
     <string name="goals_budgets">Matlamat &amp; Bajet</string>
     <string name="no_goals">Tiada matlamat lagi!</string>
@@ -107,4 +108,5 @@
     <string name="password">Kata Laluan</string>
     <string name="language">Bahasa</string>
     <string name="help">Bantuan</string>
+    <string name="currency">Penukaran Mata Wang</string>
 </resources>

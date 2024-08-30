@@ -71,7 +71,7 @@
                     android:id="@+id/subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Username"
+                    android:text="@string/name"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -122,7 +122,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logout"
+                android:text="@string/login_button"
                 android:layout_marginTop="6dp"
                 android:textColor="@color/black"
                 android:textSize="16sp" />

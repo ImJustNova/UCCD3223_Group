@@ -40,7 +40,7 @@
             android:id="@+id/tv_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Currency Conversion"
+            android:text="@string/currency"
             android:padding="16dp"
             android:textSize="20sp"
             android:textColor="@android:color/black"
@@ -62,8 +62,6 @@
             app:layout_constraintStart_toStartOf="parent"
             android:clickable="true"
             android:focusable="true"/>
-
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

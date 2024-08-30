@@ -47,6 +47,7 @@
 
     <!--history-->
     <string name="check_transaction">Check Transaction</string>
+    <string name="history_for">History for</string>
 
     <!--goal and budget-->
     <string name="goals_budgets">Goals &amp; Budgets</string>
@@ -110,10 +111,11 @@
     <string name="profile">Profile</string>
     <string name="change_picture">Change Picture</string>
     <string name="save">Save</string>
-    <string name="name">Name</string>
+    <string name="name">UserName</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="language">Language</string>
     <string name="help">Help</string>
+    <string name="currency">Currency Conversion</string>
 
 </resources>
