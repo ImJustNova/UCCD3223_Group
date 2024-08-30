@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class ExchangeRateService {
-    private static final String BASE_URL = "https://v6.exchangerate-api.com/v6/";
-    private static final String API_KEY = "f87de2c26e7fc58cbc425fb96bf99e5c";
+    private static final String BASE_URL = "https://api.freecurrencyapi.com/v1/";
+    private static final String API_KEY = "fca_live_VZtc7lMAyv3LUM1z0Yuj6A3FXXLJeKrd8tQ1kIUB";
     private OkHttpClient client;
     private Gson gson;
 
@@ -19,7 +19,7 @@ public class ExchangeRateService {
     }
 
     public ExchangeRateResponse getExchangeRate(String baseCurrency) throws IOException {
-        String url = BASE_URL + API_KEY + "/latest/" + baseCurrency;
+        String url = BASE_URL + "latest?apikey=" + API_KEY + "&base_currency=" + baseCurrency;
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -29,16 +29,11 @@ public class ExchangeRateService {
                 throw new IOException("Unexpected code " + response);
             }
 
-            // Parse the response to your custom response object
             return gson.fromJson(response.body().string(), ExchangeRateResponse.class);
         }
     }
 }
 
 class ExchangeRateResponse {
-    public String base_code;
-    public String time_last_update_utc;
-    public String time_next_update_utc;
-    public String time_eol_unix;
-    public Map<String, Double> conversion_rates;
+    public Map<String, Double> data;
 }
