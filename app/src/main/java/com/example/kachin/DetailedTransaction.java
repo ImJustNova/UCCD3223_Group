@@ -69,10 +69,10 @@ public class DetailedTransaction extends AppCompatActivity {
         } else {
             attachment.setVisibility(View.GONE);
         }
-        if (transactionTypeText.equals("Income")) {
-            transactionColor.setBackground(R.drawable.half_screen_background);
+        if (transactionTypeText.equals("income")) {
+            transactionColor.setBackgroundResource(R.drawable.half_screen_background);
         } else {
-            transactionColor.setBackground(R.drawable.half_screen_background_red);
+            transactionColor.setBackgroundResource(R.drawable.half_screen_background_red);
         }
     }
 }
