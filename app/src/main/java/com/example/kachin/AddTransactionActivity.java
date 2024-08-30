@@ -355,6 +355,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(AddTransactionActivity.this, "Failed to update goal progress", Toast.LENGTH_SHORT).show();
@@ -395,14 +396,15 @@ public class AddTransactionActivity extends AppCompatActivity {
         selectedDate = null;
         fileUri = null;
     }
+
     private void showConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Transaction Saved")
-                .setMessage("Do you want to add another transaction?")
-                .setPositiveButton("Yes", (dialog, which) -> {
+                .setMessage("Do you want to go to home page?")
+                .setPositiveButton("No", (dialog, which) -> {
                     resetForm();
                 })
-                .setNegativeButton("No", (dialog, which) -> {
+                .setNegativeButton("Yes", (dialog, which) -> {
                     goToHomePage();
                 })
                 .setCancelable(false)
