@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,19 +56,20 @@ public class ProfileActivity extends AppCompatActivity {
         loadProfileData();
         setupButtonListeners();
 
-        Button btnSettings = findViewById(R.id.btn_settings);
+        LinearLayout btnSettings = findViewById(R.id.btn_settings);
         btnSettings.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, SettingActivity.class);
             startActivity(intent);
         });
 
-        Button btnLogout = findViewById(R.id.btn_logout);
+        LinearLayout btnLogout = findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
             startActivity(intent);
             finish();
         });
+
 
         ImageView btnEditProfile = findViewById(R.id.btn_edit_profile);
         btnEditProfile.setOnClickListener(v -> {
