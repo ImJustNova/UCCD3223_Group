@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8sp"
         android:layout_centerHorizontal="true"
-        android:text="History"
+        android:text="@string/history"
         android:textSize="25sp" />
 
     <CalendarView
@@ -41,7 +41,7 @@
         android:layout_marginLeft="20sp"
         android:layout_marginRight="20sp"
         android:background="@drawable/submit_history_transaction"
-        android:text="Check Transaction"
+        android:text="@string/check_transaction"
         android:textColor="@android:color/black"
         android:padding="10dp" />
 
@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/home"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -100,7 +100,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:text="@string/add"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -125,7 +125,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -150,7 +150,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Report"
+                android:text="@string/report"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -167,7 +167,7 @@
             <ImageButton
                 android:id="@+id/btnProfile"
                 android:layout_width="50dp"
-                android:layout_height="40dp"
+                android:layout_height="46dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
                 android:src="@drawable/profileicon" />
@@ -175,7 +175,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>

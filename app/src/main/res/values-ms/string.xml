@@ -6,7 +6,7 @@
     <string name="empty_fields_error">Sila masukkan nama pengguna dan kata laluan.</string>
     <string name="terms_and_policy">Dengan mendaftar, anda bersetuju dengan Terma Perkhidmatan dan Polisi Privasi</string>
     <string name="default_web_client_id">ID_CLIENT_ANDA_DI_SINI</string>
-    <string name="google_sign_in">Daftar dengan Google</string>
+    <string name="google_sign">Daftar dengan Google</string>
     <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
 
     <string-array name="time_frame_array">
@@ -19,9 +19,82 @@
         <item>ya</item>
         <item>tidak</item>
     </string-array>
+    <string name="reset_password">Tetapkan Semula Kata Laluan</string>
+    <string name="new_password">Kata Laluan Baru</string>
+    <string name="confirm_password">Sahkan Kata Laluan Baru</string>
 
-    <string name="language_label">Bahasa</string>
-    <string name="help_label">Bantuan</string>
-    <string name="select_language">Pilih Bahasa</string>
-    <string name="help_message">Akan datang</string>
+    <string name="financial_report">Laporan Kewangan</string>
+    <string name="month">Bulan</string>
+
+    <string name="login_title">Log masuk ke Kachin</string>
+    <string name="google_sign_in">Log masuk dengan Google</string>
+    <string name="or_with">atau dengan</string>
+    <string name="email_hint">E-mel</string>
+    <string name="password_hint">Kata Laluan</string>
+    <string name="remember_me">Ingat saya</string>
+    <string name="login_button">Log masuk</string>
+    <string name="no_account">Belum ada akaun?</string>
+    <string name="sign_up">Daftar</string>
+
+    <string name="check_transaction">Semak Transaksi</string>
+
+    <string name="goals_budgets">Matlamat &amp; Bajet</string>
+    <string name="no_goals">Tiada matlamat lagi!</string>
+    <string name="add_budget">Tambah Bajet</string>
+    <string name="no_budget">Tiada had bajet lagi!</string>
+
+    <string name="forgot_password">Lupa Kata Laluan</string>
+    <string name="forgot_password_text">Sila berikan kami emel anda dan kami akan menghantar arahan untuk menukar kata laluan anda</string>
+    <string name="email_text">Emel</string>
+
+    <string name="date">Tarikh</string>
+    <string name="no_transaction">Tiada transaksi hari ini!</string>
+
+    <string name="back">Kembali</string>
+    <string name="detail_transaction">Butiran Transaksi</string>
+    <string name="type">Jenis</string>
+    <string name="category">Kategori</string>
+    <string name="shopping">Membeli-belah</string>
+    <string name="no_description">Tiada Penerangan</string>
+    <string name="attachment">Lampiran</string>
+    <string name="no_image_found">Tiada imej ditemui</string>
+
+    <string name="cancel">Batal</string>
+    <string name="title">Tajuk</string>
+    <string name="goal_name">Nama Sasaran</string>
+    <string name="target_amount">Jumlah Sasaran</string>
+    <string name="budget_limit">Had Bajet</string>
+    <string name="add_goal">Tambah Sasaran</string>
+
+    <string name="amount_label">Berapa?</string>
+    <string name="enter_amount">Masukkan Jumlah</string>
+    <string name="description">Penerangan</string>
+    <string name="add_attachment">Tambah lampiran</string>
+    <string name="select_date">Pilih Tarikh</string>
+    <string name="no_date_selected">Tiada tarikh dipilih</string>
+    <string name="continue_button">Teruskan</string>
+
+    <string name="see_all">Lihat Semua</string>
+    <string name="goal_progress">Kemajuan Matlamat</string>
+    <string name="recent_transactions">Transaksi Terkini</string>
+    <string name="no_records">Tiada rekod</string>
+    <string name="income">Pendapatan</string>
+    <string name="expenses">Perbelanjaan</string>
+    <string name="tips">Petua:\nMenetapkan matlamat kewangan yang jelas membantu anda kekal fokus, bermotivasi, dan berdisiplin untuk mencapai kejayaan kewangan.</string>
+    <string name="no_goals_yet">Belum ada matlamat!</string>
+
+    <string name="settings">Tetapan</string>
+    <string name="logout">Log keluar</string>
+    <string name="home">Laman Utama</string>
+    <string name="add">Tambah</string>
+    <string name="history">Sejarah</string>
+    <string name="report">Laporan</string>
+    <string name="profile">Profil</string>
+    <string name="change_picture">Tukar Gambar</string>
+    <string name="save">Simpan</string>
+    <string name="name">Nama</string>
+    <string name="email">E-mel</string>
+    <string name="password">Kata Laluan</string>
+    <string name="language">Bahasa</string>
+    <string name="help">Bantuan</string>
 </resources>

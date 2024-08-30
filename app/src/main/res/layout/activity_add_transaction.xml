@@ -65,11 +65,10 @@
                 <Spinner
                     android:id="@+id/spinnerCategory"
                     android:layout_width="370dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/rounded_background"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:layout_marginLeft="20dp"
-                     />
+                    android:background="@android:drawable/edit_text" />
 
                 <EditText
                     android:id="@+id/editTextAmount"
@@ -79,7 +78,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
                     android:hint="Enter Amount"
-                    android:background="@drawable/rounded_background"
+                    android:background="@android:drawable/edit_text"
                     android:padding="8dp"
                     android:inputType="numberDecimal" />
 
@@ -91,7 +90,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
                     android:hint="Description"
-                    android:background="@drawable/rounded_background"
+                    android:background="@android:drawable/edit_text"
                     android:padding="8dp"
                     android:inputType="text" />
 
@@ -100,11 +99,10 @@
                     android:layout_width="370dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/editTextDescription"
-                    android:background="@drawable/rounded_background"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
                     android:text="Add attachment"
-                     />
+                    android:background="@android:drawable/edit_text" />
 
                 <Button
                     android:id="@+id/buttonSelectDate"
@@ -114,7 +112,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="20dp"
                     android:text="Select Date"
-                    android:background="@drawable/rounded_background" />
+                    android:background="@android:drawable/edit_text" />
 
                 <TextView
                     android:id="@+id/textViewSelectedDate"
@@ -140,10 +138,9 @@
                     <Button
                         android:id="@+id/btnExpense"
                         android:layout_width="0dp"
-                        android:layout_marginRight="2dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/red_round_button_background"
+                        android:background="@android:color/holo_red_dark"
                         android:text="Expense"
                         android:textColor="@android:color/white" />
 
@@ -151,9 +148,8 @@
                         android:id="@+id/btnIncome"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
                         android:layout_weight="1"
-                        android:background="@drawable/round_button_background"
+                        android:background="@color/green"
                         android:text="Income"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
@@ -163,12 +159,11 @@
                     android:layout_width="370dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/linearLayoutExpenseIncome"
-                    android:background="@drawable/round_button_background"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="120dp"
                     android:layout_marginLeft="20dp"
                     android:text="Continue"
-
+                    android:background="@color/green"
                     android:textColor="@android:color/white" />
 
 

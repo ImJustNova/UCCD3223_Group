@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="13sp"
         android:layout_centerHorizontal="true"
-        android:text="Financial Report"
+        android:text="@string/financial_report"
         android:textStyle="bold"
         android:textSize="18sp"/>
 
@@ -33,7 +33,7 @@
         android:layout_centerHorizontal="true"
         android:padding="10dp"
         android:textStyle="bold"
-        android:text="Month"
+        android:text="@string/month"
         android:textSize="25sp"/>
 
     <com.github.mikephil.charting.charts.PieChart
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_background_expense"
-            android:text="Expense"
+            android:text="@string/expenses"
             android:textColor="@android:color/black"
             android:padding="10dp" />
 
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_background_income"
-            android:text="Income"
+            android:text="@string/income"
             android:textColor="@android:color/black"
             android:padding="10dp" />
     </LinearLayout>
@@ -124,7 +124,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/home"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -149,9 +149,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
-                android:textSize="12sp"
-                android:textColor="#404040" />
+                android:text="@string/add"
+                android:textColor="#404040"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -174,7 +174,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -199,7 +199,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Report"
+                android:text="@string/report"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -224,7 +224,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>

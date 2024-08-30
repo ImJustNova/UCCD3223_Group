@@ -24,7 +24,7 @@
             android:id="@+id/btn_change_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change Picture"
+            android:text="@string/change_picture"
             android:layout_gravity="center"
             android:paddingTop="8dp"/>
 
@@ -32,21 +32,21 @@
             android:id="@+id/edit_name"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="Name"
+            android:hint="@string/name"
             android:paddingTop="16dp" />
 
         <EditText
             android:id="@+id/edit_email"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="Email"
+            android:hint="@string/email"
             android:paddingTop="8dp" />
 
         <EditText
             android:id="@+id/edit_password"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:hint="Password"
+            android:layout_height="57dp"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:paddingTop="8dp" />
 
@@ -54,7 +54,7 @@
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="@string/save"
             android:layout_gravity="center"
             android:paddingTop="16dp"/>
 

@@ -5,7 +5,7 @@
     <string name="empty_fields_error">Please enter both username and password.</string>
     <string name="terms_and_policy">By signing up, you agree to the Terms of Service and Privacy Policy</string>
     <string name="default_web_client_id">YOUR_CLIENT_ID_HERE</string>
-    <string name="google_sign_in">Sign Up with Google</string>
+    <string name="google_sign">Sign Up with Google</string>
     <string name="client_id">64636843229-93si3uebfcqk39jumtvqqfmbsvaf9s88.apps.googleusercontent.com</string>
 
     <string-array name="time_frame">
@@ -13,9 +13,95 @@
         <item><string name="monthly">monthly</string></item>
     </string-array>
 
-    <string name="language_label">Language</string>
-    <string name="help_label">Help</string>
-    <string name="select_language">Select Language</string>
-    <string name="help_message">Coming soon</string>
+    <!--reset password-->
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm New Password</string>
+
+    <!--report-->
+    <string name="financial_report">Financial Report</string>
+    <string name="month">Month</string>
+
+    <!--main-->
+    <string name="login_title">Login into Kachin</string>
+    <string name="google_sign_in">Sign in with Google</string>
+    <string name="or_with">or with</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="login_button">Login</string>
+    <string name="no_account">Don’t have an account yet?</string>
+    <string name="sign_up">Sign Up</string>
+
+    <!--history-->
+    <string name="check_transaction">Check Transaction</string>
+
+    <!--goal and budget-->
+    <string name="goals_budgets">Goals &amp; Budgets</string>
+    <string name="no_goals">There are no goals yet!</string>
+    <string name="add_budget">Add Budget</string>
+    <string name="no_budget">There are no budget limit yet!</string>
+
+    <!--forgot password-->
+    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password_text">Please give us your email and we will send you instructions on changing your password</string>
+    <string name="email_text">Email</string>
+
+    <!--display history-->
+    <string name="date">Date</string>
+    <string name="no_transaction">No transaction today!</string>
+
+    <!--detailed transaction-->
+    <string name="back">Back</string>
+    <string name="detail_transaction">Detail Transaction</string>
+    <string name="type">Type</string>
+    <string name="category">Category</string>
+    <string name="shopping">Shopping</string>
+    <string name="no_description">No Description</string>
+    <string name="attachment">Attachment</string>
+    <string name="no_image_found">No image found</string>
+
+    <!--add goal and budget-->
+    <string name="cancel">Cancel</string>
+    <string name="title">Title</string>
+    <string name="goal_name">Goal Name</string>
+    <string name="target_amount">Target Amount</string>
+    <string name="budget_limit">Budget Limit</string>
+    <string name="add_goal">Add Goal</string>
+
+    <!--add transaction-->
+    <string name="amount_label">How much?</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="description">Description</string>
+    <string name="add_attachment">Add attachment</string>
+    <string name="select_date">Select Date</string>
+    <string name="no_date_selected">No date selected</string>
+    <string name="continue_button">Continue</string>
+
+    <!--home-->
+    <string name="see_all">See All</string>
+    <string name="goal_progress">Goal Progress</string>
+    <string name="recent_transactions">Recent Transactions</string>
+    <string name="no_records">There is no record</string>
+    <string name="income">Income</string>
+    <string name="expenses">Expenses</string>
+    <string name="tips">Tips:\nSetting a clear money goal helps you stay focused, motivated, and disciplined in achieving financial success.</string>
+    <string name="no_goals_yet">There are no goals yet!</string>
+
+    <!--profile-->
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="add">Add</string>
+    <string name="history">History</string>
+    <string name="report">Report</string>
+    <string name="profile">Profile</string>
+    <string name="change_picture">Change Picture</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="language">Language</string>
+    <string name="help">Help</string>
 
 </resources>

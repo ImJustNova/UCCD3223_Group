@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8sp"
         android:layout_centerHorizontal="true"
-        android:text="Goals &amp; Budgets"
+        android:text="@string/goals_budgets"
         android:textSize="25sp" />
 
     <ScrollView
@@ -51,7 +51,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Goal Progress"
+                    android:text="@string/goal_progress"
                     android:textSize="18sp"
                     android:textColor="@color/black"
                     android:layout_weight="1"
@@ -83,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="There are no goals yet!"
+                    android:text="@string/no_goals"
                     android:textSize="25sp"
                     android:visibility="visible" />
 
@@ -117,7 +117,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Budget Limit"
+                    android:text="@string/budget_limit"
                     android:textSize="18sp"
                     android:textColor="@color/black"
                     android:layout_weight="1"
@@ -149,7 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="There are no budget limit yet!"
+                    android:text="@string/no_budget"
                     android:textSize="25sp"
                     android:visibility="visible" />
 
@@ -188,7 +188,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/home"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -213,7 +213,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:text="@string/add"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -238,7 +238,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:textColor="#404040"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -263,7 +263,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Report"
+                android:text="@string/report"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
@@ -288,7 +288,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textSize="12sp"
                 android:textColor="#404040" />
         </LinearLayout>
