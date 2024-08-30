@@ -218,6 +218,7 @@ public class report extends AppCompatActivity {
                     dataSet.setValueTextSize(16f);
 
                     dataSet.setValueFormatter(new PercentFormatter(pieChart));
+                    dataSet.setDrawValues(false);
 
                     PieData data = new PieData(dataSet);
                     pieChart.setData(data);
