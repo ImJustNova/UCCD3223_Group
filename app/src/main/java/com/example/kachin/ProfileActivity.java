@@ -90,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
                         Glide.with(ProfileActivity.this)
                                 .load(profileImageUrl)
+                                .circleCrop()
                                 .into(profileImage);
                     } else {
                         profileImage.setImageResource(R.drawable.profile);
