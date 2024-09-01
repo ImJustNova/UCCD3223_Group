@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                     editor.apply();
                                 }
                                 // Navigate to the next activity
-                                startActivity(new Intent(MainActivity.this, UserDashBoardActivity.class));
+                                startActivity(new Intent(MainActivity.this, HomePageActivity.class));
                                 finish();
                             } else {
                                 Toast.makeText(MainActivity.this, "Login failed. Please check your credentials.", Toast.LENGTH_SHORT).show();
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success
-                        startActivity(new Intent(MainActivity.this, UserDashBoardActivity.class));
+                        startActivity(new Intent(MainActivity.this, HomePageActivity.class));
                         finish();
                     } else {
                         // Sign in failed
