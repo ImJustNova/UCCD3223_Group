@@ -1,6 +1,9 @@
 package com.example.kachin;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -29,8 +32,9 @@ public class CurrencyConverter extends AppCompatActivity {
 
     private ListView currencyListView;
     private DatabaseReference database;
-    private String uid;
+    private String uid, currentCurrency;
 
+    // List of currencies that the user can select
     private final List<String> currencies = Arrays.asList("USD", "SGD", "MYR", "EUR", "GBP");
 
     @Override
@@ -40,6 +44,11 @@ public class CurrencyConverter extends AppCompatActivity {
 
         currencyListView = findViewById(R.id.currencyListView);
         ImageButton backButton = findViewById(R.id.backButton);
+
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        currentCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        String currencyUnit = getCurrencyUnit(currentCurrency, currencyUnits);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -54,6 +63,7 @@ public class CurrencyConverter extends AppCompatActivity {
 
         currencyListView.setOnItemClickListener((parent, view, position, id) -> {
             String selectedCurrency = currencies.get(position);
+            saveSelectedCurrency(selectedCurrency);
             new CurrencyConversionTask("MYR", selectedCurrency).execute();
             Toast.makeText(this, "The selected currency is " + selectedCurrency, Toast.LENGTH_SHORT).show();
             finish();
@@ -73,7 +83,20 @@ public class CurrencyConverter extends AppCompatActivity {
         }
     }
 
-    private class CurrencyConversionTask extends AsyncTask<Void, Void, Double> {
+    private double getBaseRate(String targetCurrency) throws IOException {
+        ExchangeRateService exchangeRateService = new ExchangeRateService();
+        ExchangeRateResponse exchangeRateResponse = exchangeRateService.getExchangeRate(currentCurrency);
+
+        if (exchangeRateResponse.data.containsKey(targetCurrency)) {
+            return exchangeRateResponse.data.get(targetCurrency);
+        } else {
+            throw new IllegalArgumentException("Target currency not found: " + targetCurrency);
+        }
+    }
+
+
+
+    private class CurrencyConversionTask extends AsyncTask<Void, Void, Double[]> {
         private String baseCurrency;
         private String targetCurrency;
 
@@ -83,47 +106,65 @@ public class CurrencyConverter extends AppCompatActivity {
         }
 
         @Override
-        protected Double doInBackground(Void... voids) {
+        protected Double[] doInBackground(Void... voids) {
             try {
-                // Get conversion rate in the background
-                return getConversionRate(baseCurrency, targetCurrency);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            } catch (IllegalArgumentException e) {
+                // Get conversion rate and base rate in the background
+                double conversionRate = getConversionRate(baseCurrency, targetCurrency);
+                double baseRate = getBaseRate(targetCurrency);
+                return new Double[]{conversionRate, baseRate};
+            } catch (IOException | IllegalArgumentException e) {
                 e.printStackTrace();
                 return null;
             }
         }
 
         @Override
-        protected void onPostExecute(Double conversionRate) {
-            if (conversionRate != null) {
-                updateDatabaseWithConvertedValues(uid, conversionRate);
+        protected void onPostExecute(Double[] rates) {
+            if (rates != null) {
+                double conversionRate = rates[0];
+                double baseRate = rates[1];
+                updateDatabaseWithConvertedValues(uid, conversionRate, baseRate);
             } else {
                 Toast.makeText(CurrencyConverter.this, "Error getting conversion rate", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void updateDatabaseWithConvertedValues(String uid, double conversionRate) {
+    private void updateDatabaseWithConvertedValues(String uid, double conversionRate, double baseRate) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
+        // Update Budgets
         database.child("budget").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    double budgetLimit = snapshot.child("budgetLimit").getValue(Double.class);
-                    double currentBudget = snapshot.child("currentBudget").getValue(Double.class);
-                    double convertedBudgetLimit = budgetLimit * conversionRate;
-                    double convertedCurrentBudget = currentBudget * conversionRate;
+                    Double convertedCurrentBudget = snapshot.child("convertedCurrentBudget").getValue(Double.class);
+                    Double convertedBudgetLimit = snapshot.child("convertedBudgetLimit").getValue(Double.class);
 
-                    // Format the values to 2 decimal places
-                    convertedBudgetLimit = Double.parseDouble(decimalFormat.format(convertedBudgetLimit));
-                    convertedCurrentBudget = Double.parseDouble(decimalFormat.format(convertedCurrentBudget));
+                    if (convertedCurrentBudget != null && convertedBudgetLimit != null) {
+                        if (!snapshot.hasChild("currentBudget") || !snapshot.hasChild("budgetLimit")) {
+                            double currentBudget = convertedCurrentBudget * baseRate;
+                            double budgetLimit = convertedBudgetLimit * baseRate;
+                            currentBudget = Double.parseDouble(decimalFormat.format(currentBudget));
+                            budgetLimit = Double.parseDouble(decimalFormat.format(budgetLimit));
+                            snapshot.getRef().child("currentBudget").setValue(currentBudget);
+                            snapshot.getRef().child("budgetLimit").setValue(budgetLimit);
+                        }
 
-                    snapshot.getRef().child("convertedBudgetLimit").setValue(convertedBudgetLimit);
-                    snapshot.getRef().child("convertedCurrentBudget").setValue(convertedCurrentBudget);
+                        Double currentBudget = snapshot.child("currentBudget").getValue(Double.class);
+                        Double budgetLimit = snapshot.child("budgetLimit").getValue(Double.class);
+
+                        if (currentBudget != null && budgetLimit != null) {
+                            double newConvertedCurrentBudget = currentBudget * conversionRate;
+                            double newConvertedBudgetLimit = budgetLimit * conversionRate;
+                            newConvertedCurrentBudget = Double.parseDouble(decimalFormat.format(newConvertedCurrentBudget));
+                            newConvertedBudgetLimit = Double.parseDouble(decimalFormat.format(newConvertedBudgetLimit));
+                            snapshot.getRef().child("convertedCurrentBudget").setValue(newConvertedCurrentBudget);
+                            snapshot.getRef().child("convertedBudgetLimit").setValue(newConvertedBudgetLimit);
+                        }
+                    } else {
+                        Toast.makeText(CurrencyConverter.this, "Converted budget values are missing for some budgets", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -138,17 +179,33 @@ public class CurrencyConverter extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
-                    double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
-                    double convertedCurrentAmount = currentAmount * conversionRate;
-                    double convertedTargetAmount = targetAmount * conversionRate;
+                    Double convertedCurrentAmount = snapshot.child("convertedCurrentAmount").getValue(Double.class);
+                    Double convertedTargetAmount = snapshot.child("convertedTargetAmount").getValue(Double.class);
 
-                    // Format the values to 2 decimal places
-                    convertedCurrentAmount = Double.parseDouble(decimalFormat.format(convertedCurrentAmount));
-                    convertedTargetAmount = Double.parseDouble(decimalFormat.format(convertedTargetAmount));
+                    if (convertedCurrentAmount != null && convertedTargetAmount != null) {
+                        if (!snapshot.hasChild("currentAmount") || !snapshot.hasChild("targetAmount")) {
+                            double currentAmount = convertedCurrentAmount * baseRate;
+                            double targetAmount = convertedTargetAmount * baseRate;
+                            currentAmount = Double.parseDouble(decimalFormat.format(currentAmount));
+                            targetAmount = Double.parseDouble(decimalFormat.format(targetAmount));
+                            snapshot.getRef().child("currentAmount").setValue(currentAmount);
+                            snapshot.getRef().child("targetAmount").setValue(targetAmount);
+                        }
 
-                    snapshot.getRef().child("convertedCurrentAmount").setValue(convertedCurrentAmount);
-                    snapshot.getRef().child("convertedTargetAmount").setValue(convertedTargetAmount);
+                        Double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
+                        Double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
+
+                        if (currentAmount != null && targetAmount != null) {
+                            double newConvertedCurrentAmount = currentAmount * conversionRate;
+                            double newConvertedTargetAmount = targetAmount * conversionRate;
+                            newConvertedCurrentAmount = Double.parseDouble(decimalFormat.format(newConvertedCurrentAmount));
+                            newConvertedTargetAmount = Double.parseDouble(decimalFormat.format(newConvertedTargetAmount));
+                            snapshot.getRef().child("convertedCurrentAmount").setValue(newConvertedCurrentAmount);
+                            snapshot.getRef().child("convertedTargetAmount").setValue(newConvertedTargetAmount);
+                        }
+                    } else {
+                        Toast.makeText(CurrencyConverter.this, "Converted values are missing for some goals", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -163,13 +220,25 @@ public class CurrencyConverter extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    double amount = snapshot.child("amount").getValue(Double.class);
-                    double convertedAmount = amount * conversionRate;
+                    Double convertedAmount = snapshot.child("convertedAmount").getValue(Double.class);
 
-                    // Format the value to 2 decimal places
-                    convertedAmount = Double.parseDouble(decimalFormat.format(convertedAmount));
+                    if (convertedAmount != null) {
+                        if (!snapshot.hasChild("amount")) {
+                            double amount = convertedAmount * baseRate;
+                            Toast.makeText(CurrencyConverter.this, "baseRate is " + baseRate, Toast.LENGTH_SHORT).show();
+                            amount = Double.parseDouble(decimalFormat.format(amount));
+                            snapshot.getRef().child("amount").setValue(amount);
+                        }
 
-                    snapshot.getRef().child("convertedAmount").setValue(convertedAmount);
+                        Double amount = snapshot.child("amount").getValue(Double.class);
+                        if (amount != null) {
+                            double newConvertedAmount = amount * conversionRate;
+                            newConvertedAmount = Double.parseDouble(decimalFormat.format(newConvertedAmount));
+                            snapshot.getRef().child("convertedAmount").setValue(newConvertedAmount);
+                        }
+                    } else {
+                        Toast.makeText(CurrencyConverter.this, "Converted amount is missing for some expenses", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -184,13 +253,24 @@ public class CurrencyConverter extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    double amount = snapshot.child("amount").getValue(Double.class);
-                    double convertedIncome = amount * conversionRate;
+                    Double convertedIncome = snapshot.child("convertedIncome").getValue(Double.class);
 
-                    // Format the value to 2 decimal places
-                    convertedIncome = Double.parseDouble(decimalFormat.format(convertedIncome));
+                    if (convertedIncome != null) {
+                        if (!snapshot.hasChild("amount")) {
+                            double amount = convertedIncome * baseRate;
+                            amount = Double.parseDouble(decimalFormat.format(amount));
+                            snapshot.getRef().child("amount").setValue(amount);
+                        }
 
-                    snapshot.getRef().child("convertedIncome").setValue(convertedIncome);
+                        Double amount = snapshot.child("amount").getValue(Double.class);
+                        if (amount != null) {
+                            double newConvertedIncome = amount * conversionRate;
+                            newConvertedIncome = Double.parseDouble(decimalFormat.format(newConvertedIncome));
+                            snapshot.getRef().child("convertedIncome").setValue(newConvertedIncome);
+                        }
+                    } else {
+                        Toast.makeText(CurrencyConverter.this, "Converted income is missing for some incomes", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -199,5 +279,21 @@ public class CurrencyConverter extends AppCompatActivity {
                 Toast.makeText(CurrencyConverter.this, "Currency Conversion Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void saveSelectedCurrency(String currency) {
+        getSharedPreferences("CurrencyPrefs", MODE_PRIVATE)
+                .edit()
+                .putString("selectedCurrency", currency)
+                .apply();
+    }
+
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
     }
 }

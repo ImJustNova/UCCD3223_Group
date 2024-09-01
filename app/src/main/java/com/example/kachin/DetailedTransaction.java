@@ -3,7 +3,9 @@ package com.example.kachin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class DetailedTransaction extends AppCompatActivity {
 
+    private String currencyUnit;
+
     @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,10 @@ public class DetailedTransaction extends AppCompatActivity {
         ImageView attachment = findViewById(R.id.attachment);
         LinearLayout transactionColor = findViewById(R.id.transactionColor);
 
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         Intent intent = getIntent();
         double amountValue = intent.getDoubleExtra("amount", 0.0);  // Retrieving the double value
@@ -53,7 +61,7 @@ public class DetailedTransaction extends AppCompatActivity {
             finish();
         }
 
-        amount.setText(String.format("RM %.2f", amountValue));  // Formatting the double value as String
+        amount.setText(String.format(currencyUnit + " %.2f", amountValue));  // Formatting the double value as String
         date.setText(dateText);
         transactionType.setText(transactionTypeText);
         category.setText(categoryText);
@@ -74,5 +82,14 @@ public class DetailedTransaction extends AppCompatActivity {
         } else {
             transactionColor.setBackgroundResource(R.drawable.half_screen_background_red);
         }
+    }
+
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
     }
 }

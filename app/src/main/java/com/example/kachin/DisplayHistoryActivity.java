@@ -2,7 +2,9 @@ package com.example.kachin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -26,7 +28,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
     private ImageButton backButton;
     private TextView pageTitle, transactionText;
     private DatabaseReference database;
-    private String uid;
+    private String uid, currencyUnit;
     private LinearLayout transactionContainer;
 
     @Override
@@ -41,6 +43,11 @@ public class DisplayHistoryActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String selectedDate = intent.getStringExtra("selectedDate");
+
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -71,7 +78,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String transactionDate = snapshot.child("date").getValue(String.class);
                     if (transactionDate != null && transactionDate.equals(date)) {
-                        double amount = snapshot.child("amount").getValue(Double.class);
+                        double amount = snapshot.child("convertedAmount").getValue(Double.class);
                         String category = snapshot.child("category").getValue(String.class);
                         String description = snapshot.child("description").getValue(String.class);
                         String date = snapshot.child("date").getValue(String.class);
@@ -97,7 +104,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String transactionDate = snapshot.child("date").getValue(String.class);
                     if (transactionDate != null && transactionDate.equals(date)) {
-                        double amount = snapshot.child("amount").getValue(Double.class);
+                        double amount = snapshot.child("convertedIncome").getValue(Double.class);
                         String category = snapshot.child("category").getValue(String.class);
                         String date = snapshot.child("date").getValue(String.class);
                         String imageUrl = snapshot.child("imageUrl").getValue(String.class);
@@ -125,7 +132,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         ImageView categoryIcon = transactionView.findViewById(R.id.transactionCategoryIcon);
 
         categoryView.setText(category);
-        amountView.setText(String.format("RM %.2f", amount));
+        amountView.setText(String.format(currencyUnit + " %.2f", amount));
         dateView.setText(date);
 
         if (type.equals("expense")) {
@@ -188,4 +195,12 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         });
     }
 
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.kachin;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,19 @@ import java.util.List;
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
     private List<FinancialTransaction> transactionList;
+    private String currencyUnit;
+    private Context context;
 
     // Constructor for TransactionAdapter
-    public TransactionAdapter(List<FinancialTransaction> transactionList) {
+    public TransactionAdapter(Context context, List<FinancialTransaction> transactionList) {
+        this.context = context;
         this.transactionList = transactionList;
+
+        // Initialize currency preferences
+        SharedPreferences currencyPref = context.getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = context.getResources().getStringArray(R.array.currency_units);
+        this.currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
     }
 
     @NonNull
@@ -32,9 +43,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         FinancialTransaction transaction = transactionList.get(position);
 
-        // Set the transaction details
+        // Set the transaction details with the selected currency unit
         holder.transactionCategory.setText(transaction.getCategory());
-        holder.transactionAmount.setText(String.format("RM %.2f", transaction.getAmount()));
+        holder.transactionAmount.setText(String.format(currencyUnit + " %.2f", transaction.getAmount()));
         holder.transactionDescription.setText(transaction.getDescription());
         holder.transactionDate.setText(transaction.getDate());
 
@@ -66,9 +77,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        return Math.min(transactionList.size(), 3); // Limit to 4 items
+        return Math.min(transactionList.size(), 3); // Limit to 3 items
     }
-
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
         TextView transactionCategory, transactionAmount, transactionDescription, transactionDate;
@@ -83,5 +93,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             transactionDate = itemView.findViewById(R.id.transactionDate);
             transactionCategoryIcon = itemView.findViewById(R.id.transactionCategoryIcon);
         }
+    }
+
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
     }
 }

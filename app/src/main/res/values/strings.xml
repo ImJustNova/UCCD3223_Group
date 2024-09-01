@@ -13,6 +13,14 @@
         <item><string name="monthly">monthly</string></item>
     </string-array>
 
+    <string-array name="currency_units">
+        <item>USD - $</item>
+        <item>SGD - S$</item>
+        <item>MYR - RM</item>
+        <item>EUR - €</item>
+        <item>GBP - £</item>
+    </string-array>
+
     <!--user dashboard-->
     <string name="welcome_text">Welcome!</string>
     <string name="sign_out">Sign Out</string>

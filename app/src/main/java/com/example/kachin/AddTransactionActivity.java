@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.text.Editable;
@@ -36,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -49,7 +52,8 @@ public class AddTransactionActivity extends AppCompatActivity {
     private EditText editTextAmount, editTextDescription;
     private Spinner spinnerCategory;
     private Button buttonSelectDate, buttonContinue, btnExpense, btnIncome, buttonAddAttachment;
-    private String selectedDate, uid;
+    private String selectedDate, uid, selectedCurrency, currencyUnit;
+    private double baseAmount;
     private boolean isExpense = true;
     private Uri fileUri;
     private DatabaseReference databaseReference;
@@ -59,6 +63,11 @@ public class AddTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
+
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -81,7 +90,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tvAmount.setText("RM" + s.toString());
+                tvAmount.setText(currencyUnit + " " + s.toString());
             }
 
             @Override
@@ -92,7 +101,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         btnExpense.setOnClickListener(v -> updateUIForTransactionType(true));
         btnIncome.setOnClickListener(v -> updateUIForTransactionType(false));
         buttonSelectDate.setOnClickListener(v -> openDatePicker());
-        buttonContinue.setOnClickListener(v -> saveTransaction());
+        buttonContinue.setOnClickListener(v -> {
+            try {
+                saveTransaction();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         buttonAddAttachment.setOnClickListener(v -> openFilePicker());
     }
 
@@ -224,7 +239,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private void saveTransaction() {
+    private void saveTransaction() throws IOException {
         String amountText = editTextAmount.getText().toString();
         String category = spinnerCategory.getSelectedItem().toString();
         String description = editTextDescription.getText().toString();
@@ -244,10 +259,14 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         Map<String, Object> transaction = new HashMap<>();
         transaction.put("uid", uid);
-        transaction.put("amount", amount);
         transaction.put("category", category);
         transaction.put("description", description);
         transaction.put("date", selectedDate);
+        if (isExpense) {
+            transaction.put("convertedAmount", amount);
+        } else {
+            transaction.put("convertedIncome", amount);
+        }
 
         DatabaseReference reference = isExpense ? databaseReference.child("expense") : databaseReference.child("income");
 
@@ -284,7 +303,6 @@ public class AddTransactionActivity extends AppCompatActivity {
                 reference.child(key).setValue(transaction)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(AddTransactionActivity.this, "Transaction saved", Toast.LENGTH_SHORT).show();
-                            // Update the budget or goal based on the type of transaction
                             updateBudgetOrGoal(category, amount, isExpense);
                             resetForm();
                             showConfirmationDialog();
@@ -306,17 +324,18 @@ public class AddTransactionActivity extends AppCompatActivity {
                         String categoryName = budgetSnapshot.child("category").getValue(String.class);
 
                         if (categoryName != null && categoryName.equals(category)) {
-                            Double currentBudget = budgetSnapshot.child("currentBudget").getValue(Double.class);
-                            Double budgetLimit = budgetSnapshot.child("budgetLimit").getValue(Double.class);
+                            Double convertedCurrentBudget = budgetSnapshot.child("convertedCurrentBudget").getValue(Double.class);
+                            Double convertedBudgetLimit = budgetSnapshot.child("convertedBudgetLimit").getValue(Double.class);
 
-                            if (currentBudget == null || budgetLimit == null) {
+                            if (convertedCurrentBudget == null || convertedBudgetLimit == null) {
                                 Toast.makeText(AddTransactionActivity.this, "Error: Missing goal data for category " + category, Toast.LENGTH_SHORT).show();
                                 continue;
                             }
 
-                            currentBudget += amount;
-                            double budgetProgress = (currentBudget / budgetLimit) * 100;
-                            budgetSnapshot.getRef().child("currentBudget").setValue(currentBudget);
+                            convertedCurrentBudget += amount;
+                            double budgetProgress = (convertedCurrentBudget / convertedBudgetLimit) * 100;
+                            budgetSnapshot.getRef().child("convertedCurrentBudget").setValue(convertedCurrentBudget);
+                            budgetSnapshot.getRef().child("convertedBudgetLimit").setValue(convertedBudgetLimit);
                             budgetSnapshot.getRef().child("progress").setValue(budgetProgress);
                         }
                     }
@@ -340,17 +359,18 @@ public class AddTransactionActivity extends AppCompatActivity {
                         String categoryName = goalSnapshot.child("goalName").getValue(String.class);
 
                         if (categoryName != null && categoryName.equals(category)) {
-                            Double currentAmount = goalSnapshot.child("currentAmount").getValue(Double.class);
-                            Double targetAmount = goalSnapshot.child("targetAmount").getValue(Double.class);
+                            Double convertedCurrentAmount = goalSnapshot.child("convertedCurrentAmount").getValue(Double.class);
+                            Double convertedTargetAmount = goalSnapshot.child("convertedTargetAmount").getValue(Double.class);
 
-                            if (currentAmount == null || targetAmount == null) {
+                            if (convertedCurrentAmount == null || convertedTargetAmount == null) {
                                 Toast.makeText(AddTransactionActivity.this, "Error: Missing goal data for category " + category, Toast.LENGTH_SHORT).show();
                                 continue;
                             }
 
-                            currentAmount += amount;
-                            double goalProgress = (currentAmount / targetAmount) * 100;
-                            goalSnapshot.getRef().child("currentAmount").setValue(currentAmount);
+                            convertedCurrentAmount += amount;
+                            double goalProgress = (convertedCurrentAmount / convertedTargetAmount) * 100;
+                            goalSnapshot.getRef().child("convertedCurrentAmount").setValue(convertedCurrentAmount);
+                            goalSnapshot.getRef().child("convertedTargetAmount").setValue(convertedTargetAmount);
                             goalSnapshot.getRef().child("progress").setValue(goalProgress);
                         }
                     }
@@ -389,7 +409,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private void resetForm() {
         editTextAmount.setText("");
-        tvAmount.setText("RM0");
+        tvAmount.setText(currencyUnit + " 0");
         editTextDescription.setText("");
         spinnerCategory.setSelection(0);
         textViewSelectedDate.setText("Select Date");
@@ -409,5 +429,14 @@ public class AddTransactionActivity extends AppCompatActivity {
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
     }
 }

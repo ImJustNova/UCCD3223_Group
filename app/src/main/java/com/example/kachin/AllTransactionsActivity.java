@@ -33,7 +33,7 @@ public class AllTransactionsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TransactionAdapter transactionAdapter;
-    private List<FinancialTransaction> transactionList = new ArrayList<>();
+    private final List<FinancialTransaction> transactionList = new ArrayList<>();
     private DatabaseReference expensesRef;
     private DatabaseReference incomeRef;
 
@@ -45,7 +45,7 @@ public class AllTransactionsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewAllTransactions);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        transactionAdapter = new TransactionAdapter(transactionList);
+        transactionAdapter = new TransactionAdapter(this, transactionList);
         recyclerView.setAdapter(transactionAdapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();

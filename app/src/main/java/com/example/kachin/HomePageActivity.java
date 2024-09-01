@@ -1,7 +1,10 @@
 package com.example.kachin;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,9 +54,8 @@ public class HomePageActivity extends BaseActivity {
     private DatabaseReference expensesRef;
     private DatabaseReference incomeRef;
     private DatabaseReference goalRef;
-    private String uid;
+    private String uid, currencyUnit;
     private LinearLayout goalLayout;
-    private TextView goalText;
 
     public HomePageActivity() {
     }
@@ -68,6 +70,11 @@ public class HomePageActivity extends BaseActivity {
         expensesRef = database.getReference("expense");
         incomeRef = database.getReference("income");
         goalRef = database.getReference("goal");
+
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -90,10 +97,9 @@ public class HomePageActivity extends BaseActivity {
         seeAllButton = findViewById(R.id.seeAllText);
         seeAllbtn = findViewById(R.id.btnSeeAllGoals);
         goalLayout = findViewById(R.id.goalLayout);
-        goalText = findViewById(R.id.GoalsText);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        transactionAdapter = new TransactionAdapter(transactionList);
+        transactionAdapter = new TransactionAdapter(this, transactionList);
         recyclerView.setAdapter(transactionAdapter);
 
         Calendar calendar = Calendar.getInstance();
@@ -146,7 +152,7 @@ public class HomePageActivity extends BaseActivity {
             noRecordsTextView.setVisibility(View.GONE);
 
             // Set up your RecyclerView adapter
-            TransactionAdapter adapter = new TransactionAdapter(transactions);
+            TransactionAdapter adapter = new TransactionAdapter(this, transactions);
             recyclerView.setAdapter(adapter);
 
             // Optionally set a layout manager
@@ -192,7 +198,7 @@ public class HomePageActivity extends BaseActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String date = snapshot.child("date").getValue(String.class);
-                    Object amountObj = snapshot.child("amount").getValue();
+                    Object amountObj = snapshot.child("convertedIncome").getValue();
 
                     if (date != null && date.startsWith(currentMonth)) {
                         double amount = 0;
@@ -212,7 +218,7 @@ public class HomePageActivity extends BaseActivity {
                         totalIncome += amount;
                     }
                 }
-                textIncomeAmount.setText(String.format("RM %.2f", totalIncome));
+                textIncomeAmount.setText(String.format(currencyUnit + " %.2f", totalIncome));
             }
 
             @Override
@@ -233,7 +239,7 @@ public class HomePageActivity extends BaseActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String date = snapshot.child("date").getValue(String.class);
-                    Object amountObj = snapshot.child("amount").getValue();
+                    Object amountObj = snapshot.child("convertedAmount").getValue();
 
                     if (date != null && date.startsWith(currentMonth)) {
                         double amount = 0;
@@ -258,7 +264,7 @@ public class HomePageActivity extends BaseActivity {
                         totalExpense += amount;
                     }
                 }
-                textExpensesAmount.setText(String.format("RM %.2f", totalExpense));
+                textExpensesAmount.setText(String.format(currencyUnit + " %.2f", totalExpense));
             }
 
             @Override
@@ -278,7 +284,7 @@ public class HomePageActivity extends BaseActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String date = snapshot.child("date").getValue(String.class);
                     String category = snapshot.child("category").getValue(String.class);
-                    Object amountObj = snapshot.child("amount").getValue();
+                    Object amountObj = snapshot.child("convertedAmount").getValue();
                     String description = snapshot.child("description").getValue(String.class);
 
                     if (date != null && date.startsWith(currentDate) && category != null && amountObj != null) {
@@ -320,7 +326,7 @@ public class HomePageActivity extends BaseActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String date = snapshot.child("date").getValue(String.class);
                     String category = snapshot.child("category").getValue(String.class);
-                    Object amountObj = snapshot.child("amount").getValue();
+                    Object amountObj = snapshot.child("convertedIncome").getValue();
                     String description = snapshot.child("description").getValue(String.class);
 
                     if (date != null && date.startsWith(getCurrentDate()) && category != null && amountObj != null) {
@@ -491,6 +497,14 @@ public class HomePageActivity extends BaseActivity {
         return false;
     }
 
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
+    }
 
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());

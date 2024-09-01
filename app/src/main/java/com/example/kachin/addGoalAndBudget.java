@@ -138,10 +138,10 @@ public class addGoalAndBudget extends AppCompatActivity {
         });
     }
 
-    private void addNewGoal(String goalId, String uid, String goalName, double targetAmount, double currentAmount) {
-        double progress = (currentAmount / targetAmount) * 100;
+    private void addNewGoal(String goalId, String uid, String goalName, double convertedTargetAmount, double convertedCurrentAmount) {
+        double progress = (convertedCurrentAmount / convertedTargetAmount) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
-        Goal goal = new Goal(uid, goalName, targetAmount, currentAmount, progress);
+        Goal goal = new Goal(uid, goalName, convertedTargetAmount, convertedCurrentAmount, progress);
 
         database.child("goal").child(goalId).setValue(goal)
                 .addOnSuccessListener(aVoid -> {
@@ -177,24 +177,24 @@ public class addGoalAndBudget extends AppCompatActivity {
     public static class Goal {
         public String uid;
         public String goalName;
-        public double targetAmount;
-        public double currentAmount;
+        public double convertedTargetAmount;
+        public double convertedCurrentAmount;
         public double progress;
 
         public Goal() {
         }
 
-        public Goal(String uid, String goalName, double targetAmount, double currentAmount, double progress) {
+        public Goal(String uid, String goalName, double convertedTargetAmount, double convertedCurrentAmount, double progress) {
             this.uid = uid;
             this.goalName = goalName;
-            this.targetAmount = targetAmount;
-            this.currentAmount = currentAmount;
+            this.convertedTargetAmount = convertedTargetAmount;
+            this.convertedCurrentAmount = convertedCurrentAmount;
             this.progress = progress;
         }
     }
 
-    private void addNewBudget(String budgetId, String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String lastResetDate) {
-        double progress = (currentBudget / budgetLimit) * 100;
+    private void addNewBudget(String budgetId, String uid, double convertedBudgetLimit, double convertedCurrentBudget, String category, String timeFrame, String lastResetDate) {
+        double progress = (convertedCurrentBudget / convertedBudgetLimit) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
 
         String currentTimeFrame;
@@ -206,7 +206,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             currentTimeFrame = "currentMonth";
         }
 
-        Budget budget = new Budget(uid, budgetLimit, currentBudget, category, timeFrame, currentTimeFrame, lastResetDate, progress);
+        Budget budget = new Budget(uid, convertedBudgetLimit, convertedCurrentBudget, category, timeFrame, currentTimeFrame, lastResetDate, progress);
         database.child("budget").child(budgetId).setValue(budget)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Budget added successfully", Toast.LENGTH_SHORT).show();
@@ -244,8 +244,8 @@ public class addGoalAndBudget extends AppCompatActivity {
 
     public static class Budget {
         public String uid;
-        public double budgetLimit;
-        public double currentBudget;
+        public double convertedBudgetLimit;
+        public double convertedCurrentBudget;
         public String category;
         public String timeFrame;
         public String currentTimeFrame;
@@ -255,10 +255,10 @@ public class addGoalAndBudget extends AppCompatActivity {
         public Budget() {
         }
 
-        public Budget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame, String currentTimeFrame, String lastResetDate, double progress) {
+        public Budget(String uid, double convertedBudgetLimit, double convertedCurrentBudget, String category, String timeFrame, String currentTimeFrame, String lastResetDate, double progress) {
             this.uid = uid;
-            this.budgetLimit = budgetLimit;
-            this.currentBudget = currentBudget;
+            this.convertedBudgetLimit = convertedBudgetLimit;
+            this.convertedCurrentBudget = convertedCurrentBudget;
             this.category = category;
             this.timeFrame = timeFrame;
             this.currentTimeFrame = currentTimeFrame;

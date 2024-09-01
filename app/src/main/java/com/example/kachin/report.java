@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -48,10 +49,9 @@ public class report extends AppCompatActivity {
     private TextView totalAmount, monthView;
     private PieChart pieChart;
     private DatabaseReference database;
-    private String uid;
+    private String uid, currentMonth, currencyUnit;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
-    private String currentMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,11 @@ public class report extends AppCompatActivity {
         totalAmount = findViewById(R.id.totalAmount);
         monthView = findViewById(R.id.monthView);
         pieChart = findViewById(R.id.pieChart);
+
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
@@ -158,10 +163,14 @@ public class report extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String date = snapshot.child("date").getValue(String.class);
                     if (date != null && date.substring(5, 7).equals(currentMonth)) {
-                        total += snapshot.child("amount").getValue(Double.class);
+                        if (ref.equals("expense")) {
+                            total += snapshot.child("convertedAmount").getValue(Double.class);
+                        } else {
+                            total += snapshot.child("convertedIncome").getValue(Double.class);
+                        }
                     }
                 }
-                totalAmount.setText("RM " + String.format(Locale.getDefault(), "%.2f", total));
+                totalAmount.setText(currencyUnit + String.format(Locale.getDefault(), " %.2f", total));
             }
 
             @Override
@@ -186,9 +195,14 @@ public class report extends AppCompatActivity {
                     double totalAmount = 0;
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        double amount;
                         String date = snapshot.child("date").getValue(String.class);
                         String category = snapshot.child("category").getValue(String.class);
-                        double amount = snapshot.child("amount").getValue(Double.class);
+                        if (ref.equals("expense")) {
+                            amount = snapshot.child("convertedAmount").getValue(Double.class);
+                        } else {
+                            amount = snapshot.child("convertedIncome").getValue(Double.class);
+                        }
 
                         // Filter data by current month
                         if (date != null && date.substring(5, 7).equals(currentMonth)) {
@@ -257,9 +271,14 @@ public class report extends AppCompatActivity {
                     Map<String, Double> categoryAmount = new HashMap<>();
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        double amount;
                         String date = snapshot.child("date").getValue(String.class);
                         String category = snapshot.child("category").getValue(String.class);
-                        double amount = snapshot.child("amount").getValue(Double.class);
+                        if (ref.equals("expense")) {
+                            amount = snapshot.child("convertedAmount").getValue(Double.class);
+                        } else {
+                            amount = snapshot.child("convertedIncome").getValue(Double.class);
+                        }
 
                         if (date != null && date.substring(5, 7).equals(currentMonth)) {
                             if (categoryAmount.containsKey(category)) {
@@ -311,10 +330,18 @@ public class report extends AppCompatActivity {
 
             Pair<String, Double> item = values.get(position);
             categoryName.setText(item.first);
-            totalAmount.setText("RM " + String.format(Locale.getDefault(), "%.2f", item.second));
+            totalAmount.setText(currencyUnit + String.format(Locale.getDefault(), " %.2f", item.second));
 
             return rowView;
         }
     }
 
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
+    }
 }

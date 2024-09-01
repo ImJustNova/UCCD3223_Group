@@ -2,7 +2,9 @@ package com.example.kachin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -30,7 +32,7 @@ public class GoalAndBudget extends AppCompatActivity {
 
     private ImageButton addGoal, addBudget, backButton, btnHome, btnAdd, btnHistory, btnReport, btnProfile;
     private DatabaseReference database;
-    private String uid;
+    private String uid, currencyUnit;
     private LinearLayout goalLayout, budgetLayout;
     private TextView goalText, budgetText;
 
@@ -60,6 +62,11 @@ public class GoalAndBudget extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No user is currently signed in", Toast.LENGTH_SHORT).show();
         }
+
+        SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
+        String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
+        String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
+        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         displayGoals();
         displayBudgets();
@@ -128,8 +135,8 @@ public class GoalAndBudget extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String goalName = snapshot.child("goalName").getValue(String.class);
                         int progress = snapshot.child("progress").getValue(Integer.class);
-                        double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
-                        double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
+                        double currentAmount = snapshot.child("convertedCurrentAmount").getValue(Double.class);
+                        double targetAmount = snapshot.child("convertedTargetAmount").getValue(Double.class);
 
                         LinearLayout goalItemLayout = new LinearLayout(GoalAndBudget.this);
                         goalItemLayout.setOrientation(LinearLayout.VERTICAL);
@@ -174,11 +181,11 @@ public class GoalAndBudget extends AppCompatActivity {
                         goalNameView.setLayoutParams(goalNameParams);
 
                         TextView remaining = new TextView(GoalAndBudget.this);
-                        remaining.setText("Remaining RM " + String.format("%.2f", targetAmount - currentAmount));
+                        remaining.setText("Remaining " + currencyUnit + String.format(" %.2f", targetAmount - currentAmount));
                         remaining.setTextSize(25);
 
                         TextView currProgress = new TextView(GoalAndBudget.this);
-                        currProgress.setText(String.format("RM %.2f of RM %.2f", currentAmount, targetAmount));
+                        currProgress.setText(String.format(currencyUnit + " %.2f of " + currencyUnit + " %.2f", currentAmount, targetAmount));
                         currProgress.setTextSize(15);
 
                         ProgressBar progressBar = new ProgressBar(GoalAndBudget.this, null, android.R.attr.progressBarStyleHorizontal);
@@ -228,8 +235,8 @@ public class GoalAndBudget extends AppCompatActivity {
                     budgetText.setVisibility(View.GONE);
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String category = snapshot.child("category").getValue(String.class);
-                        double currentBudget = snapshot.child("currentBudget").getValue(Integer.class);
-                        double budgetLimit = snapshot.child("budgetLimit").getValue(Integer.class);
+                        double currentBudget = snapshot.child("convertedCurrentBudget").getValue(Integer.class);
+                        double budgetLimit = snapshot.child("convertedBudgetLimit").getValue(Integer.class);
                         int progress = (int) ((currentBudget / (float) budgetLimit) * 100);
 
                         LinearLayout budgetItemLayout = new LinearLayout(GoalAndBudget.this);
@@ -275,7 +282,7 @@ public class GoalAndBudget extends AppCompatActivity {
                         budgetText.setLayoutParams(goalNameParams);
 
                         TextView remaining = new TextView(GoalAndBudget.this);
-                        remaining.setText("Remaining RM " + String.format("%.2f", budgetLimit - currentBudget));
+                        remaining.setText("Remaining " + currencyUnit + String.format(" %.2f", budgetLimit - currentBudget));
                         remaining.setTextSize(25);
                         remaining.setTypeface(null, Typeface.BOLD);
 
@@ -303,7 +310,7 @@ public class GoalAndBudget extends AppCompatActivity {
 
                         // Current progress text
                         TextView currProgress = new TextView(GoalAndBudget.this);
-                        currProgress.setText(String.format("RM %.2f of RM %.2f", currentBudget, budgetLimit));
+                        currProgress.setText(String.format(currencyUnit + " %.2f of " + currencyUnit + " %.2f", currentBudget, budgetLimit));
                         currProgress.setTextSize(15);
                         currProgress.setTextColor(progress >= 100 ? getResources().getColor(R.color.red) : getResources().getColor(R.color.grey));
                         currProgress.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)); // Weight 1
@@ -348,8 +355,6 @@ public class GoalAndBudget extends AppCompatActivity {
                     budgetText.setVisibility(View.VISIBLE);
                 }
             }
-
-
     @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(GoalAndBudget.this, "Failed to load budgets", Toast.LENGTH_SHORT).show();
@@ -357,4 +362,12 @@ public class GoalAndBudget extends AppCompatActivity {
         });
     }
 
+    private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
+        for (String unit : currencyUnits) {
+            if (unit.startsWith(selectedCurrency)) {
+                return unit.split(" - ")[1];
+            }
+        }
+        return "RM"; // Default to RM if not found
+    }
 }
