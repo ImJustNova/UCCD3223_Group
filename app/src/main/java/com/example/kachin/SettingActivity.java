@@ -97,6 +97,7 @@ public class SettingActivity extends BaseActivity {
         builder.show();
     }
 
+
     private void setLocale(String langCode) {
         Locale locale = new Locale(langCode);
         Locale.setDefault(locale);
