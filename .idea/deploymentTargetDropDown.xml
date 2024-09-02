@@ -8,6 +8,12 @@
       <entry key="ProfileActivity">
         <State />
       </entry>
+      <entry key="SignUpAccActivity">
+        <State />
+      </entry>
+      <entry key="SignUpActivity">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
