@@ -16,7 +16,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -32,8 +32,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
 
         // Initialization
-        btnReset = findViewById(R.id.continueButton); // Updated button ID
-        edtEmail = findViewById(R.id.emailEditText); // Updated EditText ID
+        btnReset = findViewById(R.id.continueButton);
+        edtEmail = findViewById(R.id.emailEditText);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -43,7 +43,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 strEmail = edtEmail.getText().toString().trim();
                 if (!TextUtils.isEmpty(strEmail)) {
-                    ResetPassword();
+                    resetPassword();
                 } else {
                     edtEmail.setError("Email field can't be empty");
                 }
@@ -51,43 +51,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
-    private void ResetPassword() {
+    private void resetPassword() {
         btnReset.setEnabled(false);  // Disable the button during the process
 
-        mAuth.fetchSignInMethodsForEmail(strEmail)
-                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+        mAuth.sendPasswordResetEmail(strEmail)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        btnReset.setEnabled(true);
                         if (task.isSuccessful()) {
-                            SignInMethodQueryResult result = task.getResult();
-                            if (result != null && result.getSignInMethods() != null && !result.getSignInMethods().isEmpty()) {
-                                // Email exists, proceed to send reset email
-                                mAuth.sendPasswordResetEmail(strEmail)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(ForgotPasswordActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(ForgotPasswordActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                btnReset.setEnabled(true);  // Re-enable the button if there's an error
-                                            }
-                                        });
-                            } else {
-                                // Email does not exist
-                                Toast.makeText(ForgotPasswordActivity.this, "This email is not registered", Toast.LENGTH_SHORT).show();
-                                btnReset.setEnabled(true);
-                            }
+                            Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ForgotPasswordActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         } else {
-                            // Task failed
-                            Toast.makeText(ForgotPasswordActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            btnReset.setEnabled(true);
+                            Exception exception = task.getException();
+                            if (exception instanceof FirebaseAuthInvalidUserException) {
+                                Toast.makeText(ForgotPasswordActivity.this, "This email is not registered", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ForgotPasswordActivity.this, "Error: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
