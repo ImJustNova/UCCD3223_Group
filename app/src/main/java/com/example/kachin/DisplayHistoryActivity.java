@@ -1,12 +1,12 @@
 package com.example.kachin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -25,8 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class DisplayHistoryActivity extends AppCompatActivity {
 
-    private ImageButton backButton;
-    private TextView pageTitle, transactionText;
+    private TextView transactionText;
     private DatabaseReference database;
     private String uid, currencyUnit;
     private LinearLayout transactionContainer;
@@ -36,8 +35,8 @@ public class DisplayHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_history);
 
-        backButton = findViewById(R.id.backButton);
-        pageTitle = findViewById(R.id.pageTitle);
+        ImageButton backButton = findViewById(R.id.backButton);
+        TextView pageTitle = findViewById(R.id.pageTitle);
         transactionContainer = findViewById(R.id.transactionContainer);
         transactionText = findViewById(R.id.transactionText);
 
@@ -59,7 +58,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
             finish();
         }
 
-        pageTitle.setText("History for " + selectedDate);
+        pageTitle.setText("Transaction on " + selectedDate);
 
         backButton.setOnClickListener(v -> finish());
 
@@ -74,7 +73,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
     private void loadExpenses(String date) {
         database.child("expense").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String transactionDate = snapshot.child("date").getValue(String.class);
                     if (transactionDate != null && transactionDate.equals(date)) {
@@ -91,7 +90,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(DisplayHistoryActivity.this, "Failed to load expenses.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -100,7 +99,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
     private void loadIncome(String date) {
         database.child("income").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String transactionDate = snapshot.child("date").getValue(String.class);
                     if (transactionDate != null && transactionDate.equals(date)) {
@@ -116,7 +115,7 @@ public class DisplayHistoryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(DisplayHistoryActivity.this, "Failed to load income.", Toast.LENGTH_SHORT).show();
             }
         });

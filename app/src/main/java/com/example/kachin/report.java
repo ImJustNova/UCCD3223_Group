@@ -1,5 +1,6 @@
 package com.example.kachin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -15,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,13 +45,11 @@ import java.util.Map;
 public class report extends AppCompatActivity {
 
     private Button btnExpense, btnIncome;
-    private ImageButton btnBack, btnHome, btnAdd, btnHistory, btnReport, btnProfile;
-    private TextView totalAmount, monthView;
+    private ImageButton btnHome, btnAdd, btnHistory, btnReport, btnProfile;
+    private TextView totalAmount;
     private PieChart pieChart;
     private DatabaseReference database;
     private String uid, currentMonth, currencyUnit;
-    private Calendar calendar;
-    private SimpleDateFormat dateFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +58,14 @@ public class report extends AppCompatActivity {
 
         btnExpense = findViewById(R.id.btnExpense);
         btnIncome = findViewById(R.id.btnIncome);
-        btnBack = findViewById(R.id.btnBack);
+        ImageButton btnBack = findViewById(R.id.btnBack);
         btnHome = findViewById(R.id.btnHome);
         btnAdd = findViewById(R.id.btnAdd);
         btnHistory = findViewById(R.id.btnHistory);
         btnReport = findViewById(R.id.btnReport);
         btnProfile = findViewById(R.id.btnProfile);
         totalAmount = findViewById(R.id.totalAmount);
-        monthView = findViewById(R.id.monthView);
+        TextView monthView = findViewById(R.id.monthView);
         pieChart = findViewById(R.id.pieChart);
 
         SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
@@ -75,8 +73,8 @@ public class report extends AppCompatActivity {
         String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
         currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
-        calendar = Calendar.getInstance();
-        dateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
         String currentMonthName = dateFormat.format(calendar.getTime()).toUpperCase(Locale.getDefault());
         int monthNumber = calendar.get(Calendar.MONTH) + 1;
         currentMonth = String.format(Locale.getDefault(), "%02d", monthNumber);
@@ -93,7 +91,7 @@ public class report extends AppCompatActivity {
 
         setupButtonListeners();
 
-        // Display expense as default
+        // Display expense by default
         btnExpense.setSelected(true);
         btnIncome.setSelected(false);
         expensePieChart("expense");
@@ -158,7 +156,7 @@ public class report extends AppCompatActivity {
 
         cashFlowRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 double total = 0;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String date = snapshot.child("date").getValue(String.class);
@@ -174,7 +172,7 @@ public class report extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("Error", "Failed to read value.", databaseError.toException());
             }
         });
@@ -244,13 +242,12 @@ public class report extends AppCompatActivity {
                     legend.setDrawInside(false);
                     legend.setTextSize(12f);
 
-                    // Refresh the chart
                     pieChart.invalidate();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("Error", "Failed to read value.", databaseError.toException());
             }
         });
@@ -266,7 +263,7 @@ public class report extends AppCompatActivity {
 
         expenseRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Map<String, Double> categoryAmount = new HashMap<>();
 
@@ -298,7 +295,7 @@ public class report extends AppCompatActivity {
                 }
             }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("Error", "Failed to read value.", databaseError.toException());
             }
         });
@@ -320,6 +317,7 @@ public class report extends AppCompatActivity {
             this.values = values;
         }
 
+        @NonNull
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

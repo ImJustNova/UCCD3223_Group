@@ -3,12 +3,10 @@ package com.example.kachin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,9 +14,7 @@ import java.util.Locale;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    private ImageButton backButton, btnHome, btnAdd, btnHistory, btnReport, btnProfile;
-    private CalendarView calendar;
-    private Button submitButton;
+    private ImageButton btnHome, btnAdd, btnHistory, btnReport, btnProfile;
     private String selectedDate;
 
     @Override
@@ -26,9 +22,9 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        backButton = findViewById(R.id.backButton);
-        calendar = findViewById(R.id.calendar);
-        submitButton = findViewById(R.id.submitButton);
+        ImageButton backButton = findViewById(R.id.backButton);
+        CalendarView calendar = findViewById(R.id.calendar);
+        Button submitButton = findViewById(R.id.submitButton);
         btnHome = findViewById(R.id.btnHome);
         btnAdd = findViewById(R.id.btnAdd);
         btnHistory = findViewById(R.id.btnHistory);

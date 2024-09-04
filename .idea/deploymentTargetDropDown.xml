@@ -5,10 +5,7 @@
       <entry key="AddTransactionActivity">
         <State />
       </entry>
-      <entry key="HomePageActivity">
-        <State />
-      </entry>
-      <entry key="ProfileActivity">
+      <entry key="app">
         <State />
       </entry>
       <entry key="SignUpAccActivity">
