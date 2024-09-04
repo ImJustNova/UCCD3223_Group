@@ -9,11 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
 public class SettingActivity extends BaseActivity {
-
     private TextView tvLanguage;
     private TextView tvHelp;
 

@@ -8,11 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,20 +21,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class EditProfileActivity extends AppCompatActivity {
-
     private ImageView editProfileImage;
     private EditText editName, editEmail, editPassword;
     private Button btnSave, btnChangePicture;
-
     private DatabaseReference userRef;
     private StorageReference storageRef;
     private FirebaseUser currentUser;
-
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
 

@@ -7,26 +7,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,7 +47,6 @@ public class AddTransactionActivity extends AppCompatActivity {
     private Spinner spinnerCategory;
     private Button buttonSelectDate, buttonContinue, btnExpense, btnIncome, buttonAddAttachment;
     private String selectedDate, uid, selectedCurrency, currencyUnit;
-    private double baseAmount;
     private boolean isExpense = true;
     private Uri fileUri;
     private DatabaseReference databaseReference;
@@ -139,18 +132,15 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void updateUIForTransactionType(boolean isExpense) {
         this.isExpense = isExpense;
 
-        // Update the title text
         tvTitle.setText(isExpense ? "Expense" : "Income");
 
-        // Get reference to the root layout
         ConstraintLayout rootLayout = findViewById(R.id.rootLayout);
 
-        // Change the background color of the root layout
         if (isExpense) {
-            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.red));  // Set background to red
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.red));
             loadCategoriesFromFirebase();
         } else {
-            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.green));  // Set background to green
+            rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.green));
             loadIncomeCategoriesFromFirebase();
         }
     }
@@ -271,8 +261,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         DatabaseReference reference = isExpense ? databaseReference.child("expense") : databaseReference.child("income");
 
         if (fileUri != null) {
-            String fileName = getFileName(fileUri); // Retrieve the original file name
-            StorageReference fileReference = storageReference.child(fileName); // Use original file name
+            String fileName = getFileName(fileUri);
+            StorageReference fileReference = storageReference.child(fileName);
 
             UploadTask uploadTask = fileReference.putFile(fileUri);
 
@@ -346,7 +336,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                     Toast.makeText(AddTransactionActivity.this, "Failed to update budget limit", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else { // income
+        } else {
             databaseReference.child("goal").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
