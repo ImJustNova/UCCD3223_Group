@@ -35,7 +35,7 @@ public class CurrencyConverter extends AppCompatActivity {
     private String uid, currentCurrency;
 
     // List of currencies that the user can select
-    private final List<String> currencies = Arrays.asList("USD", "SGD", "MYR", "EUR", "GBP");
+    private final List<String> currencies = Arrays.asList("USD", "SGD", "MYR", "EUR", "GBP", "JPY", "CNY", "KRW", "AUD", "CAD", "INR", "IDR", "THB", "VND", "PHP", "HKD", "TWD");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,6 @@ public class CurrencyConverter extends AppCompatActivity {
         @Override
         protected Double[] doInBackground(Void... voids) {
             try {
-                // Get conversion rate and base rate in the background
                 double conversionRate = getConversionRate(baseCurrency, targetCurrency);
                 double baseRate = getBaseRate(targetCurrency);
                 return new Double[]{conversionRate, baseRate};
@@ -225,7 +224,6 @@ public class CurrencyConverter extends AppCompatActivity {
                     if (convertedAmount != null) {
                         if (!snapshot.hasChild("amount")) {
                             double amount = convertedAmount * baseRate;
-                            Toast.makeText(CurrencyConverter.this, "baseRate is " + baseRate, Toast.LENGTH_SHORT).show();
                             amount = Double.parseDouble(decimalFormat.format(amount));
                             snapshot.getRef().child("amount").setValue(amount);
                         }
