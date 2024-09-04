@@ -19,6 +19,18 @@
         <item>MYR - RM</item>
         <item>EUR - €</item>
         <item>GBP - £</item>
+        <item>JPY - ¥</item>
+        <item>CNY - ¥</item>
+        <item>KRW - ₩</item>
+        <item>AUD - A$</item>
+        <item>CAD - C$</item>
+        <item>INR - ₹</item>
+        <item>IDR - Rp</item>
+        <item>THB - ฿</item>
+        <item>VND - ₫</item>
+        <item>PHP - ₱</item>
+        <item>HKD - HK$</item>
+        <item>TWD - NT$</item>
     </string-array>
 
     <!--user dashboard-->
