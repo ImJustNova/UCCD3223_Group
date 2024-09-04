@@ -42,8 +42,8 @@
             <!-- Edit Icon -->
             <ImageView
                 android:id="@+id/btn_edit_profile"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
