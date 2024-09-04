@@ -35,6 +35,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private DatabaseReference userRef;
     private StorageReference storageRef;
+    private FirebaseUser currentUser;
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
@@ -52,14 +53,11 @@ public class EditProfileActivity extends AppCompatActivity {
         btnChangePicture = findViewById(R.id.btn_change_picture);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null) {
             String userId = currentUser.getUid();
-
             userRef = database.getReference("users").child(userId);
-
             storageRef = FirebaseStorage.getInstance().getReference("profile_pictures").child(userId);
         } else {
             Toast.makeText(EditProfileActivity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
@@ -68,8 +66,26 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         btnChangePicture.setOnClickListener(v -> selectProfilePicture());
-
         btnSave.setOnClickListener(v -> saveProfile());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (currentUser != null) {
+            userRef.child("profilePictureUrl").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String profilePictureUrl = task.getResult().getValue(String.class);
+                    if (!TextUtils.isEmpty(profilePictureUrl)) {
+                        Glide.with(this)
+                                .load(profilePictureUrl)
+                                .circleCrop()
+                                .into(editProfileImage);
+                    }
+                }
+            });
+        }
     }
 
     private void selectProfilePicture() {
@@ -85,8 +101,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
-            editProfileImage.setImageURI(imageUri);
 
+            // Load selected image into ImageView
             Glide.with(this)
                     .load(imageUri)
                     .circleCrop()

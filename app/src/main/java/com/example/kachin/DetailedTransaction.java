@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,8 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class DetailedTransaction extends AppCompatActivity {
-
-    private String currencyUnit;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -42,7 +39,7 @@ public class DetailedTransaction extends AppCompatActivity {
         SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
         String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
         String[] currencyUnits = getResources().getStringArray(R.array.currency_units);
-        currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
+        String currencyUnit = getCurrencyUnit(selectedCurrency, currencyUnits);
 
         Intent intent = getIntent();
         double amountValue = intent.getDoubleExtra("amount", 0.0);  // Retrieving the double value

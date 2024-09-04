@@ -17,14 +17,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private List<FinancialTransaction> transactionList;
     private String currencyUnit;
-    private Context context;
 
-    // Constructor for TransactionAdapter
     public TransactionAdapter(Context context, List<FinancialTransaction> transactionList) {
-        this.context = context;
         this.transactionList = transactionList;
 
-        // Initialize currency preferences
         SharedPreferences currencyPref = context.getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
         String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
         String[] currencyUnits = context.getResources().getStringArray(R.array.currency_units);
@@ -34,7 +30,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @NonNull
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for each transaction item
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_transaction_item, parent, false);
         return new TransactionViewHolder(view);
     }
@@ -43,13 +38,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         FinancialTransaction transaction = transactionList.get(position);
 
-        // Set the transaction details with the selected currency unit
         holder.transactionCategory.setText(transaction.getCategory());
         holder.transactionAmount.setText(String.format(currencyUnit + " %.2f", transaction.getAmount()));
         holder.transactionDescription.setText(transaction.getDescription());
         holder.transactionDate.setText(transaction.getDate());
 
-        // Set the icon based on the category
         switch (transaction.getCategory()) {
             case "Food and Drinks":
                 holder.transactionCategoryIcon.setImageResource(R.drawable.food_and_drinks_icon);
@@ -86,7 +79,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Bind the views with the respective IDs in XML
             transactionCategory = itemView.findViewById(R.id.transactionCategory);
             transactionAmount = itemView.findViewById(R.id.transactionAmount);
             transactionDescription = itemView.findViewById(R.id.transactionDescription);

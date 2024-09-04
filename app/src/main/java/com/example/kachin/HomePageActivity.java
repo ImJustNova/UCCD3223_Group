@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
+
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,9 +36,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Map;
 
 
 public class HomePageActivity extends BaseActivity {
@@ -451,20 +452,38 @@ public class HomePageActivity extends BaseActivity {
         DatabaseReference budgetRef = FirebaseDatabase.getInstance().getReference("budgets").child(uid);
 
         budgetRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Calendar calendar = Calendar.getInstance();
+                    String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
+                    String currentMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(calendar.getTime());
 
-                for (DataSnapshot budgetSnapshot : snapshot.getChildren()) {
-                    String lastResetDate = budgetSnapshot.child("lastResetDate").getValue(String.class);
-                    String timeFrame = budgetSnapshot.child("timeFrame").getValue(String.class); // "daily" or "monthly"
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String timeFrame = snapshot.child("timeFrame").getValue(String.class);
+                        String lastResetDate = snapshot.child("lastResetDate").getValue(String.class);
 
-                    if (lastResetDate == null || isDateDifferent(currentDate, lastResetDate, timeFrame)) {
-                        // Reset the budget
-                        budgetSnapshot.getRef().child("currentBudget").setValue(0.0);
-                        budgetSnapshot.getRef().child("progress").setValue(0.0);
-                        budgetSnapshot.getRef().child("lastResetDate").setValue(currentDate);
-                        Toast.makeText(HomePageActivity.this, "Budget for " + timeFrame + " has been reset.", Toast.LENGTH_SHORT).show();
+                        if (timeFrame != null && lastResetDate != null) {
+                            boolean shouldReset = false;
+
+                            if (timeFrame.equals("daily")) {
+                                // Reset if the last reset date is different from the current date
+                                shouldReset = !lastResetDate.equals(currentDate);
+                            } else if (timeFrame.equals("monthly")) {
+                                // Reset if the last reset month is different from the current month
+                                shouldReset = !lastResetDate.startsWith(currentMonth);
+                            }
+
+                            if (shouldReset) {
+                                // Reset convertedCurrentBudget, currentAmount, and progress to 0
+                                Map<String, Object> updates = new HashMap<>();
+                                updates.put("convertedCurrentBudget", 0);
+                                updates.put("currentAmount", 0);
+                                updates.put("progress", 0);
+                                updates.put("lastResetDate", currentDate); // Update the last reset date
+
+                                snapshot.getRef().updateChildren(updates);
+                            }
+                        }
                     }
                 }
             }

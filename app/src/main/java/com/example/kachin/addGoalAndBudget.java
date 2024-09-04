@@ -1,5 +1,6 @@
 package com.example.kachin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -33,8 +34,6 @@ public class addGoalAndBudget extends AppCompatActivity {
     private EditText goalName, targetAmount, budgetLimit;
     private Spinner category, timeFrame;
     private List<String> categoriesList;
-    private Button addButton;
-    private TextView pageTitle, cancelButton;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -42,14 +41,14 @@ public class addGoalAndBudget extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal_and_budget);
 
-        pageTitle = findViewById(R.id.pageTitle);
-        cancelButton = findViewById(R.id.cancelButton);
+        TextView pageTitle = findViewById(R.id.pageTitle);
+        TextView cancelButton = findViewById(R.id.cancelButton);
         goalName = findViewById(R.id.goalName);
         targetAmount = findViewById(R.id.targetAmount);
         budgetLimit = findViewById(R.id.budgetLimit);
         category = findViewById(R.id.category);
         timeFrame = findViewById(R.id.timeFrame);
-        addButton = findViewById(R.id.addButton);
+        Button addButton = findViewById(R.id.addButton);
 
         database = FirebaseDatabase.getInstance().getReference();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -82,9 +81,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             timeFrame.setVisibility(View.VISIBLE);
         }
 
-        cancelButton.setOnClickListener(v -> {
-            finish();
-        });
+        cancelButton.setOnClickListener(v -> { finish();});
 
         addButton.setOnClickListener(v -> {
             if ("goal".equals(title)) {
@@ -95,7 +92,7 @@ public class addGoalAndBudget extends AppCompatActivity {
                     Toast.makeText(addGoalAndBudget.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                getNextGoalIdAndWriteNewGoal(uid, goalName.getText().toString(), Double.parseDouble(targetAmount.getText().toString()), 0);
+                getNextGoalIdAndWriteNewGoal(uid, goalName.getText().toString(), Double.parseDouble(targetAmount.getText().toString()));
             } else if ("budget".equals(title)) {
                 String budgetLimitText = budgetLimit.getText().toString().trim();
                 String selectedCategory = category.getSelectedItem().toString();
@@ -106,7 +103,7 @@ public class addGoalAndBudget extends AppCompatActivity {
                     return;
                 }
                 getNextBudgetIdAndWriteNewBudget(uid, Double.parseDouble(budgetLimit.getText().toString()),
-                        0, category.getSelectedItem().toString(), timeFrame.getSelectedItem().toString());
+                        category.getSelectedItem().toString(), timeFrame.getSelectedItem().toString());
             }
             finish();
         });
@@ -116,7 +113,7 @@ public class addGoalAndBudget extends AppCompatActivity {
         DatabaseReference databaseCategories = FirebaseDatabase.getInstance().getReference("category");
         databaseCategories.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 categoriesList.clear();
 
                 for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
@@ -132,16 +129,16 @@ public class addGoalAndBudget extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(addGoalAndBudget.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void addNewGoal(String goalId, String uid, String goalName, double convertedTargetAmount, double convertedCurrentAmount) {
-        double progress = (convertedCurrentAmount / convertedTargetAmount) * 100;
+    private void addNewGoal(String goalId, String uid, String goalName, double convertedTargetAmount) {
+        double progress = ((double) 0 / convertedTargetAmount) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
-        Goal goal = new Goal(uid, goalName, convertedTargetAmount, convertedCurrentAmount, progress);
+        Goal goal = new Goal(uid, goalName, convertedTargetAmount, 0, progress);
 
         database.child("goal").child(goalId).setValue(goal)
                 .addOnSuccessListener(aVoid -> {
@@ -152,23 +149,24 @@ public class addGoalAndBudget extends AppCompatActivity {
                 });
     }
 
-    private void getNextGoalIdAndWriteNewGoal(String uid, String goalName, double targetAmount, double currentAmount) {
+    private void getNextGoalIdAndWriteNewGoal(String uid, String goalName, double targetAmount) {
         database.child("goal").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long nextGoalId = 1; // Default to 1 if there are no existing goals
                 for (DataSnapshot goalSnapshot : dataSnapshot.getChildren()) {
                     String key = goalSnapshot.getKey();
+                    assert key != null;
                     long goalId = Long.parseLong(key.replace("goal", ""));
                     nextGoalId = Math.max(nextGoalId, goalId + 1);
                 }
 
                 String goalId = "goal" + nextGoalId;
-                addNewGoal(goalId, uid, goalName, targetAmount, currentAmount);
+                addNewGoal(goalId, uid, goalName, targetAmount);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(addGoalAndBudget.this, "Failed to read goal data", Toast.LENGTH_SHORT).show();
             }
         });
@@ -193,8 +191,8 @@ public class addGoalAndBudget extends AppCompatActivity {
         }
     }
 
-    private void addNewBudget(String budgetId, String uid, double convertedBudgetLimit, double convertedCurrentBudget, String category, String timeFrame, String lastResetDate) {
-        double progress = (convertedCurrentBudget / convertedBudgetLimit) * 100;
+    private void addNewBudget(String budgetId, String uid, double convertedBudgetLimit, String category, String timeFrame, String lastResetDate) {
+        double progress = ((double) 0 / convertedBudgetLimit) * 100;
         progress = Math.round(progress * 100.0) / 100.0;
 
         String currentTimeFrame;
@@ -206,7 +204,7 @@ public class addGoalAndBudget extends AppCompatActivity {
             currentTimeFrame = "currentMonth";
         }
 
-        Budget budget = new Budget(uid, convertedBudgetLimit, convertedCurrentBudget, category, timeFrame, currentTimeFrame, lastResetDate, progress);
+        Budget budget = new Budget(uid, convertedBudgetLimit, 0, category, timeFrame, currentTimeFrame, lastResetDate, progress);
         database.child("budget").child(budgetId).setValue(budget)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Budget added successfully", Toast.LENGTH_SHORT).show();
@@ -216,27 +214,28 @@ public class addGoalAndBudget extends AppCompatActivity {
                 });
     }
 
-    private void getNextBudgetIdAndWriteNewBudget(String uid, double budgetLimit, double currentBudget, String category, String timeFrame) {
+    private void getNextBudgetIdAndWriteNewBudget(String uid, double budgetLimit, String category, String timeFrame) {
         database.child("budget").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long nextBudgetId = 1;
                 for (DataSnapshot budgetSnapshot : dataSnapshot.getChildren()) {
                     String key = budgetSnapshot.getKey();
+                    assert key != null;
                     long budgetId = Long.parseLong(key.replace("budget", ""));
                     nextBudgetId = Math.max(nextBudgetId, budgetId + 1);
                 }
 
                 String budgetId = "budget" + nextBudgetId;
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String lastResetDate = sdf.format(new Date());
 
-                addNewBudget(budgetId, uid, budgetLimit, currentBudget, category, timeFrame, lastResetDate);
+                addNewBudget(budgetId, uid, budgetLimit, category, timeFrame, lastResetDate);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(addGoalAndBudget.this, "Failed to read budget data", Toast.LENGTH_SHORT).show();
             }
         });
