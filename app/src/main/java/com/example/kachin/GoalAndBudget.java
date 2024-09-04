@@ -93,31 +93,26 @@ public class GoalAndBudget extends AppCompatActivity {
 
     private void setupButtonListeners() {
         btnHome.setOnClickListener(v -> {
-            Toast.makeText(GoalAndBudget.this, "Home Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(GoalAndBudget.this, HomePageActivity.class);
             startActivity(intent);
         });
 
         btnAdd.setOnClickListener(v -> {
-            Toast.makeText(GoalAndBudget.this, "Add Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(GoalAndBudget.this, AddTransactionActivity.class);
             startActivity(intent);
         });
 
         btnHistory.setOnClickListener(v -> {
-            Toast.makeText(GoalAndBudget.this, "History Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(GoalAndBudget.this, HistoryActivity.class);
             startActivity(intent);
         });
 
         btnReport.setOnClickListener(v -> {
-            Toast.makeText(GoalAndBudget.this, "Report Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(GoalAndBudget.this, report.class);
             startActivity(intent);
         });
 
         btnProfile.setOnClickListener(v -> {
-            Toast.makeText(GoalAndBudget.this, "Profile Clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(GoalAndBudget.this, ProfileActivity.class);
             startActivity(intent);
         });
