@@ -56,9 +56,6 @@
             android:name=".addGoalAndBudget"
             android:exported="false" />
         <activity
-            android:name=".ResetPasswordActivity"
-            android:exported="false" />
-        <activity
             android:name=".UserDashBoardActivity"
             android:exported="true" />
         <activity
