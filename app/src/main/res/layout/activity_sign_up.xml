@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="350dp"
-        android:text="@string/text_view_title"
+        android:text="Earn money and \n spend money in \n          ease"
         android:textSize="35sp"
         android:textStyle="bold"
         android:textColor="#000000" />  <!-- Black color -->
@@ -48,7 +48,7 @@
         android:layout_below="@id/textViewTitle"
         android:layout_marginTop="1dp"
         android:layout_centerHorizontal="true"
-        android:text="@string/text_view_subtitle"
+        android:text="Become your own money manager \n       and make every cent count"
         android:textSize="14sp"
         android:textColor="#808080" />
 
@@ -61,7 +61,7 @@
         android:layout_marginLeft="40dp"
         android:background="@drawable/round_button_background"
         android:padding="16dp"
-        android:text="@string/sign_up"
+        android:text="Sign Up"
         android:textColor="@android:color/white" />
 
     <Button
@@ -73,7 +73,7 @@
         android:layout_marginLeft="40dp"
         android:background="@drawable/round_button_background"
         android:padding="16dp"
-        android:text="@string/login_button"
+        android:text="Login"
         android:textColor="@android:color/white" />
 
 </RelativeLayout>

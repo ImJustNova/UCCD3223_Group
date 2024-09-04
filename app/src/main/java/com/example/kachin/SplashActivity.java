@@ -1,5 +1,6 @@
 package com.example.kachin;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -92,6 +93,26 @@ public class SplashActivity extends AppCompatActivity {
                 kachinAnimationSet.addAnimation(scaleUp);
 
                 kachinText.startAnimation(kachinAnimationSet);  // Start text animation
+
+                // Automatically navigate to SignUpActivity after the animation ends
+                kachinAnimationSet.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        // Not used in this context
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        Intent intent = new Intent(SplashActivity.this, SignUpActivity.class);
+                        startActivity(intent);
+                        finish();  // Close SplashActivity so that it won't appear on back press
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                        // Not used in this context
+                    }
+                });
             }
 
             @Override

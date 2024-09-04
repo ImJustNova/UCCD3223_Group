@@ -16,40 +16,45 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Login"
         tools:targetApi="31">
+
+        <!-- Splash Activity -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Other activities -->
         <activity
             android:name=".DisplayHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".DetailedTransaction"
             android:exported="false" />
-        <!-- Google Sign-In metadata -->
         <meta-data
             android:name="com.google.android.gms.client_id"
-            android:value="@string/default_web_client_id" /> <!-- Activities -->
+            android:value="@string/default_web_client_id" />
         <activity
             android:name=".HomePageActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".CurrencyConverter"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".HistoryActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".AllTransactionsActivity"
             android:exported="true" />
         <activity
             android:name=".report"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".GoalAndBudget"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".addGoalAndBudget"
             android:exported="false" />
@@ -58,9 +63,7 @@
             android:exported="false" />
         <activity
             android:name=".testActivity"
-            android:exported="true"> <!-- for testing purposes -->
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".UserDashBoardActivity"
             android:exported="true" />
@@ -72,14 +75,7 @@
             android:exported="false" />
         <activity
             android:name=".SignUpActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />
@@ -88,14 +84,12 @@
             android:exported="true" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".EditProfileActivity"
             android:exported="true" />
         <activity
             android:name=".AddTransactionActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
-
 </manifest>
