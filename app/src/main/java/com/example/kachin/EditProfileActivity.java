@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -129,7 +130,16 @@ public class EditProfileActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             if (task.isSuccessful()) {
                                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                    updates.put("profilePictureUrl", uri.toString());
+                                    String downloadUrl = uri.toString();
+                                    updates.put("profilePictureUrl", downloadUrl);
+
+                                    Glide.with(EditProfileActivity.this)
+                                            .load(downloadUrl + "?t=" + System.currentTimeMillis())
+                                            .circleCrop()
+                                            .skipMemoryCache(true)
+                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                            .into(editProfileImage);
+
                                     updateFirebaseProfile(updates);
                                 });
                             } else {
