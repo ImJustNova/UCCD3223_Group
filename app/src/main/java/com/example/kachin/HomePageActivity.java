@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,32 +28,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 public class HomePageActivity extends BaseActivity {
 
-    private TextView monthView;
-    private TextView textIncomeAmount;
-    private TextView textExpensesAmount;
+    private TextView textIncomeAmount, textExpensesAmount;
     private ImageButton btnHome, btnAdd, btnHistory, btnReport, btnProfile;
-    private RecyclerView recyclerView;
     private TransactionAdapter transactionAdapter;
     private List<FinancialTransaction> transactionList = new ArrayList<>();
-    private Button seeAllButton, seeAllbtn;
-    private DatabaseReference expensesRef;
-    private DatabaseReference incomeRef;
-    private DatabaseReference goalRef;
+    private DatabaseReference expensesRef, incomeRef, goalRef, budgetRef;
     private String uid, currencyUnit;
     private LinearLayout goalLayout;
 
@@ -71,6 +61,7 @@ public class HomePageActivity extends BaseActivity {
         expensesRef = database.getReference("expense");
         incomeRef = database.getReference("income");
         goalRef = database.getReference("goal");
+        budgetRef = database.getReference("budget");
 
         SharedPreferences currencyPref = getSharedPreferences("CurrencyPrefs", Context.MODE_PRIVATE);
         String selectedCurrency = currencyPref.getString("selectedCurrency", "MYR");
@@ -85,8 +76,7 @@ public class HomePageActivity extends BaseActivity {
             return;
         }
 
-        // Initialize UI components
-        monthView = findViewById(R.id.monthView);
+        TextView monthView = findViewById(R.id.monthView);
         textIncomeAmount = findViewById(R.id.textIncomeAmount);
         textExpensesAmount = findViewById(R.id.textExpensesAmount);
         btnHome = findViewById(R.id.btnHome);
@@ -94,9 +84,9 @@ public class HomePageActivity extends BaseActivity {
         btnHistory = findViewById(R.id.btnHistory);
         btnReport = findViewById(R.id.btnReport);
         btnProfile = findViewById(R.id.btnProfile);
-        recyclerView = findViewById(R.id.transactionRecyclerView);
-        seeAllButton = findViewById(R.id.seeAllText);
-        seeAllbtn = findViewById(R.id.btnSeeAllGoals);
+        RecyclerView recyclerView = findViewById(R.id.transactionRecyclerView);
+        Button seeAllButton = findViewById(R.id.seeAllText);
+        Button seeAllbtn = findViewById(R.id.btnSeeAllGoals);
         goalLayout = findViewById(R.id.goalLayout);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -129,15 +119,12 @@ public class HomePageActivity extends BaseActivity {
     }
 
     private void displayCurrentMonth() {
-        // Find the TextView by its ID
         TextView monthTextView = findViewById(R.id.monthView);
 
-        // Get the current month
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
         String currentMonth = monthFormat.format(calendar.getTime());
 
-        // Set the current month to the TextView
         monthTextView.setText(currentMonth);
     }
 
@@ -152,11 +139,9 @@ public class HomePageActivity extends BaseActivity {
             recyclerView.setVisibility(View.VISIBLE);
             noRecordsTextView.setVisibility(View.GONE);
 
-            // Set up your RecyclerView adapter
             TransactionAdapter adapter = new TransactionAdapter(this, transactions);
             recyclerView.setAdapter(adapter);
 
-            // Optionally set a layout manager
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
     }
@@ -361,7 +346,6 @@ public class HomePageActivity extends BaseActivity {
     }
 
     private void combineTransactionsAndNotifyAdapter() {
-        // Sort the transactionList by date in descending order
         Collections.sort(transactionList, new Comparator<FinancialTransaction>() {
             @Override
             public int compare(FinancialTransaction t1, FinancialTransaction t2) {
@@ -369,47 +353,41 @@ public class HomePageActivity extends BaseActivity {
             }
         });
 
-        // Limit the list to the last 3 transactions
         if (transactionList.size() > 3) {
             transactionList = transactionList.subList(0, 3);
         }
 
         transactionAdapter.notifyDataSetChanged();
     }
+
     private void displayGoals() {
         goalRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 double totalGoalsAmount = 0;
-                goalLayout.removeAllViews(); // Clear previous views if any
+                goalLayout.removeAllViews();
 
-                boolean isFirstGoal = true; // Flag to check if the first goal is processed
+                boolean isFirstGoal = true;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (!isFirstGoal) break; // Stop processing after the first goal
+                    if (!isFirstGoal) break;
 
                     String goalName = snapshot.child("goalName").getValue(String.class);
                     int progress = snapshot.child("progress").getValue(Integer.class);
-                    double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
-                    double targetAmount = snapshot.child("targetAmount").getValue(Double.class);
+                    double convertedCurrentAmount = snapshot.child("convertedCurrentAmount").getValue(Double.class);
+                    double convertedTargetAmount = snapshot.child("convertedTargetAmount").getValue(Double.class);
 
-                    // Calculate total goals amount
-                    totalGoalsAmount += targetAmount;
+                    totalGoalsAmount += convertedTargetAmount;
 
-                    // Create layout for the goal
                     LinearLayout goalItemLayout = new LinearLayout(HomePageActivity.this);
                     goalItemLayout.setOrientation(LinearLayout.VERTICAL);
                     goalItemLayout.setPadding(10, 10, 10, 10);
 
-                    // Create and configure TextView for goal name
                     TextView goalNameView = new TextView(HomePageActivity.this);
                     goalNameView.setText(goalName);
                     goalNameView.setTextSize(20);
                     goalNameView.setTypeface(null, Typeface.BOLD);
 
-
-
-                    // Create and configure ProgressBar
                     ProgressBar progressBar = new ProgressBar(HomePageActivity.this, null, android.R.attr.progressBarStyleHorizontal);
                     progressBar.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -418,11 +396,9 @@ public class HomePageActivity extends BaseActivity {
                     progressBar.setMax(100);
                     progressBar.setProgress(progress);
 
-                    // Add views to goalItemLayout
                     goalItemLayout.addView(goalNameView);
                     goalItemLayout.addView(progressBar);
 
-                    // Check if progress exceeds 100% and add warning if necessary
                     if (progress >= 100) {
                         TextView warning = new TextView(HomePageActivity.this);
                         warning.setText("You have exceeded your goal!");
@@ -431,14 +407,10 @@ public class HomePageActivity extends BaseActivity {
                         goalItemLayout.addView(warning);
                     }
 
-                    // Add the goalItemLayout to the parent layout
                     goalLayout.addView(goalItemLayout);
 
-                    // Set flag to false to ensure only the first goal is processed
                     isFirstGoal = false;
                 }
-
-                // Removed Toast message here
             }
 
             @Override
@@ -449,9 +421,7 @@ public class HomePageActivity extends BaseActivity {
     }
 
     private void resetBudgetIfNecessary(String uid) {
-        DatabaseReference budgetRef = FirebaseDatabase.getInstance().getReference("budgets").child(uid);
-
-        budgetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        budgetRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Calendar calendar = Calendar.getInstance();
@@ -466,22 +436,31 @@ public class HomePageActivity extends BaseActivity {
                             boolean shouldReset = false;
 
                             if (timeFrame.equals("daily")) {
-                                // Reset if the last reset date is different from the current date
                                 shouldReset = !lastResetDate.equals(currentDate);
                             } else if (timeFrame.equals("monthly")) {
-                                // Reset if the last reset month is different from the current month
                                 shouldReset = !lastResetDate.startsWith(currentMonth);
                             }
 
                             if (shouldReset) {
-                                // Reset convertedCurrentBudget, currentAmount, and progress to 0
+                                Double convertedCurrentBudget = snapshot.child("convertedCurrentBudget").getValue(Double.class);
+                                Double currentBudget = snapshot.child("currentBudget").getValue(Double.class);
+                                Double progress = snapshot.child("progress").getValue(Double.class);
+
+                                if (convertedCurrentBudget == null) convertedCurrentBudget = 0.0;
+                                if (currentBudget == null) currentBudget = 0.0;
+                                if (progress == null) progress = 0.0;
+
                                 Map<String, Object> updates = new HashMap<>();
                                 updates.put("convertedCurrentBudget", 0);
-                                updates.put("currentAmount", 0);
+                                updates.put("currentBudget", 0);
                                 updates.put("progress", 0);
-                                updates.put("lastResetDate", currentDate); // Update the last reset date
+                                updates.put("lastResetDate", currentDate);
 
                                 snapshot.getRef().updateChildren(updates);
+
+                                Toast.makeText(HomePageActivity.this, "Budget reset for " + timeFrame, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(HomePageActivity.this, "No reset needed for " + timeFrame, Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -495,26 +474,6 @@ public class HomePageActivity extends BaseActivity {
         });
     }
 
-    private boolean isDateDifferent(String currentDate, String lastResetDate, String timeFrame) {
-        Calendar currentCalendar = Calendar.getInstance();
-        Calendar lastResetCalendar = Calendar.getInstance();
-
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            lastResetCalendar.setTime(sdf.parse(lastResetDate));
-
-            if ("daily".equals(timeFrame)) {
-                return !currentDate.equals(lastResetDate); // reset daily if the date is different
-            } else if ("monthly".equals(timeFrame)) {
-                return currentCalendar.get(Calendar.MONTH) != lastResetCalendar.get(Calendar.MONTH) ||
-                        currentCalendar.get(Calendar.YEAR) != lastResetCalendar.get(Calendar.YEAR); // reset monthly if the month/year is different
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
 
     private String getCurrencyUnit(String selectedCurrency, String[] currencyUnits) {
         for (String unit : currencyUnits) {

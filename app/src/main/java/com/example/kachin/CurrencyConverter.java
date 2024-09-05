@@ -132,7 +132,6 @@ public class CurrencyConverter extends AppCompatActivity {
     private void updateDatabaseWithConvertedValues(String uid, double conversionRate, double baseRate) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        // Update Budgets
         database.child("budget").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -173,7 +172,6 @@ public class CurrencyConverter extends AppCompatActivity {
             }
         });
 
-        // Update Goals
         database.child("goal").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -214,7 +212,6 @@ public class CurrencyConverter extends AppCompatActivity {
             }
         });
 
-        // Update Expenses
         database.child("expense").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -246,7 +243,6 @@ public class CurrencyConverter extends AppCompatActivity {
             }
         });
 
-        // Update Incomes
         database.child("income").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

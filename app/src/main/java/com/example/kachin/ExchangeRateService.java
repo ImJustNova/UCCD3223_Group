@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Map;
 
+// backend service for handling currency API
 public class ExchangeRateService {
     private static final String BASE_URL = "https://api.freecurrencyapi.com/v1/";
     private static final String API_KEY = "fca_live_VZtc7lMAyv3LUM1z0Yuj6A3FXXLJeKrd8tQ1kIUB";
