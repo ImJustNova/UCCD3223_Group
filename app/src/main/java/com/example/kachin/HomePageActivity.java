@@ -458,9 +458,6 @@ public class HomePageActivity extends BaseActivity {
 
                                 snapshot.getRef().updateChildren(updates);
 
-                                Toast.makeText(HomePageActivity.this, "Budget reset for " + timeFrame, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(HomePageActivity.this, "No reset needed for " + timeFrame, Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
