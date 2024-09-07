@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">LoginApp</string>
+    <string name="app_name">Kachin</string>
     <string name="login_success">Login Successful!</string>
     <string name="login_failed">Login Failed!</string>
     <string name="empty_fields_error">Please enter both username and password.</string>
