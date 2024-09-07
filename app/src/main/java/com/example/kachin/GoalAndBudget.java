@@ -228,8 +228,8 @@ public class GoalAndBudget extends AppCompatActivity {
                     budgetText.setVisibility(View.GONE);
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String category = snapshot.child("category").getValue(String.class);
-                        double currentBudget = snapshot.child("convertedCurrentBudget").getValue(Integer.class);
-                        double budgetLimit = snapshot.child("convertedBudgetLimit").getValue(Integer.class);
+                        double currentBudget = snapshot.child("convertedCurrentBudget").getValue(Double.class);
+                        double budgetLimit = snapshot.child("convertedBudgetLimit").getValue(Double.class);
                         int progress = (int) ((currentBudget / (float) budgetLimit) * 100);
 
                         LinearLayout budgetItemLayout = new LinearLayout(GoalAndBudget.this);
