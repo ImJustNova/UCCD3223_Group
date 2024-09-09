@@ -141,12 +141,17 @@ public class CurrencyConverter extends AppCompatActivity {
 
                     if (convertedCurrentBudget != null && convertedBudgetLimit != null) {
                         if (!snapshot.hasChild("currentBudget") || !snapshot.hasChild("budgetLimit")) {
-                            double currentBudget = convertedCurrentBudget * baseRate;
-                            double budgetLimit = convertedBudgetLimit * baseRate;
-                            currentBudget = Double.parseDouble(decimalFormat.format(currentBudget));
-                            budgetLimit = Double.parseDouble(decimalFormat.format(budgetLimit));
-                            snapshot.getRef().child("currentBudget").setValue(currentBudget);
-                            snapshot.getRef().child("budgetLimit").setValue(budgetLimit);
+                            if (!currentCurrency.equals("MYR")) {
+                                double currentBudget = convertedCurrentBudget * baseRate;
+                                double budgetLimit = convertedBudgetLimit * baseRate;
+                                currentBudget = Double.parseDouble(decimalFormat.format(currentBudget));
+                                budgetLimit = Double.parseDouble(decimalFormat.format(budgetLimit));
+                                snapshot.getRef().child("currentBudget").setValue(currentBudget);
+                                snapshot.getRef().child("budgetLimit").setValue(budgetLimit);
+                            } else {
+                                snapshot.getRef().child("currentBudget").setValue(convertedCurrentBudget);
+                                snapshot.getRef().child("budgetLimit").setValue(convertedBudgetLimit);
+                            }
                         }
 
                         Double currentBudget = snapshot.child("currentBudget").getValue(Double.class);
@@ -181,12 +186,17 @@ public class CurrencyConverter extends AppCompatActivity {
 
                     if (convertedCurrentAmount != null && convertedTargetAmount != null) {
                         if (!snapshot.hasChild("currentAmount") || !snapshot.hasChild("targetAmount")) {
-                            double currentAmount = convertedCurrentAmount * baseRate;
-                            double targetAmount = convertedTargetAmount * baseRate;
-                            currentAmount = Double.parseDouble(decimalFormat.format(currentAmount));
-                            targetAmount = Double.parseDouble(decimalFormat.format(targetAmount));
-                            snapshot.getRef().child("currentAmount").setValue(currentAmount);
-                            snapshot.getRef().child("targetAmount").setValue(targetAmount);
+                            if (!currentCurrency.equals("MYR")) {
+                                double currentAmount = convertedCurrentAmount * baseRate;
+                                double targetAmount = convertedTargetAmount * baseRate;
+                                currentAmount = Double.parseDouble(decimalFormat.format(currentAmount));
+                                targetAmount = Double.parseDouble(decimalFormat.format(targetAmount));
+                                snapshot.getRef().child("currentAmount").setValue(currentAmount);
+                                snapshot.getRef().child("targetAmount").setValue(targetAmount);
+                            } else {
+                                snapshot.getRef().child("currentAmount").setValue(convertedCurrentAmount);
+                                snapshot.getRef().child("targetAmount").setValue(convertedTargetAmount);
+                            }
                         }
 
                         Double currentAmount = snapshot.child("currentAmount").getValue(Double.class);
@@ -218,13 +228,17 @@ public class CurrencyConverter extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Double convertedAmount = snapshot.child("convertedAmount").getValue(Double.class);
 
+
                     if (convertedAmount != null) {
                         if (!snapshot.hasChild("amount")) {
-                            double amount = convertedAmount * baseRate;
-                            amount = Double.parseDouble(decimalFormat.format(amount));
-                            snapshot.getRef().child("amount").setValue(amount);
+                            if (!currentCurrency.equals("MYR")) {
+                                double amount = convertedAmount * baseRate;
+                                amount = Double.parseDouble(decimalFormat.format(amount));
+                                snapshot.getRef().child("amount").setValue(amount);
+                            } else {
+                                snapshot.getRef().child("amount").setValue(convertedAmount);
+                            }
                         }
-
                         Double amount = snapshot.child("amount").getValue(Double.class);
                         if (amount != null) {
                             double newConvertedAmount = amount * conversionRate;
@@ -251,11 +265,14 @@ public class CurrencyConverter extends AppCompatActivity {
 
                     if (convertedIncome != null) {
                         if (!snapshot.hasChild("amount")) {
-                            double amount = convertedIncome * baseRate;
-                            amount = Double.parseDouble(decimalFormat.format(amount));
-                            snapshot.getRef().child("amount").setValue(amount);
+                            if (!currentCurrency.equals("MYR")) {
+                                double amount = convertedIncome * baseRate;
+                                amount = Double.parseDouble(decimalFormat.format(amount));
+                                snapshot.getRef().child("amount").setValue(amount);
+                            } else {
+                                snapshot.getRef().child("amount").setValue(convertedIncome);
+                            }
                         }
-
                         Double amount = snapshot.child("amount").getValue(Double.class);
                         if (amount != null) {
                             double newConvertedIncome = amount * conversionRate;
